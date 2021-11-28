@@ -1,0 +1,82 @@
+import React, { useEffect, useState } from 'react';
+import Grid from '@material-ui/core/Grid';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import QueuePlayNextIcon from '@material-ui/icons/QueuePlayNext';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { RootStateType } from '../store/store'; //типизиция всего стора
+import FormDevice from '../components/FormDevice';
+import { TypeDeviceType, BrandType } from '../store/reducer/deviceReducer';
+import { connect } from 'react-redux';
+
+//типизация--------------------------------
+type MapStateToPropsType = {
+  types: TypeDeviceType[];
+  brands: BrandType[];
+};
+type MapDispathPropsType = {};
+
+type PropsType = MapDispathPropsType & MapStateToPropsType;
+//-----------------------------------------
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    root: {
+      height: '100vh',
+      width: '100%',
+    },
+    paper: {
+      margin: theme.spacing(4, 4),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    avatar: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.secondary.main,
+    },
+  })
+);
+
+const AddDevicesContainer: React.FC<PropsType> = ({ types, brands }) => {
+  const classes = useStyles();
+
+  return (
+    <Grid
+      container
+      component="main"
+      className={classes.root}
+      justifyContent="center"
+    >
+      <CssBaseline />
+      <Grid item>
+        <Box className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <QueuePlayNextIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Добавить устройства
+          </Typography>
+          <FormDevice types={types} brands={brands} />
+        </Box>
+      </Grid>
+    </Grid>
+  );
+};
+const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
+  return {
+    types: state.devices.types,
+    brands: state.devices.brands,
+  };
+};
+export default connect<
+  MapStateToPropsType,
+  MapDispathPropsType,
+  unknown, // личные пропсы
+  RootStateType
+>(
+  mapStateToProps,
+  {}
+)(AddDevicesContainer);

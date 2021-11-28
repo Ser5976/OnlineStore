@@ -1,0 +1,9 @@
+import mongoose from 'mongoose';
+const { Schema, model } = mongoose;
+
+const Basket = new Schema({
+  product: [{ name: String, price: Number, picture: String, id: String }],
+  owner: { type: String, unique: true, required: true },
+});
+
+export default model('Basket', Basket);
