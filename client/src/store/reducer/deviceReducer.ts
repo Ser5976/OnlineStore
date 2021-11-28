@@ -29,7 +29,7 @@ export type InfoType = {
   id?: number;
   _id?: string;
   title: string;
-  discription: string;
+  description: string;
   __v?: number;
 };
 
@@ -37,7 +37,7 @@ export type DeviceType = {
   _id?: string;
   name: string;
   price: number | null;
-  picture: string[] | any[] | null;
+  picture: string[] | any[];
   info: InfoType[];
   typeId: string;
   brandId: string;
@@ -143,7 +143,7 @@ const initialState: InitialStateType = {
   addedDevice: {
     name: '',
     price: null,
-    picture: null,
+    picture: [],
     info: [],
     typeId: '',
     brandId: '',
@@ -207,6 +207,11 @@ export const deviceReducer = (
         ...state,
         isFetchErrorTypes: action.payload,
       };
+    case SET_ADDED_DEVICE:
+      return {
+        ...state,
+        addedDevice: action.payload,
+      };
     default:
       return state;
   }
@@ -266,7 +271,9 @@ export const setFetchErrorTypes = (
   type: SET_FETCH_ERROR_TYPES,
   payload: bul,
 });
-export const setAddDevice = (data: DeviceType): setAddedDeviceActionType => ({
+
+//запись добавленного девайса в стейт
+export const setAddedDevice = (data: DeviceType): setAddedDeviceActionType => ({
   type: SET_ADDED_DEVICE,
   payload: data,
 });

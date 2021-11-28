@@ -10,18 +10,26 @@ import DeviceData from '../components/DeviceData';
 import DeviceProperty from '../components/DeviceProperty';
 import Step3 from '../components/Step3';
 import { RootStateType } from '../store/store'; //типизиция всего стора
-import { TypeDeviceType, BrandType } from '../store/reducer/deviceReducer';
-//import IconButton from '@material-ui/core/IconButton';
-//import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
-//import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
+import {
+  TypeDeviceType, //типизация типов
+  BrandType, //типизация брэндов
+  DeviceType, //типизация добаленного девайса
+  setAddedDevice, //экшен запись добавленного девайса в стейт
+  setAddedDeviceActionType, //типизация экшена
+} from '../store/reducer/deviceReducer';
+import IconButton from '@material-ui/core/IconButton';
+import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
 type MapStateToPropsType = {
   types: TypeDeviceType[];
   brands: BrandType[];
+  addedDevice: DeviceType;
 };
-type MapDispathPropsType = {};
+type MapDispathPropsType = {
+  setAddedDevice: (data: DeviceType) => setAddedDeviceActionType;
+};
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 //-----------------------------------------
@@ -62,18 +70,43 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = ['Данные о товаре', 'Добавить новые данные', 'Результат'];
 
-const AddDevicesContainer: React.FC<PropsType> = ({ types, brands }) => {
+const AddDevicesContainer: React.FC<PropsType> = ({
+  types, //типы
+  brands, //брэнды
+  addedDevice, //добавленный девайс
+  setAddedDevice, //запись добавленного девайса в стейт
+}) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 
   const getStepContent = (step: number): JSX.Element => {
     switch (step) {
       case 0:
-        return <DeviceData types={types} brands={brands} />;
+        return (
+          <DeviceData
+            types={types}
+            brands={brands}
+            handleNext={handleNext}
+            setAddedDevice={setAddedDevice}
+            addedDevice={addedDevice}
+          />
+        );
       case 1:
-        return <DeviceProperty />;
+        return (
+          <DeviceProperty
+            handleNext={handleNext}
+            setAddedDevice={setAddedDevice}
+            addedDevice={addedDevice}
+          />
+        );
       case 2:
-        return <Step3 />;
+        return (
+          <Step3
+            setAddedDevice={setAddedDevice}
+            addedDevice={addedDevice}
+            handleNext={handleNext}
+          />
+        );
       default:
         throw new Error('Unknown step');
     }
@@ -117,18 +150,20 @@ const AddDevicesContainer: React.FC<PropsType> = ({ types, brands }) => {
               {getStepContent(activeStep)}
               <div className={classes.buttons}>
                 {activeStep !== 0 && (
-                  <Button onClick={handleBack} className={classes.button}>
-                    Back
+                  <IconButton onClick={handleBack} className={classes.button}>
+                    <ArrowBackSharpIcon />
+                  </IconButton>
+                )}
+                {activeStep === steps.length - 1 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    // onClick={handleNext}
+                    className={classes.button}
+                  >
+                    Сохранить
                   </Button>
                 )}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  className={classes.button}
-                >
-                  {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                </Button>
               </div>
             </React.Fragment>
           )}
@@ -141,6 +176,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
   return {
     types: state.devices.types,
     brands: state.devices.brands,
+    addedDevice: state.devices.addedDevice,
   };
 };
 export default connect<
@@ -148,7 +184,4 @@ export default connect<
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(
-  mapStateToProps,
-  {}
-)(AddDevicesContainer);
+>(mapStateToProps, { setAddedDevice })(AddDevicesContainer);

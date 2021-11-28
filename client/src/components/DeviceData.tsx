@@ -6,10 +6,16 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { MenuItem } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone'; // загрузка файлов
+import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import { TypeDeviceType, BrandType } from '../store/reducer/deviceReducer';
+import {
+  TypeDeviceType,
+  BrandType,
+  DeviceType,
+  setAddedDeviceActionType,
+} from '../store/reducer/deviceReducer';
 
 //типизация данных
 type DataDeviceType = {
@@ -32,6 +38,9 @@ const schema = yup.object().shape({
 type PropsType = {
   types: TypeDeviceType[];
   brands: BrandType[];
+  addedDevice: DeviceType;
+  setAddedDevice: (data: DeviceType) => setAddedDeviceActionType;
+  handleNext: () => void;
 };
 //--------------------------------------------
 
@@ -58,7 +67,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeviceData: React.FC<PropsType> = ({ types, brands }) => {
+const DeviceData: React.FC<PropsType> = ({
+  types,
+  brands,
+  addedDevice,
+  setAddedDevice,
+  handleNext,
+}) => {
   const history: any = useHistory();
   const classes = useStyles();
   const {
@@ -74,6 +89,7 @@ const DeviceData: React.FC<PropsType> = ({ types, brands }) => {
     data: DataDeviceType
   ): void => {
     //console.log('Отправлено:', data);
+    handleNext();
   };
   // console.log('Отправлено:', errors);
   return (
@@ -84,7 +100,7 @@ const DeviceData: React.FC<PropsType> = ({ types, brands }) => {
             <Controller
               name="types"
               control={control}
-              defaultValue=""
+              defaultValue={addedDevice.typeId}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -118,7 +134,7 @@ const DeviceData: React.FC<PropsType> = ({ types, brands }) => {
             <Controller
               name="brands"
               control={control}
-              defaultValue=""
+              defaultValue={addedDevice.brandId}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -151,7 +167,7 @@ const DeviceData: React.FC<PropsType> = ({ types, brands }) => {
         <Controller
           name="name"
           control={control}
-          defaultValue=""
+          defaultValue={addedDevice.name}
           render={({ field }) => (
             <TextField
               {...field}
@@ -170,7 +186,7 @@ const DeviceData: React.FC<PropsType> = ({ types, brands }) => {
         <Controller
           name="price"
           control={control}
-          defaultValue=""
+          defaultValue={addedDevice.price}
           render={({ field }) => (
             <TextField
               {...field}
@@ -203,9 +219,11 @@ const DeviceData: React.FC<PropsType> = ({ types, brands }) => {
         type="submit"
         variant="contained"
         color="primary"
+        fullWidth
         className={classes.submit}
       >
-        Сохранить
+        Далее
+        <ArrowForwardSharpIcon style={{ marginLeft: 10 }} />
       </Button>
     </form>
   );

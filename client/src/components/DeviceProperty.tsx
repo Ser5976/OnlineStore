@@ -2,18 +2,27 @@ import React from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
+import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import TextField from '@material-ui/core/TextField';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { InfoType } from '../store/reducer/deviceReducer'; //типизация данных
+import {
+  DeviceType,
+  InfoType,
+  setAddedDeviceActionType,
+} from '../store/reducer/deviceReducer'; //типизация данных
 
 //-----типизация------
 
 // пропсы
-type PropsType = {};
+type PropsType = {
+  addedDevice: DeviceType;
+  setAddedDevice: (data: DeviceType) => setAddedDeviceActionType;
+  handleNext: () => void;
+};
 
 //схема валидации---------------------
 //массива info
@@ -23,13 +32,13 @@ const schemaInfo = yup.object().shape({
 });
 //общая
 const schema = yup.object().shape({
-  test: yup.array().of(schemaInfo).optional(),
+  info: yup.array().of(schemaInfo).optional(),
 });
 //-----------------------------------------
-const info = [
+/* const info = [
   { title: 'gfgfgfgf', description: 'gfgfg' },
   { title: 'kghkhkhjkj', description: 'dgfbjfgghk' },
-];
+]; */
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -37,7 +46,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeviceProperty: React.FC<PropsType> = () => {
+const DeviceProperty: React.FC<PropsType> = ({
+  addedDevice,
+  setAddedDevice,
+  handleNext,
+}) => {
+  const { info } = addedDevice;
   const classes = useStyles();
   const {
     control,
@@ -55,7 +69,10 @@ const DeviceProperty: React.FC<PropsType> = () => {
     name: 'info',
   });
 
-  const onSubmit = (data: InfoType[]): void => console.log('data', data);
+  const onSubmit = (data: InfoType[]): void => {
+    console.log('data', data);
+    handleNext();
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -124,10 +141,12 @@ const DeviceProperty: React.FC<PropsType> = () => {
       <Button
         type="submit"
         variant="contained"
+        fullWidth
         color="primary"
         className={classes.submit}
       >
-        Сохранить
+        Далее
+        <ArrowForwardSharpIcon style={{ marginLeft: 10 }} />
       </Button>
     </form>
   );
