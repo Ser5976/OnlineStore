@@ -13,9 +13,9 @@ import { RootStateType } from '../store/store'; //типизиция всего 
 import {
   TypeDeviceType, //типизация типов
   BrandType, //типизация брэндов
-  DeviceType, //типизация добаленного девайса
   setAddedDevice, //экшен запись добавленного девайса в стейт
-  setAddedDeviceActionType, //типизация экшена
+  setAddedDeviceActionType,
+  addedDeviceType, //типизация экшена
 } from '../store/reducer/deviceReducer';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
@@ -25,10 +25,10 @@ import { connect } from 'react-redux';
 type MapStateToPropsType = {
   types: TypeDeviceType[];
   brands: BrandType[];
-  addedDevice: DeviceType;
+  addedDevice: addedDeviceType;
 };
 type MapDispathPropsType = {
-  setAddedDevice: (data: DeviceType) => setAddedDeviceActionType;
+  setAddedDevice: (data: addedDeviceType) => setAddedDeviceActionType;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
   buttons: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
   },
   button: {
     marginTop: theme.spacing(3),
@@ -68,7 +68,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ['Данные о товаре', 'Добавить новые данные', 'Результат'];
+const steps = [
+  'Данные о товаре',
+  'Добавить изображения',
+  'Добавить новые данные',
+  'Добавить товар',
+];
 
 const AddDevicesContainer: React.FC<PropsType> = ({
   types, //типы
@@ -93,18 +98,20 @@ const AddDevicesContainer: React.FC<PropsType> = ({
         );
       case 1:
         return (
-          <DeviceProperty
-            handleNext={handleNext}
-            setAddedDevice={setAddedDevice}
-            addedDevice={addedDevice}
-          />
-        );
-      case 2:
-        return (
           <Step3
             setAddedDevice={setAddedDevice}
             addedDevice={addedDevice}
             handleNext={handleNext}
+            handleBack={handleBack}
+          />
+        );
+      case 2:
+        return (
+          <DeviceProperty
+            handleNext={handleNext}
+            setAddedDevice={setAddedDevice}
+            addedDevice={addedDevice}
+            handleBack={handleBack}
           />
         );
       default:
@@ -149,11 +156,6 @@ const AddDevicesContainer: React.FC<PropsType> = ({
             <React.Fragment>
               {getStepContent(activeStep)}
               <div className={classes.buttons}>
-                {activeStep !== 0 && (
-                  <IconButton onClick={handleBack} className={classes.button}>
-                    <ArrowBackSharpIcon />
-                  </IconButton>
-                )}
                 {activeStep === steps.length - 1 && (
                   <Button
                     variant="contained"

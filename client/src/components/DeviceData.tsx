@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { MenuItem } from '@material-ui/core';
-import { DropzoneArea } from 'material-ui-dropzone'; // загрузка файлов
+import IconButton from '@material-ui/core/IconButton';
 import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,23 +13,14 @@ import { useHistory } from 'react-router-dom';
 import {
   TypeDeviceType,
   BrandType,
-  DeviceType,
+  addedDeviceType,
   setAddedDeviceActionType,
 } from '../store/reducer/deviceReducer';
 
-//типизация данных
-type DataDeviceType = {
-  name: string;
-  price: number;
-  picture: any;
-  typeId: string;
-  brandId: string;
-};
-
 //схема валидации---------------------
 const schema = yup.object().shape({
-  types: yup.string().required('Пожалуйста, выберите тип'),
-  brands: yup.string().required('Пожалуйста, выберите брэнд'),
+  typeId: yup.string().required('Пожалуйста, выберите тип'),
+  brandId: yup.string().required('Пожалуйста, выберите брэнд'),
   name: yup.string().required('Поле обязательное для заполнения'),
   price: yup.string().required('Поле обязательное для заполнения'),
 });
@@ -38,8 +29,8 @@ const schema = yup.object().shape({
 type PropsType = {
   types: TypeDeviceType[];
   brands: BrandType[];
-  addedDevice: DeviceType;
-  setAddedDevice: (data: DeviceType) => setAddedDeviceActionType;
+  addedDevice: addedDeviceType;
+  setAddedDevice: (data: addedDeviceType) => setAddedDeviceActionType;
   handleNext: () => void;
 };
 //--------------------------------------------
@@ -57,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: '15px 15x',
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
   dropzone: {
     minHeight: 50,
@@ -82,23 +77,32 @@ const DeviceData: React.FC<PropsType> = ({
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    mode: 'onChange',
+    mode: 'onBlur',
   });
   // получение данных из формы и отправка на сервак(авторизация или регистрация)
-  const onSubmit: SubmitHandler<DataDeviceType> = (
-    data: DataDeviceType
+  const onSubmit: SubmitHandler<addedDeviceType> = (
+    data: addedDeviceType
   ): void => {
-    //console.log('Отправлено:', data);
+    console.log('Отправлено:', data);
+    const copyAddedDevice: addedDeviceType = {
+      ...addedDevice,
+      name: data.name,
+      price: data.price,
+      typeId: data.typeId,
+      brandId: data.brandId,
+    };
+    setAddedDevice(copyAddedDevice);
     handleNext();
   };
-  // console.log('Отправлено:', errors);
+  // console.log('Файл:', addedDevice.picture);
+  console.log('Ошибка:', errors);
   return (
     <form noValidate className={classes.form} onSubmit={handleSubmit(onSubmit)}>
       <Grid container component="main">
         <Grid container component="main">
           <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
             <Controller
-              name="types"
+              name="typeId"
               control={control}
               defaultValue={addedDevice.typeId}
               render={({ field }) => (
@@ -108,12 +112,10 @@ const DeviceData: React.FC<PropsType> = ({
                   margin="normal"
                   required
                   fullWidth
-                  id="type"
                   label="Выберите тип"
-                  autoFocus
-                  error={!!errors.types}
+                  error={!!errors.typeId}
                   select
-                  helperText={errors.types ? errors.types?.message : null}
+                  helperText={errors.typeId ? errors.typeId?.message : null}
                 >
                   {types.map((item, index) => {
                     return (
@@ -132,7 +134,7 @@ const DeviceData: React.FC<PropsType> = ({
 
           <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
             <Controller
-              name="brands"
+              name="brandId"
               control={control}
               defaultValue={addedDevice.brandId}
               render={({ field }) => (
@@ -142,11 +144,10 @@ const DeviceData: React.FC<PropsType> = ({
                   margin="normal"
                   required
                   fullWidth
-                  id="brands"
                   label="Выберите брэнд"
-                  error={!!errors.brands}
+                  error={!!errors.brandId}
                   select
-                  helperText={errors.brands ? errors.brands?.message : null}
+                  helperText={errors.brandId ? errors.brandId?.message : null}
                 >
                   {brands.map((item, index) => {
                     return (
@@ -175,9 +176,7 @@ const DeviceData: React.FC<PropsType> = ({
               margin="normal"
               required
               fullWidth
-              id="name"
               label="Введите название устройства"
-              autoFocus
               error={!!errors.name}
               helperText={errors.name ? errors.name?.message : null}
             />
@@ -194,37 +193,19 @@ const DeviceData: React.FC<PropsType> = ({
               margin="normal"
               required
               fullWidth
-              id="price"
               label="Введите стоимость устройства"
-              type="number"
-              autoFocus
               error={!!errors.price}
               helperText={errors.price ? errors.price?.message : null}
             />
           )}
         />
-        <Controller
-          name="picture"
-          control={control}
-          render={({ field }) => (
-            <DropzoneArea
-              {...field}
-              dropzoneText="Перетащите сюда файл или щелкните"
-              dropzoneClass={classes.dropzone}
-            />
-          )}
-        />
       </Grid>
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-        className={classes.submit}
-      >
-        Далее
-        <ArrowForwardSharpIcon style={{ marginLeft: 10 }} />
-      </Button>
+      <div className={classes.buttons}>
+        {' '}
+        <IconButton type="submit" style={{ color: '#3f51b5' }}>
+          <ArrowForwardSharpIcon />
+        </IconButton>
+      </div>
     </form>
   );
 };

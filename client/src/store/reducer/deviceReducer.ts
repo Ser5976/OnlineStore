@@ -48,6 +48,14 @@ export type BrandType = {
   name: string;
   __v: number;
 };
+export type addedDeviceType = {
+  name: string;
+  price: string;
+  picture: any[];
+  info: InfoType[];
+  typeId: string;
+  brandId: string;
+};
 
 export type InitialStateType = {
   devices: DeviceType[];
@@ -61,7 +69,7 @@ export type InitialStateType = {
   isFetchErrorDevice: boolean;
   isLoadinTypes: boolean;
   isFetchErrorTypes: boolean;
-  addedDevice: DeviceType;
+  addedDevice: addedDeviceType;
 };
 //------- action---------------------------
 export type setDevicesActionType = {
@@ -106,7 +114,7 @@ export type setFetchErrorTypesActionType = {
 };
 export type setAddedDeviceActionType = {
   type: typeof SET_ADDED_DEVICE;
-  payload: DeviceType;
+  payload: addedDeviceType;
 };
 
 export type DeviceAtionType =
@@ -142,7 +150,7 @@ const initialState: InitialStateType = {
   //------добавленное устройство
   addedDevice: {
     name: '',
-    price: null,
+    price: '',
     picture: [],
     info: [],
     typeId: '',
@@ -273,7 +281,9 @@ export const setFetchErrorTypes = (
 });
 
 //запись добавленного девайса в стейт
-export const setAddedDevice = (data: DeviceType): setAddedDeviceActionType => ({
+export const setAddedDevice = (
+  data: addedDeviceType
+): setAddedDeviceActionType => ({
   type: SET_ADDED_DEVICE,
   payload: data,
 });

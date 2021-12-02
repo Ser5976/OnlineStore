@@ -3,6 +3,7 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
+import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import TextField from '@material-ui/core/TextField';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,7 +11,7 @@ import * as yup from 'yup';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import {
-  DeviceType,
+  addedDeviceType,
   InfoType,
   setAddedDeviceActionType,
 } from '../store/reducer/deviceReducer'; //типизация данных
@@ -19,9 +20,10 @@ import {
 
 // пропсы
 type PropsType = {
-  addedDevice: DeviceType;
-  setAddedDevice: (data: DeviceType) => setAddedDeviceActionType;
+  addedDevice: addedDeviceType;
+  setAddedDevice: (data: addedDeviceType) => setAddedDeviceActionType;
   handleNext: () => void;
+  handleBack: () => void;
 };
 
 //схема валидации---------------------
@@ -44,12 +46,18 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: 30,
+  },
 }));
 
 const DeviceProperty: React.FC<PropsType> = ({
   addedDevice,
   setAddedDevice,
   handleNext,
+  handleBack,
 }) => {
   const { info } = addedDevice;
   const classes = useStyles();
@@ -137,17 +145,14 @@ const DeviceProperty: React.FC<PropsType> = ({
           </Grid>
         );
       })}
-
-      <Button
-        type="submit"
-        variant="contained"
-        fullWidth
-        color="primary"
-        className={classes.submit}
-      >
-        Далее
-        <ArrowForwardSharpIcon style={{ marginLeft: 10 }} />
-      </Button>
+      <div className={classes.buttons}>
+        <IconButton style={{ color: '#3f51b5' }} onClick={handleBack}>
+          <ArrowBackSharpIcon />
+        </IconButton>
+        <IconButton type="submit" style={{ color: '#3f51b5' }}>
+          <ArrowForwardSharpIcon />
+        </IconButton>
+      </div>
     </form>
   );
 };
