@@ -94,6 +94,7 @@ const Step3: React.FC<PropsType> = ({
           <DropzoneArea
             {...field}
             initialFiles={addedDevice.picture}
+            filesLimit={7}
             dropzoneText="Перетащите сюда файл или щелкните"
             dropzoneClass={classes.dropzone}
           />

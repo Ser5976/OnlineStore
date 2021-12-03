@@ -14,11 +14,9 @@ import {
   TypeDeviceType, //типизация типов
   BrandType, //типизация брэндов
   setAddedDevice, //экшен запись добавленного девайса в стейт
-  setAddedDeviceActionType,
-  addedDeviceType, //типизация экшена
+  setAddedDeviceActionType, //типизация экшена
+  addedDeviceType, //типизация добавленного устройства
 } from '../store/reducer/deviceReducer';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------

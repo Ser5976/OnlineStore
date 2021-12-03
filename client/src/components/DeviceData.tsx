@@ -2,19 +2,20 @@ import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import Button from '@material-ui/core/Button';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import { MenuItem } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import {
-  TypeDeviceType,
-  BrandType,
-  addedDeviceType,
-  setAddedDeviceActionType,
+  TypeDeviceType, //типизация типов
+  BrandType, //типизация брэндов
+  addedDeviceType, //типизация добавленного устройства
+  setAddedDeviceActionType, //типизация экшена
 } from '../store/reducer/deviceReducer';
 
 //схема валидации---------------------
@@ -40,12 +41,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginTop: theme.spacing(1),
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  link: {
-    pointerEvents: 'none',
-  },
   button: {
     margin: '15px 15x',
   },
@@ -53,21 +48,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'flex-end',
   },
-  dropzone: {
-    minHeight: 50,
-    // marginTop: 15,
-    border: '0px',
-    '& 	.MuiDropzoneArea-text': { color: '#3f51b5', fontSize: '1.00rem' },
-    '& 	.MuiDropzoneArea-icon': { color: '#3f51b5' },
-  },
 }));
 
 const DeviceData: React.FC<PropsType> = ({
-  types,
-  brands,
-  addedDevice,
-  setAddedDevice,
-  handleNext,
+  types, //типы устройств
+  brands, // брэнды
+  addedDevice, //добавленное устройство
+  setAddedDevice, //запись добавленного устройства в стейт
+  handleNext, // вперёд на следующий степ
 }) => {
   const history: any = useHistory();
   const classes = useStyles();
@@ -83,7 +71,8 @@ const DeviceData: React.FC<PropsType> = ({
   const onSubmit: SubmitHandler<addedDeviceType> = (
     data: addedDeviceType
   ): void => {
-    console.log('Отправлено:', data);
+    //console.log('Отправлено:', data);
+    //создаём копию объекта добавленного устройства,изменяем данные, которые получем из формы, и записываем в стейт
     const copyAddedDevice: addedDeviceType = {
       ...addedDevice,
       name: data.name,
@@ -94,8 +83,7 @@ const DeviceData: React.FC<PropsType> = ({
     setAddedDevice(copyAddedDevice);
     handleNext();
   };
-  // console.log('Файл:', addedDevice.picture);
-  console.log('Ошибка:', errors);
+  // console.log('Ошибка:', errors);
   return (
     <form noValidate className={classes.form} onSubmit={handleSubmit(onSubmit)}>
       <Grid container component="main">
@@ -108,11 +96,20 @@ const DeviceData: React.FC<PropsType> = ({
               render={({ field }) => (
                 <TextField
                   {...field}
-                  variant="outlined"
+                  //  variant="outlined"
                   margin="normal"
                   required
                   fullWidth
                   label="Выберите тип"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconButton>
+                          <AddCircleOutlineIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                   error={!!errors.typeId}
                   select
                   helperText={errors.typeId ? errors.typeId?.message : null}
@@ -127,9 +124,6 @@ const DeviceData: React.FC<PropsType> = ({
                 </TextField>
               )}
             />
-            <Button variant="contained" color="primary" fullWidth>
-              Добавить тип
-            </Button>
           </Grid>
 
           <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
@@ -140,11 +134,20 @@ const DeviceData: React.FC<PropsType> = ({
               render={({ field }) => (
                 <TextField
                   {...field}
-                  variant="outlined"
+                  // variant="outlined"
                   margin="normal"
                   required
                   fullWidth
                   label="Выберите брэнд"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconButton>
+                          <AddCircleOutlineIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                   error={!!errors.brandId}
                   select
                   helperText={errors.brandId ? errors.brandId?.message : null}
@@ -159,9 +162,6 @@ const DeviceData: React.FC<PropsType> = ({
                 </TextField>
               )}
             />
-            <Button variant="contained" color="primary" fullWidth>
-              Добавить брэнд
-            </Button>
           </Grid>
         </Grid>
 
@@ -172,7 +172,7 @@ const DeviceData: React.FC<PropsType> = ({
           render={({ field }) => (
             <TextField
               {...field}
-              variant="outlined"
+              // variant="outlined"
               margin="normal"
               required
               fullWidth
@@ -189,7 +189,7 @@ const DeviceData: React.FC<PropsType> = ({
           render={({ field }) => (
             <TextField
               {...field}
-              variant="outlined"
+              //variant="outlined"
               margin="normal"
               required
               fullWidth
@@ -201,7 +201,6 @@ const DeviceData: React.FC<PropsType> = ({
         />
       </Grid>
       <div className={classes.buttons}>
-        {' '}
         <IconButton type="submit" style={{ color: '#3f51b5' }}>
           <ArrowForwardSharpIcon />
         </IconButton>
