@@ -10,7 +10,6 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
 import {
   TypeDeviceType, //типизация типов
   BrandType, //типизация брэндов
@@ -57,7 +56,6 @@ const DeviceData: React.FC<PropsType> = ({
   setAddedDevice, //запись добавленного устройства в стейт
   handleNext, // вперёд на следующий степ
 }) => {
-  const history: any = useHistory();
   const classes = useStyles();
   const {
     handleSubmit,

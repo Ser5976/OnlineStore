@@ -1,12 +1,13 @@
 import React from 'react';
 import {
-  addedDeviceType,
-  setAddedDeviceActionType,
+  addedDeviceType, //типизация добавленного устройства
+  setAddedDeviceActionType, //типизация экшена
 } from '../store/reducer/deviceReducer';
 import { useForm, Controller } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
 import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
@@ -25,25 +26,14 @@ const schema = yup.object().shape({
   picture: yup.mixed().test('required', 'Необходимо добавить файл', (value) => {
     return value && value.length;
   }),
-  // picture: yup.mixed().required('First name is a required field'),
-  //  .test('fileSize', 'The file is too large', (value) => {
-  //   return value && value[0].size <= 20000;
-  //  }),
+  /* .test("fileSize", "The file is too large", (value, context) => {
+    return value && value[0] && value[0].size <= 200000;
+  })
+  .test("type", "We only support jpeg", function (value) {
+    return value && value[0] && value[0].type === "image/jpeg";
+  }), */
 });
 const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: '#eee',
-    textAlign: 'center',
-    cursor: 'pointer',
-    color: '#333',
-    padding: '10px',
-    marginTop: '20px',
-  },
-  icon: {
-    marginTop: '16px',
-    color: '#888888',
-    fontSize: '42px',
-  },
   buttons: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -51,18 +41,17 @@ const useStyles = makeStyles((theme) => ({
   },
   dropzone: {
     minHeight: 50,
-    // marginTop: 15,
     border: '0px',
-    '& 	.MuiDropzoneArea-text': { color: '#3f51b5', fontSize: '1.00rem' },
+    '& 	.MuiDropzoneArea-text': { fontSize: '1.00rem' },
     '& 	.MuiDropzoneArea-icon': { color: '#3f51b5' },
   },
 }));
 
-const Step3: React.FC<PropsType> = ({
-  addedDevice,
-  setAddedDevice,
-  handleNext,
-  handleBack,
+const DevicePicture: React.FC<PropsType> = ({
+  addedDevice, //добавленное устройство
+  setAddedDevice, //запись добавленного устройства в стейт
+  handleNext, // вперёд на следующий степ
+  handleBack, // назад на следующий степ
 }) => {
   const classes = useStyles();
   const {
@@ -75,7 +64,7 @@ const Step3: React.FC<PropsType> = ({
   });
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    //console.log(data);
     const copyAddedPicture: addedDeviceType = {
       ...addedDevice,
       picture: data.picture,
@@ -83,7 +72,7 @@ const Step3: React.FC<PropsType> = ({
     setAddedDevice(copyAddedPicture);
     handleNext();
   };
-  console.log(errors);
+  // console.log(errors);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Controller
@@ -100,7 +89,16 @@ const Step3: React.FC<PropsType> = ({
           />
         )}
       />
-      {errors.picture && <p>{errors.picture.message}</p>}
+      {errors.picture && (
+        <Typography
+          component="h1"
+          variant="subtitle1"
+          align="center"
+          color="error"
+        >
+          {errors.picture.message}
+        </Typography>
+      )}
       <div className={classes.buttons}>
         <IconButton style={{ color: '#3f51b5' }} onClick={handleBack}>
           <ArrowBackSharpIcon />
@@ -112,4 +110,4 @@ const Step3: React.FC<PropsType> = ({
     </form>
   );
 };
-export default Step3;
+export default DevicePicture;

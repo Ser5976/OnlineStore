@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import DeviceData from '../components/DeviceData';
 import DeviceProperty from '../components/DeviceProperty';
-import Step3 from '../components/Step3';
+import DevicePicture from '../components/DevicePicture';
 import { RootStateType } from '../store/store'; //типизиция всего стора
 import {
   TypeDeviceType, //типизация типов
@@ -35,6 +35,7 @@ type PropsType = MapDispathPropsType & MapStateToPropsType;
 const useStyles = makeStyles((theme) => ({
   layout: {
     width: 'auto',
+    paddingTop: theme.spacing(7),
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
@@ -96,7 +97,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
         );
       case 1:
         return (
-          <Step3
+          <DevicePicture
             setAddedDevice={setAddedDevice}
             addedDevice={addedDevice}
             handleNext={handleNext}
@@ -127,7 +128,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
 
   return (
     <main className={classes.layout}>
-      <Paper className={classes.paper}>
+      <div className={classes.paper}>
         <Typography component="h1" variant="h5" align="center">
           Добавить товар
         </Typography>
@@ -168,7 +169,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
             </React.Fragment>
           )}
         </React.Fragment>
-      </Paper>
+      </div>
     </main>
   );
 };
