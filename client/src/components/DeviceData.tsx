@@ -65,12 +65,11 @@ const DeviceData: React.FC<PropsType> = ({
     resolver: yupResolver(schema),
     mode: 'onBlur',
   });
-  // получение данных из формы и отправка на сервак(авторизация или регистрация)
+  // получаем данных из формы,создаём копию объекта добавленного устройства,изменяем данные, которые получем из формы, и записываем в стейт
   const onSubmit: SubmitHandler<addedDeviceType> = (
     data: addedDeviceType
   ): void => {
     //console.log('Отправлено:', data);
-    //создаём копию объекта добавленного устройства,изменяем данные, которые получем из формы, и записываем в стейт
     const copyAddedDevice: addedDeviceType = {
       ...addedDevice,
       name: data.name,

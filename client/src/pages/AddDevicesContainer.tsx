@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import DeviceData from '../components/DeviceData';
 import DeviceProperty from '../components/DeviceProperty';
 import DevicePicture from '../components/DevicePicture';
+import SaveDevice from '../components/SaveDevice';
 import { RootStateType } from '../store/store'; //типизиция всего стора
 import {
   TypeDeviceType, //типизация типов
@@ -107,6 +108,15 @@ const AddDevicesContainer: React.FC<PropsType> = ({
       case 2:
         return (
           <DeviceProperty
+            handleNext={handleNext}
+            setAddedDevice={setAddedDevice}
+            addedDevice={addedDevice}
+            handleBack={handleBack}
+          />
+        );
+      case 3:
+        return (
+          <SaveDevice
             handleNext={handleNext}
             setAddedDevice={setAddedDevice}
             addedDevice={addedDevice}

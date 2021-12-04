@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 50,
     border: '0px',
     '& 	.MuiDropzoneArea-text': { fontSize: '1.00rem' },
-    '& 	.MuiDropzoneArea-icon': { color: '#3f51b5' },
+    '& 	.MuiDropzoneArea-icon': { color: '#3f51b5', marginBottom: 25 },
   },
 }));
 
@@ -51,7 +51,7 @@ const DevicePicture: React.FC<PropsType> = ({
   addedDevice, //добавленное устройство
   setAddedDevice, //запись добавленного устройства в стейт
   handleNext, // вперёд на следующий степ
-  handleBack, // назад на следующий степ
+  handleBack, // назад на предыдущий степ
 }) => {
   const classes = useStyles();
   const {
@@ -62,7 +62,7 @@ const DevicePicture: React.FC<PropsType> = ({
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
-
+  // получаем данных из формы,создаём копию объекта добавленного устройства,изменяем данные, которые получем из формы, и записываем в стейт
   const onSubmit = (data: any) => {
     //console.log(data);
     const copyAddedPicture: addedDeviceType = {

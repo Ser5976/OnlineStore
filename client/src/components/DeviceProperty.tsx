@@ -10,10 +10,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+
 import {
-  addedDeviceType,
-  InfoType,
-  setAddedDeviceActionType,
+  addedDeviceType, //типизация добавленного устройства
+  setAddedDeviceActionType, //типизация экшена
 } from '../store/reducer/deviceReducer'; //типизация данных
 
 //-----типизация------
@@ -37,10 +37,6 @@ const schema = yup.object().shape({
   info: yup.array().of(schemaInfo).optional(),
 });
 //-----------------------------------------
-/* const info = [
-  { title: 'gfgfgfgf', description: 'gfgfg' },
-  { title: 'kghkhkhjkj', description: 'dgfbjfgghk' },
-]; */
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -54,10 +50,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DeviceProperty: React.FC<PropsType> = ({
-  addedDevice,
-  setAddedDevice,
-  handleNext,
-  handleBack,
+  addedDevice, //добавленное устройство
+  setAddedDevice, //запись добавленного устройства в стейт
+  handleNext, // вперёд на следующий степ
+  handleBack, // назад на предыдущий степ
 }) => {
   const { info } = addedDevice;
   const classes = useStyles();
@@ -76,22 +72,28 @@ const DeviceProperty: React.FC<PropsType> = ({
     control,
     name: 'info',
   });
-
-  const onSubmit = (data: InfoType[]): void => {
-    console.log('data', data);
+  // получаем данных из формы,создаём копию объекта добавленного устройства,изменяем данные, которые получем из формы, и записываем в стейт
+  const onSubmit = (data: addedDeviceType): void => {
+    // console.log('data', data.info);
+    const copyAddedDevice: addedDeviceType = {
+      ...addedDevice,
+      info: data.info,
+    };
+    setAddedDevice(copyAddedDevice);
     handleNext();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Button
+        variant="outlined"
         color="primary"
         style={{ marginBottom: 15, fontSize: 12 }}
         onClick={() => {
           append({ title: '', description: '' });
         }}
       >
-        Добавить новое поле
+        Добавить поле
       </Button>
       {fields.map((item, index) => {
         return (
@@ -138,7 +140,7 @@ const DeviceProperty: React.FC<PropsType> = ({
               />
             </Grid>
             <Grid item xs={12} sm={2}>
-              <IconButton onClick={() => remove(index)}>
+              <IconButton onClick={() => remove(index)} color="secondary">
                 <HighlightOffIcon style={{ fontSize: 30 }} />
               </IconButton>
             </Grid>
