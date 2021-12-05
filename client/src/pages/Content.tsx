@@ -107,6 +107,8 @@ const Content: React.FC<PropsType> = ({
   }, [typeId, brandId, page]);
 
   console.log(devices);
+  // const { name, picture, price, info } = devices[1];
+  // console.log(info);
   return (
     <Grid item container>
       <Grid item xs={12} sm={2} className={classes.grid}>

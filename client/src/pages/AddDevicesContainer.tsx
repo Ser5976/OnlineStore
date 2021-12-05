@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+//import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import DeviceData from '../components/DeviceData';
 import DeviceProperty from '../components/DeviceProperty';
 import DevicePicture from '../components/DevicePicture';
-import SaveDevice from '../components/SaveDevice';
+import Grid from '@material-ui/core/Grid';
 import { RootStateType } from '../store/store'; //типизиция всего стора
 import {
   TypeDeviceType, //типизация типов
@@ -18,6 +18,7 @@ import {
   setAddedDeviceActionType, //типизация экшена
   addedDeviceType, //типизация добавленного устройства
 } from '../store/reducer/deviceReducer';
+import { addDevice } from '../action/deviceAction';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -28,6 +29,7 @@ type MapStateToPropsType = {
 };
 type MapDispathPropsType = {
   setAddedDevice: (data: addedDeviceType) => setAddedDeviceActionType;
+  addDevice: (data: addedDeviceType) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -72,7 +74,6 @@ const steps = [
   'Данные о товаре',
   'Добавить изображения',
   'Добавить новые данные',
-  'Добавить товар',
 ];
 
 const AddDevicesContainer: React.FC<PropsType> = ({
@@ -80,6 +81,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   brands, //брэнды
   addedDevice, //добавленный девайс
   setAddedDevice, //запись добавленного девайса в стейт
+  addDevice, //добавить устройства в базу данных
 }) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
@@ -114,15 +116,6 @@ const AddDevicesContainer: React.FC<PropsType> = ({
             handleBack={handleBack}
           />
         );
-      case 3:
-        return (
-          <SaveDevice
-            handleNext={handleNext}
-            setAddedDevice={setAddedDevice}
-            addedDevice={addedDevice}
-            handleBack={handleBack}
-          />
-        );
       default:
         throw new Error('Unknown step');
     }
@@ -134,6 +127,19 @@ const AddDevicesContainer: React.FC<PropsType> = ({
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
+  };
+  const appendDevice = () => {
+    const { picture, price, name, typeId, brandId, info } = addedDevice;
+    const formData: any = new FormData();
+    formData.append('price', price);
+    formData.append('name', name);
+    formData.append('typeId', typeId);
+    formData.append('brandId', brandId);
+    formData.append('info', JSON.stringify(info));
+    picture.forEach((file) => {
+      formData.append('picture', file);
+    });
+    addDevice(formData);
   };
 
   return (
@@ -152,31 +158,35 @@ const AddDevicesContainer: React.FC<PropsType> = ({
         <React.Fragment>
           {activeStep === steps.length ? (
             <React.Fragment>
-              <Typography variant="h5" gutterBottom>
-                Thank you for your order.
-              </Typography>
-              <Typography variant="subtitle1">
-                Your order number is #2001539. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
-              </Typography>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              {getStepContent(activeStep)}
-              <div className={classes.buttons}>
-                {activeStep === steps.length - 1 && (
+              <Grid container component="main">
+                <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     color="primary"
-                    // onClick={handleNext}
-                    className={classes.button}
+                    fullWidth
+                    style={{ marginBottom: 15, fontSize: 12 }}
+                    onClick={() => {
+                      setActiveStep(0);
+                    }}
+                  >
+                    Отмена
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    style={{ marginBottom: 15, fontSize: 12 }}
+                    onClick={appendDevice}
                   >
                     Сохранить
                   </Button>
-                )}
-              </div>
+                </Grid>
+              </Grid>
             </React.Fragment>
+          ) : (
+            <React.Fragment>{getStepContent(activeStep)}</React.Fragment>
           )}
         </React.Fragment>
       </div>
@@ -195,4 +205,4 @@ export default connect<
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(mapStateToProps, { setAddedDevice })(AddDevicesContainer);
+>(mapStateToProps, { setAddedDevice, addDevice })(AddDevicesContainer);

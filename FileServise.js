@@ -5,15 +5,24 @@ import * as fs from 'fs';
 //создаём имя файла,записываем его в папку static
 class FileServise {
   saveFile(files) {
-    // console.log(file);
+    console.log(files);
     try {
-      const fileNames = files.map((file) => {
+      if (files.length) {
+        const fileNames = files.map((file) => {
+          const fileName = uuid.v4() + '.jpg';
+          const filePath = path.resolve('static', fileName);
+          file.mv(filePath);
+          return fileName;
+        });
+        return fileNames;
+      } else {
         const fileName = uuid.v4() + '.jpg';
         const filePath = path.resolve('static', fileName);
-        file.mv(filePath);
+        files.mv(filePath);
+        // console.log(fileName);
         return fileName;
-      });
-      return fileNames;
+      }
+
       // console.log(fileName);
     } catch (e) {
       console.log(e);
@@ -23,12 +32,19 @@ class FileServise {
   deleteFile(fileNames) {
     // console.log(fileName);
     try {
-      fileNames.map((file) => {
-        const filePath = path.join('static', file);
+      if (fileNames.length) {
+        fileNames.map((file) => {
+          const filePath = path.join('static', file);
+          if (fs.existsSync(filePath)) {
+            fs.unlink(filePath, () => {});
+          }
+        });
+      } else {
+        const filePath = path.join('static', fileNames);
         if (fs.existsSync(filePath)) {
           fs.unlink(filePath, () => {});
         }
-      });
+      }
     } catch (e) {
       console.log(e);
     }

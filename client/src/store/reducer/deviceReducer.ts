@@ -38,7 +38,7 @@ export type DeviceType = {
   name: string;
   price: number | null;
   picture: string[] | any[];
-  info: InfoType[];
+  info: any;
   typeId: string;
   brandId: string;
   __v?: number;

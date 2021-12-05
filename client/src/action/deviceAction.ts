@@ -14,6 +14,7 @@ import {
   setTypes, // запись типов в стейт
   setBrands, // запись брэндов
   setPageQty, // запись количества страниц в стейт
+  addedDeviceType,
 } from '../store/reducer/deviceReducer';
 
 // типизация санки
@@ -84,6 +85,17 @@ export const getBrands = (): ThunkType => {
       // console.log(response);
       //запись в стейт
       dispatch(setBrands(response.data));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+// добавление устройства в базу данных
+export const addDevice = (data: any): ThunkType => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(ModelUrls.DEVICES, data);
+      // console.log(response);
     } catch (e) {
       console.log(e);
     }

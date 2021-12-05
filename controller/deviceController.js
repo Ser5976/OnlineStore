@@ -5,18 +5,18 @@ import Type from '../models/Type.js';
 class deviceController {
   async create(req, res) {
     try {
-      // console.log(req.files.picture);
       const { name, price, typeId, brandId, info } = req.body;
+      // console.log(req.files.picture);
       const fileName = FileServise.saveFile(req.files.picture);
-      // info = JSON.parse(info); // info  из фронта приходит в json строке, поэтому парсим обратно в массив
-      console.log(fileName);
+      const specifications = JSON.parse(info); //парсим,т.к. массив info из formData приходит в виде строки
+
       const device = await Device.create({
         name,
         price,
         picture: fileName,
         typeId,
         brandId,
-        // info,
+        info: specifications,
       });
       //--------------------------------------------------------
       //добавление брэнда в тип
