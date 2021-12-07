@@ -32,6 +32,8 @@ type PropsType = {
   addedDevice: addedDeviceType;
   setAddedDevice: (data: addedDeviceType) => setAddedDeviceActionType;
   handleNext: () => void;
+  handleOpenType: () => void;
+  handleOpenBrand: () => void;
 };
 //--------------------------------------------
 
@@ -55,6 +57,8 @@ const DeviceData: React.FC<PropsType> = ({
   addedDevice, //добавленное устройство
   setAddedDevice, //запись добавленного устройства в стейт
   handleNext, // вперёд на следующий степ
+  handleOpenType, //открытие модального окна типа
+  handleOpenBrand, //открытие модального окна брэнда
 }) => {
   const classes = useStyles();
   const {
@@ -95,13 +99,12 @@ const DeviceData: React.FC<PropsType> = ({
                   {...field}
                   //  variant="outlined"
                   margin="normal"
-                  required
                   fullWidth
                   label="Выберите тип"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <IconButton>
+                        <IconButton onClick={handleOpenType}>
                           <AddCircleOutlineIcon />
                         </IconButton>
                       </InputAdornment>
@@ -139,7 +142,7 @@ const DeviceData: React.FC<PropsType> = ({
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <IconButton>
+                        <IconButton onClick={handleOpenBrand}>
                           <AddCircleOutlineIcon />
                         </IconButton>
                       </InputAdornment>

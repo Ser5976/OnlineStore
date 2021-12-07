@@ -11,6 +11,7 @@ const SET_FETCH_ERROR_DEVICE = 'SET_FETCH_ERROR_DEVICE';
 const SET_FETCH_ERROR_TYPES = 'SET_FETCH_ERROR_TYPES';
 
 const SET_ADDED_DEVICE = 'SET_ADDED_DEVICE';
+const SET_ADDED_DEVICE_ERROR = 'SET_ADDED_DEVICE_ERROR';
 
 //типизация--------------------------------
 //----------стейта-------------------------
@@ -70,6 +71,7 @@ export type InitialStateType = {
   isLoadinTypes: boolean;
   isFetchErrorTypes: boolean;
   addedDevice: addedDeviceType;
+  addedDeviceError: boolean;
 };
 //------- action---------------------------
 export type setDevicesActionType = {
@@ -116,6 +118,10 @@ export type setAddedDeviceActionType = {
   type: typeof SET_ADDED_DEVICE;
   payload: addedDeviceType;
 };
+export type setAddedDeviceErrorActionType = {
+  type: typeof SET_ADDED_DEVICE_ERROR;
+  payload: boolean;
+};
 
 export type DeviceAtionType =
   | setDevicesActionType
@@ -128,7 +134,8 @@ export type DeviceAtionType =
   | setFetchErrorDeviceActionType
   | setIsLoadinTypesActionType
   | setFetchErrorTypesActionType
-  | setAddedDeviceActionType;
+  | setAddedDeviceActionType
+  | setAddedDeviceErrorActionType;
 
 //-----------------------------------------
 
@@ -138,7 +145,7 @@ const initialState: InitialStateType = {
   brands: [], // массив брэндов устройств
   //---пагинация----
   pageQty: 0, // общее количество страниц(для пагинации)
-  limit: 3, // количество устройств на станице
+  limit: 6, // количество устройств на станице
   //----для фильтрации---
   typeId: null, // выбранный тип устройства
   brandId: null, // выбранный брэнд устройства
@@ -156,6 +163,7 @@ const initialState: InitialStateType = {
     typeId: '',
     brandId: '',
   },
+  addedDeviceError: false,
 };
 export const deviceReducer = (
   state = initialState,
@@ -219,6 +227,11 @@ export const deviceReducer = (
       return {
         ...state,
         addedDevice: action.payload,
+      };
+    case SET_ADDED_DEVICE_ERROR:
+      return {
+        ...state,
+        addedDeviceError: action.payload,
       };
     default:
       return state;
@@ -285,5 +298,12 @@ export const setAddedDevice = (
   data: addedDeviceType
 ): setAddedDeviceActionType => ({
   type: SET_ADDED_DEVICE,
+  payload: data,
+});
+//ошибка добавленного устройтсва
+export const setAddedDeviceError = (
+  data: boolean
+): setAddedDeviceErrorActionType => ({
+  type: SET_ADDED_DEVICE_ERROR,
   payload: data,
 });

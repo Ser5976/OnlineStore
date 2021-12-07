@@ -105,6 +105,11 @@ const Content: React.FC<PropsType> = ({
     getDevices(typeId, brandId, limit, page, setPage, history);
     // eslint-disable-next-line
   }, [typeId, brandId, page]);
+  // запрос на сервак для получения типов устройств
+  useEffect(() => {
+    getTypes();
+    // eslint-disable-next-line
+  }, []);
 
   console.log(devices);
   // const { name, picture, price, info } = devices[1];

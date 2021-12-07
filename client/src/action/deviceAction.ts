@@ -3,19 +3,19 @@ import {
   setIsLoadinTypes, //крутилка для типов
   setFetchErrorDevice, //ошибка для устройств
   setFetchErrorTypes, //ошибка для типов
+  setDevices, // запись устройств в стейт
+  setTypes, // запись типов в стейт
+  setBrands, // запись брэндов
+  setPageQty, // запись количества страниц в стейт
+  addedDeviceType, //типизация добавленного устройства
+  setAddedDevice, // запись добавленного устройства в стейт
+  setAddedDeviceError, // изменения статуса ошибки добавленного устройства
 } from './../store/reducer/deviceReducer';
 import axios from 'axios';
 import { ThunkAction } from 'redux-thunk'; // для типизации санки
 import { RootStateType } from '../store/store'; //типизация всего стора
 import { ModelUrls } from '../constants/url';
 import { DeviceAtionType } from '../store/reducer/deviceReducer'; //типизация экшенов устройств
-import {
-  setDevices, // запись устройств в стейт
-  setTypes, // запись типов в стейт
-  setBrands, // запись брэндов
-  setPageQty, // запись количества страниц в стейт
-  addedDeviceType,
-} from '../store/reducer/deviceReducer';
 
 // типизация санки
 export type ThunkType = ThunkAction<
@@ -44,7 +44,7 @@ export const getDevices = (
           page,
         },
       });
-      console.log(response);
+      // console.log(response);
       //если число страниц меньше активной страницы,текущую страницу ставим 1
       if (response.data.pageQty < page) {
         setPage(1); //записываем текущую страницу в локальный стейт,(в Content)
@@ -90,12 +90,58 @@ export const getBrands = (): ThunkType => {
     }
   };
 };
-// добавление устройства в базу данных
-export const addDevice = (data: any): ThunkType => {
+// добавление устройства в базу данных ,обнуление стейта addedDevice,переход на главную страницу
+export const addDevice = (data: any, history: any): ThunkType => {
+  //чтобы обнулить стейт
+  const copyAddedDevice: addedDeviceType = {
+    name: '',
+    price: '',
+    picture: [],
+    info: [],
+    typeId: '',
+    brandId: '',
+  };
   return async (dispatch) => {
     try {
       const response = await axios.post(ModelUrls.DEVICES, data);
       // console.log(response);
+      dispatch(setAddedDeviceError(false));
+      //обнуляем добавленное устройство в стейте
+      dispatch(setAddedDevice(copyAddedDevice));
+      history.push('/');
+    } catch (e) {
+      console.log(e);
+      dispatch(setAddedDeviceError(true));
+    }
+  };
+};
+// добавление типа устройства в базу данных
+export const addType = (
+  data: { name: string },
+  handleClose: () => void
+): ThunkType => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(ModelUrls.TYPES, data);
+      console.log(response);
+      dispatch(getTypes());
+      handleClose();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+// добавление брэнда устройства в базу данных
+export const addBrand = (
+  data: { name: string },
+  handleClose: () => void
+): ThunkType => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(ModelUrls.BRANDS, data);
+      console.log(response);
+      dispatch(getBrands());
+      handleClose();
     } catch (e) {
       console.log(e);
     }

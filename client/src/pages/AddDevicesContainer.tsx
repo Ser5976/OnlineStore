@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 //import Paper from '@material-ui/core/Paper';
+import { useHistory } from 'react-router';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -16,20 +17,24 @@ import {
   BrandType, //типизация брэндов
   setAddedDevice, //экшен запись добавленного девайса в стейт
   setAddedDeviceActionType, //типизация экшена
-  addedDeviceType, //типизация добавленного устройства
+  addedDeviceType, // типизация добавленного устройства
 } from '../store/reducer/deviceReducer';
-import { addDevice } from '../action/deviceAction';
+import { addDevice, addType, addBrand } from '../action/deviceAction';
 import { connect } from 'react-redux';
+import ModalWindow from '../components/ModalWindow';
 
 //типизация--------------------------------
 type MapStateToPropsType = {
   types: TypeDeviceType[];
   brands: BrandType[];
   addedDevice: addedDeviceType;
+  addedDeviceError: boolean;
 };
 type MapDispathPropsType = {
   setAddedDevice: (data: addedDeviceType) => setAddedDeviceActionType;
-  addDevice: (data: addedDeviceType) => void;
+  addDevice: (data: addedDeviceType, history: any) => void;
+  addType: (data: { name: string }, handleClose: () => void) => void;
+  addBrand: (data: { name: string }, handleClose: () => void) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -68,6 +73,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
   },
+  textTitle: {
+    marginBottom: '25px',
+  },
 }));
 
 const steps = [
@@ -82,21 +90,60 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   addedDevice, //добавленный девайс
   setAddedDevice, //запись добавленного девайса в стейт
   addDevice, //добавить устройства в базу данных
+  addType, //добавить тип устройства в базу данных
+  addBrand, //добавить брэнд устройства в базу данных
+  addedDeviceError, //ошибка добавленного устройства
 }) => {
+  const history = useHistory();
   const classes = useStyles();
+  //степер
   const [activeStep, setActiveStep] = React.useState(0);
 
+  //открытие модального окна-------------------------------
+  //для типа
+  const [openType, setOpenType] = React.useState(false);
+  const handleOpenType = () => {
+    setOpenType(true);
+  };
+  const handleCloseType = () => {
+    setOpenType(false);
+  };
+  //для брэнда
+  const [openBrand, setOpenBrand] = React.useState(false);
+  const handleOpenBrand = () => {
+    setOpenType(true);
+  };
+  const handleCloseBrand = () => {
+    setOpenType(false);
+  };
+  //------------------------------------------------------------
   const getStepContent = (step: number): JSX.Element => {
     switch (step) {
       case 0:
         return (
-          <DeviceData
-            types={types}
-            brands={brands}
-            handleNext={handleNext}
-            setAddedDevice={setAddedDevice}
-            addedDevice={addedDevice}
-          />
+          <>
+            <DeviceData
+              types={types}
+              brands={brands}
+              handleNext={handleNext}
+              setAddedDevice={setAddedDevice}
+              addedDevice={addedDevice}
+              handleOpenType={handleOpenType}
+              handleOpenBrand={handleOpenBrand}
+            />
+            <ModalWindow
+              handleClose={handleCloseType}
+              open={openType}
+              addData={addType}
+              title="тип"
+            />
+            <ModalWindow
+              handleClose={handleCloseBrand}
+              open={openType}
+              addData={addBrand}
+              title="брэнд"
+            />
+          </>
         );
       case 1:
         return (
@@ -128,6 +175,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+  //отправка добаленного устройства  на сервак,используем FormData из за файлов,history чтобы вернуться на главную
   const appendDevice = () => {
     const { picture, price, name, typeId, brandId, info } = addedDevice;
     const formData: any = new FormData();
@@ -139,7 +187,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
     picture.forEach((file) => {
       formData.append('picture', file);
     });
-    addDevice(formData);
+    addDevice(formData, history);
   };
 
   return (
@@ -158,6 +206,15 @@ const AddDevicesContainer: React.FC<PropsType> = ({
         <React.Fragment>
           {activeStep === steps.length ? (
             <React.Fragment>
+              {addedDeviceError && (
+                <Typography
+                  align="center"
+                  color="error"
+                  className={classes.textTitle}
+                >
+                  Что-то пошло не так!
+                </Typography>
+              )}
               <Grid container component="main">
                 <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
                   <Button
@@ -198,6 +255,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     types: state.devices.types,
     brands: state.devices.brands,
     addedDevice: state.devices.addedDevice,
+    addedDeviceError: state.devices.addedDeviceError,
   };
 };
 export default connect<
@@ -205,4 +263,6 @@ export default connect<
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(mapStateToProps, { setAddedDevice, addDevice })(AddDevicesContainer);
+>(mapStateToProps, { setAddedDevice, addDevice, addType, addBrand })(
+  AddDevicesContainer
+);
