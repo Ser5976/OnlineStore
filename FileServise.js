@@ -5,7 +5,7 @@ import * as fs from 'fs';
 //создаём имя файла,записываем его в папку static
 class FileServise {
   saveFile(files) {
-    console.log(files);
+    // console.log(files);
     try {
       if (files.length) {
         const fileNames = files.map((file) => {

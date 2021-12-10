@@ -1,4 +1,5 @@
 import Type from '../models/Type.js';
+import Device from '../models/Device.js';
 
 class typeController {
   async create(req, res) {
@@ -22,13 +23,21 @@ class typeController {
   async delete(req, res) {
     try {
       const { id } = req.params;
-
+      //Проверка наличия id
       if (!id) {
         res.status(400).json({ massage: 'Id не указан' });
       }
-
-      const deleteType = await Type.findByIdAndDelete(id);
-      return res.json(deleteType);
+      //проверка типа,если тип используется в устройстве,то мы его не удаляем
+      const typeId = await Device.find({ typeId: id });
+      //  console.log(typeId.length !== 0);
+      if (typeId.length !== 0) {
+        return res.status(400).json({
+          message: `Данный тип  используется в других устройствах,чтобы удалить тип удалите все устройства с этим типом`,
+        });
+      } else {
+        const deleteType = await Type.findByIdAndDelete(id);
+        return res.json(deleteType);
+      }
     } catch (e) {
       res.status(500).json(e);
     }
