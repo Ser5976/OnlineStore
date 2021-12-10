@@ -9,11 +9,15 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { DeviceType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
+import { AuthReducerType } from '../store/reducer/authReducer';
 
 //типизация----------------------
 
 type PropsType = {
   item: DeviceType;
+  auth: AuthReducerType;
+  isAuth: boolean;
+  removeDevice: (id: string | undefined) => void;
 };
 //---------------------------------
 
@@ -22,11 +26,16 @@ const useStyles = makeStyles({
     maxWidth: 345,
   },
   media: {
-    height: 140,
+    height: 0,
+    paddingTop: '56.25%',
+  },
+  cardActions: {
+    display: 'flex',
+    justifyContent: 'space-between',
   },
 });
 
-const Device: React.FC<PropsType> = ({ item }) => {
+const Device: React.FC<PropsType> = ({ item, auth, isAuth, removeDevice }) => {
   const { name, picture, price } = item;
   const classes = useStyles();
 
@@ -38,19 +47,31 @@ const Device: React.FC<PropsType> = ({ item }) => {
           image={`${ROOT_URL}/${picture[0]}`}
           title="Contemplative Reptile"
         />
-        <CardContent>
-          <Typography gutterBottom variant="h6">
-            {name}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {price}
-          </Typography>
-        </CardContent>
       </CardActionArea>
-      <CardActions>
+      <CardContent>
+        <Typography gutterBottom variant="h6">
+          {name}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" component="p">
+          {price}
+        </Typography>
+      </CardContent>
+
+      <CardActions className={classes.cardActions}>
         <Button size="small" color="primary">
           Купить
         </Button>
+        {isAuth && auth.role === 'ADMIN' && (
+          <Button
+            size="small"
+            color="secondary"
+            onClick={() => {
+              removeDevice(item._id);
+            }}
+          >
+            Удалить
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

@@ -17,7 +17,8 @@ import {
   BrandType, //типизация брэндов
   setAddedDevice, //экшен запись добавленного девайса в стейт
   setAddedDeviceActionType, //типизация экшена
-  addedDeviceType, // типизация добавленного устройства
+  addedDeviceType, // типизация добавленного устройства\
+  setAddedDeviceError, //изменения ошибки
 } from '../store/reducer/deviceReducer';
 import { addDevice, addType, addBrand } from '../action/deviceAction';
 import { connect } from 'react-redux';
@@ -35,6 +36,7 @@ type MapDispathPropsType = {
   addDevice: (data: addedDeviceType, history: any) => void;
   addType: (data: { name: string }, handleClose: () => void) => void;
   addBrand: (data: { name: string }, handleClose: () => void) => void;
+  setAddedDeviceError: (data: boolean) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -93,6 +95,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   addType, //добавить тип устройства в базу данных
   addBrand, //добавить брэнд устройства в базу данных
   addedDeviceError, //ошибка добавленного устройства
+  setAddedDeviceError, //изменение ошибки
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -111,10 +114,10 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   //для брэнда
   const [openBrand, setOpenBrand] = React.useState(false);
   const handleOpenBrand = () => {
-    setOpenType(true);
+    setOpenBrand(true);
   };
   const handleCloseBrand = () => {
-    setOpenType(false);
+    setOpenBrand(false);
   };
   //------------------------------------------------------------
   const getStepContent = (step: number): JSX.Element => {
@@ -136,12 +139,16 @@ const AddDevicesContainer: React.FC<PropsType> = ({
               open={openType}
               addData={addType}
               title="тип"
+              addedDeviceError={addedDeviceError}
+              setAddedDeviceError={setAddedDeviceError}
             />
             <ModalWindow
               handleClose={handleCloseBrand}
-              open={openType}
+              open={openBrand}
               addData={addBrand}
               title="брэнд"
+              addedDeviceError={addedDeviceError}
+              setAddedDeviceError={setAddedDeviceError}
             />
           </>
         );
@@ -263,6 +270,10 @@ export default connect<
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(mapStateToProps, { setAddedDevice, addDevice, addType, addBrand })(
-  AddDevicesContainer
-);
+>(mapStateToProps, {
+  setAddedDevice,
+  addDevice,
+  addType,
+  addBrand,
+  setAddedDeviceError,
+})(AddDevicesContainer);

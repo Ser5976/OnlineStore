@@ -16,6 +16,8 @@ type PropsType = {
   open: boolean;
   title: string;
   addData: (data: { name: string }, handleClose: () => void) => void;
+  addedDeviceError: boolean;
+  setAddedDeviceError: (data: boolean) => void;
 };
 //--------------------------------------------
 //схема валидации---------------------
@@ -38,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'flex-end',
   },
+  textTitle: {
+    marginTop: '5px',
+  },
 }));
 
 const ModalWindow: React.FC<PropsType> = ({
@@ -45,6 +50,8 @@ const ModalWindow: React.FC<PropsType> = ({
   open, //открытие модального окна
   title, // заголовок(тип или брэнд)
   addData, //функция отправляющая тип или брэнд в базу данных
+  addedDeviceError, // ошибка
+  setAddedDeviceError, //изменение ошибки
 }) => {
   const classes = useStyles();
   const {
@@ -68,6 +75,15 @@ const ModalWindow: React.FC<PropsType> = ({
           Добавить {title}
         </Typography>
         <Divider />
+        {addedDeviceError && (
+          <Typography
+            align="center"
+            color="error"
+            className={classes.textTitle}
+          >
+            Что-то пошло не так!
+          </Typography>
+        )}
         <form style={{ padding: 15 }} onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="name"
@@ -89,7 +105,10 @@ const ModalWindow: React.FC<PropsType> = ({
               variant="outlined"
               color="primary"
               style={{ margin: 5, fontSize: 12 }}
-              onClick={handleClose}
+              onClick={() => {
+                handleClose();
+                setAddedDeviceError(false); //
+              }}
             >
               Закрыть
             </Button>
@@ -98,7 +117,6 @@ const ModalWindow: React.FC<PropsType> = ({
               variant="outlined"
               color="primary"
               style={{ margin: 5, fontSize: 12 }}
-              onClick={() => {}}
             >
               Добавить
             </Button>

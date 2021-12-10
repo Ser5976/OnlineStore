@@ -123,11 +123,13 @@ export const addType = (
   return async (dispatch) => {
     try {
       const response = await axios.post(ModelUrls.TYPES, data);
+      dispatch(setAddedDeviceError(false));
       console.log(response);
       dispatch(getTypes());
       handleClose();
     } catch (e) {
       console.log(e);
+      dispatch(setAddedDeviceError(true));
     }
   };
 };
@@ -139,11 +141,26 @@ export const addBrand = (
   return async (dispatch) => {
     try {
       const response = await axios.post(ModelUrls.BRANDS, data);
+      dispatch(setAddedDeviceError(false));
       console.log(response);
       dispatch(getBrands());
       handleClose();
     } catch (e) {
       console.log(e);
+      dispatch(setAddedDeviceError(true));
+    }
+  };
+};
+// удаление  устройства
+export const removeDevice = (id: string | undefined): ThunkType => {
+  console.log(id);
+  return async (dispatch) => {
+    try {
+      const response = await axios.delete(ModelUrls.DEVICES + '/' + id);
+      window.location.reload();
+    } catch (e) {
+      console.log(e);
+      dispatch(setAddedDeviceError(true));
     }
   };
 };

@@ -11,6 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import TypeBar from '../components/TypeBar';
 import DeviceContainer from '../components/DeviceContainer';
 import { RootStateType } from '../store/store'; //типизиция всего стора
+import { AuthReducerType } from '../store/reducer/authReducer';
 import {
   setTypeId, //запись выбранного типа устройства
   setBrandId, //запись выбранного  брэнда устройства
@@ -20,7 +21,7 @@ import {
   setBrandIdActionType,
 } from '../store/reducer/deviceReducer'; // типизация экшенов
 import { DeviceType, TypeDeviceType } from '../store/reducer/deviceReducer'; //типизация данных
-import { getDevices, getTypes } from '../action/deviceAction'; //запрос на получение устройств  и типов устройств
+import { getDevices, getTypes, removeDevice } from '../action/deviceAction'; //запрос на получение устройств  и типов устройств,удаления устройства
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -35,6 +36,8 @@ type MapStateToPropsType = {
   isFetchErrorDevice: boolean;
   isLoadinTypes: boolean;
   isFetchErrorTypes: boolean;
+  auth: AuthReducerType;
+  isAuth: boolean;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -47,6 +50,7 @@ type MapDispathPropsType = {
   ) => void;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
+  removeDevice: (id: string | undefined) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -64,7 +68,7 @@ const useStyles = makeStyles((theme) =>
     },
     grid: {
       width: '100%',
-      height: '100%',
+      height: 650,
       overflow: 'auto',
     },
     textTitle: {
@@ -77,6 +81,7 @@ const Content: React.FC<PropsType> = ({
   getDevices,
   setTypeId,
   setBrandId,
+  removeDevice,
   devices,
   types,
   pageQty,
@@ -87,6 +92,8 @@ const Content: React.FC<PropsType> = ({
   isFetchErrorDevice,
   isLoadinTypes,
   isFetchErrorTypes,
+  auth,
+  isAuth,
 }) => {
   const classes = useStyles();
   const searchPage = useLocation(); // для получения строки запроса
@@ -170,7 +177,12 @@ const Content: React.FC<PropsType> = ({
           </Typography>
         ) : (
           <>
-            <DeviceContainer devices={devices} />
+            <DeviceContainer
+              devices={devices}
+              auth={auth}
+              isAuth={isAuth}
+              removeDevice={removeDevice}
+            />
             {!!pageQty && (
               <Pagination
                 className={classes.root}
@@ -207,6 +219,8 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     isLoadinTypes: state.devices.isLoadinTypes, //крутилка типов
     isFetchErrorDevice: state.devices.isFetchErrorDevice, //ошибка устройств
     isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка типов
+    auth: state.auth.auth, //авторизация
+    isAuth: state.auth.isAuth, //маркер авторизации
   };
 };
 export default connect<
@@ -218,4 +232,5 @@ export default connect<
   getDevices,
   setTypeId,
   setBrandId,
+  removeDevice,
 })(Content);
