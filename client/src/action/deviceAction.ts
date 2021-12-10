@@ -10,6 +10,7 @@ import {
   addedDeviceType, //типизация добавленного устройства
   setAddedDevice, // запись добавленного устройства в стейт
   setAddedDeviceError, // изменения статуса ошибки добавленного устройства
+  setTypeMessage, // изменения маркера получения сообщения о невозможности удаления типа устройства
 } from './../store/reducer/deviceReducer';
 import axios from 'axios';
 import { ThunkAction } from 'redux-thunk'; // для типизации санки
@@ -160,7 +161,22 @@ export const removeDevice = (id: string | undefined): ThunkType => {
       window.location.reload();
     } catch (e) {
       console.log(e);
-      dispatch(setAddedDeviceError(true));
+    }
+  };
+};
+// удаление типа устройства
+export const removeType = (id: string): ThunkType => {
+  console.log(id);
+  return async (dispatch) => {
+    try {
+      const response = await axios.delete(ModelUrls.TYPES + '/' + id);
+      console.log(response);
+      if (response.data.message) {
+        dispatch(setTypeMessage(true));
+      }
+      dispatch(getTypes());
+    } catch (e) {
+      console.log(e);
     }
   };
 };

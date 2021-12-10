@@ -31,7 +31,7 @@ class typeController {
       const typeId = await Device.find({ typeId: id });
       //  console.log(typeId.length !== 0);
       if (typeId.length !== 0) {
-        return res.status(400).json({
+        return res.json({
           message: `Данный тип  используется в других устройствах,чтобы удалить тип удалите все устройства с этим типом`,
         });
       } else {

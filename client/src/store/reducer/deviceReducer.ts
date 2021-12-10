@@ -1,3 +1,5 @@
+import { boolean } from 'yup/lib/locale';
+
 const SET_DEVICES = 'SET_DEVICES';
 const SET_TYPES = 'SET_TYPE';
 const SET_BRANDS = 'SET_BRANDS';
@@ -12,6 +14,8 @@ const SET_FETCH_ERROR_TYPES = 'SET_FETCH_ERROR_TYPES';
 
 const SET_ADDED_DEVICE = 'SET_ADDED_DEVICE';
 const SET_ADDED_DEVICE_ERROR = 'SET_ADDED_DEVICE_ERROR';
+
+const SET_TYPE_MESSAGE = 'SET_TYPE_MESSAGE';
 
 //типизация--------------------------------
 //----------стейта-------------------------
@@ -72,6 +76,7 @@ export type InitialStateType = {
   isFetchErrorTypes: boolean;
   addedDevice: addedDeviceType;
   addedDeviceError: boolean;
+  typeMessage: boolean;
 };
 //------- action---------------------------
 export type setDevicesActionType = {
@@ -122,6 +127,10 @@ export type setAddedDeviceErrorActionType = {
   type: typeof SET_ADDED_DEVICE_ERROR;
   payload: boolean;
 };
+export type setTypeMessageActionType = {
+  type: typeof SET_TYPE_MESSAGE;
+  payload: boolean;
+};
 
 export type DeviceAtionType =
   | setDevicesActionType
@@ -135,7 +144,8 @@ export type DeviceAtionType =
   | setIsLoadinTypesActionType
   | setFetchErrorTypesActionType
   | setAddedDeviceActionType
-  | setAddedDeviceErrorActionType;
+  | setAddedDeviceErrorActionType
+  | setTypeMessageActionType;
 
 //-----------------------------------------
 
@@ -163,7 +173,8 @@ const initialState: InitialStateType = {
     typeId: '',
     brandId: '',
   },
-  addedDeviceError: false,
+  addedDeviceError: false, //ошибка при добавлении устройства в базу данных
+  typeMessage: true, // маркер получения сообщения о невозможности удаления типа устройства
 };
 export const deviceReducer = (
   state = initialState,
@@ -232,6 +243,11 @@ export const deviceReducer = (
       return {
         ...state,
         addedDeviceError: action.payload,
+      };
+    case SET_TYPE_MESSAGE:
+      return {
+        ...state,
+        typeMessage: action.payload,
       };
     default:
       return state;
@@ -305,5 +321,10 @@ export const setAddedDeviceError = (
   data: boolean
 ): setAddedDeviceErrorActionType => ({
   type: SET_ADDED_DEVICE_ERROR,
+  payload: data,
+});
+// изменения маркера получения сообщения о невозможности удаления типа устройства
+export const setTypeMessage = (data: boolean): setTypeMessageActionType => ({
+  type: SET_TYPE_MESSAGE,
   payload: data,
 });

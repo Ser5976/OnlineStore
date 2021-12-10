@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -13,12 +12,14 @@ import {
   setTypeIdActionType,
   setBrandIdActionType,
 } from '../store/reducer/deviceReducer'; //типизация
+import TypeListDelete from './TypeListDelete';
 
 //----типизация пропсов----
 type PropsType = {
   types: TypeDeviceType[];
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
+  removeType: (id: string) => void;
 };
 //-------------------------
 
@@ -26,6 +27,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     marginTop: 20,
     padding: '0px 5px',
+  },
+  products: { paddingLeft: theme.spacing(2), marginBottom: 50 },
+  activProducts: {
+    paddingLeft: theme.spacing(2),
+    marginBottom: 50,
+    backgroundColor: '#e0e0e0',
   },
   listType: { paddingLeft: theme.spacing(5) },
   activListType: { paddingLeft: theme.spacing(5), backgroundColor: '#e0e0e0' },
@@ -38,7 +45,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const TypeBar: React.FC<PropsType> = ({ types, setTypeId, setBrandId }) => {
+const TypeBar: React.FC<PropsType> = ({
+  types,
+  setTypeId,
+  setBrandId,
+  removeType,
+}) => {
   const classes = useStyles();
   //создаём объект с булевыми значениями для управления элементами списка(открытие закрытие)(чтобы реагировать на каждый элемент)
   let objType = {} as any;
@@ -64,94 +76,98 @@ const TypeBar: React.FC<PropsType> = ({ types, setTypeId, setBrandId }) => {
   };
 
   return (
-    <List component="nav" className={classes.root}>
-      <ListItem
-        button
-        className={allDevice ? classes.activListType : classes.listType}
-        onClick={() => {
-          setTypeId(null); //удаление из стейта существующего типа
-          setBrandId(null); // удаление из стейта существующего брэнда
-          setOpen(objType); //закрытие списка
-          setActivType(null); //удаление выделения типа
-          setAllDevice(true); //выделение всех товаров
-        }}
-      >
-        <ListItemText
-          disableTypography
-          primary={
-            <Typography variant="subtitle1" gutterBottom>
-              все товары
-            </Typography>
-          }
-        />
-      </ListItem>
-      <Divider />
-      {types.map((type, indexType) => {
-        return (
-          <div key={type._id}>
-            <ListItem
-              className={
-                activType === indexType
-                  ? classes.activListType
-                  : classes.listType
-              }
-              button
-              onClick={() => {
-                handleType(indexType); //управление типом
-                setTypeId(type._id); //запись в стейт выбранного типа
-                setBrandId(null); // удаление из стейта существующего брэнда
-                setAllDevice(false); // удаление выделения всех товаров
-              }}
-            >
-              <ListItemText
-                disableTypography
-                primary={
-                  <Typography variant="subtitle1" gutterBottom>
-                    {type.name}
-                  </Typography>
+    <>
+      <List component="nav" className={classes.root}>
+        <ListItem
+          button
+          className={allDevice ? classes.activProducts : classes.products}
+          onClick={() => {
+            setTypeId(null); //удаление из стейта существующего типа
+            setBrandId(null); // удаление из стейта существующего брэнда
+            setOpen(objType); //закрытие списка
+            setActivType(null); //удаление выделения типа
+            setAllDevice(true); //выделение всех товаров
+          }}
+        >
+          <ListItemText
+            disableTypography
+            primary={
+              <Typography variant="subtitle1" gutterBottom>
+                все товары
+              </Typography>
+            }
+          />
+        </ListItem>
+      </List>
+      <List component="nav" className={classes.root}>
+        {types.map((type, indexType) => {
+          return (
+            <div key={type._id}>
+              <ListItem
+                className={
+                  activType === indexType
+                    ? classes.activListType
+                    : classes.listType
                 }
-              />
-              {open[indexType] ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Divider />
-            <Collapse in={open[indexType]} timeout="auto" unmountOnExit>
-              <List component="div">
-                {type.brands.map((brand) => {
-                  return (
-                    <div key={brand._id}>
-                      <ListItem
-                        button
-                        className={classes.listBrand}
-                        onClick={() => {
-                          handleBrand(brand._id, indexType); //управление брэндом
-                          setTypeId(type._id); //запись в стейт выбранного типа
-                          setBrandId(brand._id); //запись в стейт выбранного брэнда
-                        }}
-                      >
-                        <ListItemText
-                          disableTypography
-                          className={
-                            activBrand === brand._id && activType === indexType
-                              ? classes.activListBrand
-                              : undefined
-                          }
-                          primary={
-                            <Typography variant="subtitle2" gutterBottom>
-                              {brand.name}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                      <Divider />
-                    </div>
-                  );
-                })}
-              </List>
-            </Collapse>
-          </div>
-        );
-      })}
-    </List>
+                button
+                onClick={() => {
+                  handleType(indexType); //управление типом
+                  setTypeId(type._id); //запись в стейт выбранного типа
+                  setBrandId(null); // удаление из стейта существующего брэнда
+                  setAllDevice(false); // удаление выделения всех товаров
+                }}
+              >
+                <ListItemText
+                  disableTypography
+                  primary={
+                    <Typography variant="subtitle1" gutterBottom>
+                      {type.name}
+                    </Typography>
+                  }
+                />
+                {open[indexType] ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+
+              <Collapse in={open[indexType]} timeout="auto" unmountOnExit>
+                <List component="div">
+                  {type.brands.map((brand) => {
+                    return (
+                      <div key={brand._id}>
+                        <ListItem
+                          button
+                          className={classes.listBrand}
+                          onClick={() => {
+                            handleBrand(brand._id, indexType); //управление брэндом
+                            setTypeId(type._id); //запись в стейт выбранного типа
+                            setBrandId(brand._id); //запись в стейт выбранного брэнда
+                          }}
+                        >
+                          <ListItemText
+                            disableTypography
+                            className={
+                              activBrand === brand._id &&
+                              activType === indexType
+                                ? classes.activListBrand
+                                : undefined
+                            }
+                            primary={
+                              <Typography variant="subtitle2" gutterBottom>
+                                {brand.name}
+                              </Typography>
+                            }
+                          />
+                        </ListItem>
+                      </div>
+                    );
+                  })}
+                </List>
+              </Collapse>
+            </div>
+          );
+        })}
+      </List>
+      <TypeListDelete types={types} removeType={removeType} />
+    </>
   );
 };
 

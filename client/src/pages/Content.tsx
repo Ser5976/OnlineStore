@@ -9,19 +9,26 @@ import Pagination from '@material-ui/lab/Pagination';
 import PaginationItem from '@material-ui/lab/PaginationItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TypeBar from '../components/TypeBar';
+import AlertType from '../components/AlertType';
 import DeviceContainer from '../components/DeviceContainer';
 import { RootStateType } from '../store/store'; //типизиция всего стора
 import { AuthReducerType } from '../store/reducer/authReducer';
 import {
   setTypeId, //запись выбранного типа устройства
   setBrandId, //запись выбранного  брэнда устройства
+  setTypeMessage, // изменения маркера получения сообщения о невозможности удаления типа устройства
 } from '../store/reducer/deviceReducer';
 import {
   setTypeIdActionType,
   setBrandIdActionType,
 } from '../store/reducer/deviceReducer'; // типизация экшенов
 import { DeviceType, TypeDeviceType } from '../store/reducer/deviceReducer'; //типизация данных
-import { getDevices, getTypes, removeDevice } from '../action/deviceAction'; //запрос на получение устройств  и типов устройств,удаления устройства
+import {
+  getDevices, //запрос на получение устройств
+  getTypes, //запрос на получение типов
+  removeDevice, //удаление устройства
+  removeType, //удаление типа
+} from '../action/deviceAction';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -38,6 +45,7 @@ type MapStateToPropsType = {
   isFetchErrorTypes: boolean;
   auth: AuthReducerType;
   isAuth: boolean;
+  typeMessage: boolean;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -51,6 +59,8 @@ type MapDispathPropsType = {
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
   removeDevice: (id: string | undefined) => void;
+  removeType: (id: string) => void;
+  setTypeMessage: (data: boolean) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -82,6 +92,8 @@ const Content: React.FC<PropsType> = ({
   setTypeId,
   setBrandId,
   removeDevice,
+  removeType,
+  setTypeMessage,
   devices,
   types,
   pageQty,
@@ -94,6 +106,7 @@ const Content: React.FC<PropsType> = ({
   isFetchErrorTypes,
   auth,
   isAuth,
+  typeMessage,
 }) => {
   const classes = useStyles();
   const searchPage = useLocation(); // для получения строки запроса
@@ -122,89 +135,93 @@ const Content: React.FC<PropsType> = ({
   // const { name, picture, price, info } = devices[1];
   // console.log(info);
   return (
-    <Grid item container>
-      <Grid item xs={12} sm={2} className={classes.grid}>
-        {isFetchErrorTypes ? (
-          <Typography
-            align="center"
-            color="error"
-            className={classes.textTitle}
-          >
-            Что-то пошло не так!
-          </Typography>
-        ) : isLoadinTypes ? (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            style={{ height: window.innerHeight - 65.6 }}
-          >
-            <CircularProgress />
-          </Box>
-        ) : types.length === 0 ? (
-          <Typography align="center" className={classes.textTitle}>
-            Пока типов товаров нет!
-          </Typography>
-        ) : (
-          <TypeBar
-            types={types}
-            setTypeId={setTypeId}
-            setBrandId={setBrandId}
-          />
-        )}
-      </Grid>
-      <Grid item xs={12} sm={10}>
-        {isFetchErrorDevice ? (
-          <Typography
-            align="center"
-            color="error"
-            className={classes.textTitle}
-          >
-            Что-то пошло не так!
-          </Typography>
-        ) : isLoadinDevice ? (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            style={{ height: window.innerHeight - 65.6 }}
-          >
-            <CircularProgress />
-          </Box>
-        ) : devices.length === 0 ? (
-          <Typography align="center" className={classes.textTitle}>
-            Пока товаров нет!
-          </Typography>
-        ) : (
-          <>
-            <DeviceContainer
-              devices={devices}
-              auth={auth}
-              isAuth={isAuth}
-              removeDevice={removeDevice}
+    <>
+      {typeMessage && <AlertType setTypeMessage={setTypeMessage} />}
+      <Grid item container>
+        <Grid item xs={12} sm={2} className={classes.grid}>
+          {isFetchErrorTypes ? (
+            <Typography
+              align="center"
+              color="error"
+              className={classes.textTitle}
+            >
+              Что-то пошло не так!
+            </Typography>
+          ) : isLoadinTypes ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              style={{ height: window.innerHeight - 65.6 }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : types.length === 0 ? (
+            <Typography align="center" className={classes.textTitle}>
+              Пока типов товаров нет!
+            </Typography>
+          ) : (
+            <TypeBar
+              types={types}
+              setTypeId={setTypeId}
+              setBrandId={setBrandId}
+              removeType={removeType}
             />
-            {!!pageQty && (
-              <Pagination
-                className={classes.root}
-                count={pageQty}
-                page={page}
-                showFirstButton
-                showLastButton
-                onChange={handleChange}
-                // интегрируем роутер
-                renderItem={(item) => (
-                  <PaginationItem
-                    component={Link}
-                    to={`/?page=${item.page}`}
-                    {...item}
-                  />
-                )}
+          )}
+        </Grid>
+        <Grid item xs={12} sm={10}>
+          {isFetchErrorDevice ? (
+            <Typography
+              align="center"
+              color="error"
+              className={classes.textTitle}
+            >
+              Что-то пошло не так!
+            </Typography>
+          ) : isLoadinDevice ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              style={{ height: window.innerHeight - 65.6 }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : devices.length === 0 ? (
+            <Typography align="center" className={classes.textTitle}>
+              Пока товаров нет!
+            </Typography>
+          ) : (
+            <>
+              <DeviceContainer
+                devices={devices}
+                auth={auth}
+                isAuth={isAuth}
+                removeDevice={removeDevice}
               />
-            )}
-          </>
-        )}
+              {!!pageQty && (
+                <Pagination
+                  className={classes.root}
+                  count={pageQty}
+                  page={page}
+                  showFirstButton
+                  showLastButton
+                  onChange={handleChange}
+                  // интегрируем роутер
+                  renderItem={(item) => (
+                    <PaginationItem
+                      component={Link}
+                      to={`/?page=${item.page}`}
+                      {...item}
+                    />
+                  )}
+                />
+              )}
+            </>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
@@ -221,6 +238,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка типов
     auth: state.auth.auth, //авторизация
     isAuth: state.auth.isAuth, //маркер авторизации
+    typeMessage: state.devices.typeMessage, // маркер получения сообщения о невозможности удаления типа устройства
   };
 };
 export default connect<
@@ -233,4 +251,6 @@ export default connect<
   setTypeId,
   setBrandId,
   removeDevice,
+  removeType,
+  setTypeMessage,
 })(Content);
