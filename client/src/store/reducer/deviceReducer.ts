@@ -174,7 +174,7 @@ const initialState: InitialStateType = {
     brandId: '',
   },
   addedDeviceError: false, //ошибка при добавлении устройства в базу данных
-  typeMessage: true, // маркер получения сообщения о невозможности удаления типа устройства
+  typeMessage: false, // маркер получения сообщения о невозможности удаления типа устройства
 };
 export const deviceReducer = (
   state = initialState,

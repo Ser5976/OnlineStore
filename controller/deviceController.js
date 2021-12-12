@@ -109,7 +109,7 @@ class deviceController {
   async delete(req, res) {
     try {
       const { id } = req.params;
-      console.log(id);
+      // console.log(id);
 
       if (!id) {
         res.status(400).json({ massage: 'Id не указан' });
