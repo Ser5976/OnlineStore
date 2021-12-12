@@ -9,17 +9,24 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import {
   TypeDeviceType,
+  BrandType,
   setTypeIdActionType,
   setBrandIdActionType,
 } from '../store/reducer/deviceReducer'; //типизация
+import { AuthReducerType } from '../store/reducer/authReducer';
 import TypeListDelete from './TypeListDelete';
+import BrandListDelete from './BrandListDelete';
 
 //----типизация пропсов----
 type PropsType = {
   types: TypeDeviceType[];
+  brands: BrandType[];
+  isAuth: boolean;
+  auth: AuthReducerType;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
   removeType: (id: string) => void;
+  removeBrand: (id: string) => void;
 };
 //-------------------------
 
@@ -47,9 +54,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const TypeBar: React.FC<PropsType> = ({
   types,
+  brands,
+  isAuth,
+  auth,
   setTypeId,
   setBrandId,
   removeType,
+  removeBrand,
 }) => {
   const classes = useStyles();
   //создаём объект с булевыми значениями для управления элементами списка(открытие закрытие)(чтобы реагировать на каждый элемент)
@@ -166,7 +177,12 @@ const TypeBar: React.FC<PropsType> = ({
           );
         })}
       </List>
-      <TypeListDelete types={types} removeType={removeType} />
+      {isAuth && auth.role === 'ADMIN' && (
+        <TypeListDelete types={types} removeType={removeType} />
+      )}
+      {isAuth && auth.role === 'ADMIN' && (
+        <BrandListDelete brands={brands} removeBrand={removeBrand} />
+      )}
     </>
   );
 };

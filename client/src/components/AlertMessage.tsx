@@ -1,11 +1,11 @@
 import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
-import { setTypeMessage } from '../store/reducer/deviceReducer';
 
 //----типизация пропсов----
 type PropsType = {
-  setTypeMessage: (data: boolean) => void;
+  setAlertMessage: (data: string | null) => void;
+  alertMessage: string | null;
 };
 //-------------------------
 
@@ -18,20 +18,22 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const AlertType: React.FC<PropsType> = ({ setTypeMessage }) => {
+const AlertMessage: React.FC<PropsType> = ({
+  setAlertMessage,
+  alertMessage,
+}) => {
   const classes = useStyles();
 
   return (
     <Alert
       severity="error"
       onClose={() => {
-        setTypeMessage(false);
+        setAlertMessage(null);
       }}
     >
-      Данный тип используется в других устройствах,чтобы удалить тип удалите все
-      устройства с этим типом !
+      {alertMessage}
     </Alert>
   );
 };
 
-export default AlertType;
+export default AlertMessage;

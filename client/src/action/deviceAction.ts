@@ -10,7 +10,7 @@ import {
   addedDeviceType, //типизация добавленного устройства
   setAddedDevice, // запись добавленного устройства в стейт
   setAddedDeviceError, // изменения статуса ошибки добавленного устройства
-  setTypeMessage, // изменения маркера получения сообщения о невозможности удаления типа устройства
+  setAlertMessage, // изменения маркера получения сообщения о невозможности удаления типа/брэнда устройства
 } from './../store/reducer/deviceReducer';
 import axios from 'axios';
 import { ThunkAction } from 'redux-thunk'; // для типизации санки
@@ -170,10 +170,27 @@ export const removeType = (id: string): ThunkType => {
   return async (dispatch) => {
     try {
       const response = await axios.delete(ModelUrls.TYPES + '/' + id);
-      console.log(response);
+      // console.log(response);
       if (response.data.message) {
-        dispatch(setTypeMessage(true));
+        dispatch(setAlertMessage(response.data.message));
       }
+      dispatch(getTypes());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+// удаление брэнда устройства
+export const removeBrand = (id: string): ThunkType => {
+  console.log(id);
+  return async (dispatch) => {
+    try {
+      const response = await axios.delete(ModelUrls.BRANDS + '/' + id);
+      // console.log(response);
+      if (response.data.message) {
+        dispatch(setAlertMessage(response.data.message));
+      }
+      dispatch(getBrands());
       dispatch(getTypes());
     } catch (e) {
       console.log(e);

@@ -32,7 +32,7 @@ class typeController {
       //  console.log(typeId.length !== 0);
       if (typeId.length !== 0) {
         return res.json({
-          message: `Данный тип  используется в других устройствах,чтобы удалить тип удалите все устройства с этим типом`,
+          message: `Данный тип  используется в других устройствах,чтобы удалить тип удалите все устройства с этим типом!`,
         });
       } else {
         const deleteType = await Type.findByIdAndDelete(id);

@@ -37,7 +37,7 @@ class brandController {
       if (brandDevice.length !== 0) {
         res.json({
           message:
-            'Данный брэнд  используется в других устройствах,чтобы удалить брэнд удалите все устройства с этим брэндом',
+            'Данный брэнд  используется в других устройствах,чтобы удалить брэнд удалите все устройства с этим брэндом!',
         });
       } else if (brandType.length !== 0) {
         const deleteBrandType = await Type.updateMany(

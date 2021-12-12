@@ -9,25 +9,30 @@ import Pagination from '@material-ui/lab/Pagination';
 import PaginationItem from '@material-ui/lab/PaginationItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TypeBar from '../components/TypeBar';
-import AlertType from '../components/AlertType';
+import AlertMessage from '../components/AlertMessage';
 import DeviceContainer from '../components/DeviceContainer';
 import { RootStateType } from '../store/store'; //типизиция всего стора
 import { AuthReducerType } from '../store/reducer/authReducer';
 import {
   setTypeId, //запись выбранного типа устройства
   setBrandId, //запись выбранного  брэнда устройства
-  setTypeMessage, // изменения маркера получения сообщения о невозможности удаления типа устройства
+  setAlertMessage, // изменения маркера получения сообщения о невозможности удаления типа/брэнда устройства
 } from '../store/reducer/deviceReducer';
 import {
   setTypeIdActionType,
   setBrandIdActionType,
 } from '../store/reducer/deviceReducer'; // типизация экшенов
-import { DeviceType, TypeDeviceType } from '../store/reducer/deviceReducer'; //типизация данных
+import {
+  DeviceType,
+  TypeDeviceType,
+  BrandType,
+} from '../store/reducer/deviceReducer'; //типизация данных
 import {
   getDevices, //запрос на получение устройств
   getTypes, //запрос на получение типов
   removeDevice, //удаление устройства
   removeType, //удаление типа
+  removeBrand, //удаление брэнда
 } from '../action/deviceAction';
 import { connect } from 'react-redux';
 
@@ -35,6 +40,7 @@ import { connect } from 'react-redux';
 type MapStateToPropsType = {
   devices: DeviceType[];
   types: TypeDeviceType[];
+  brands: BrandType[];
   pageQty: number;
   limit: number;
   typeId: string | null;
@@ -45,7 +51,7 @@ type MapStateToPropsType = {
   isFetchErrorTypes: boolean;
   auth: AuthReducerType;
   isAuth: boolean;
-  typeMessage: boolean;
+  alertMessage: string | null;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -60,7 +66,8 @@ type MapDispathPropsType = {
   setBrandId: (data: string | null) => setBrandIdActionType;
   removeDevice: (id: string | undefined) => void;
   removeType: (id: string) => void;
-  setTypeMessage: (data: boolean) => void;
+  removeBrand: (id: string) => void;
+  setAlertMessage: (data: string | null) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -93,9 +100,11 @@ const Content: React.FC<PropsType> = ({
   setBrandId,
   removeDevice,
   removeType,
-  setTypeMessage,
+  removeBrand,
+  setAlertMessage,
   devices,
   types,
+  brands,
   pageQty,
   limit,
   typeId,
@@ -106,7 +115,7 @@ const Content: React.FC<PropsType> = ({
   isFetchErrorTypes,
   auth,
   isAuth,
-  typeMessage,
+  alertMessage,
 }) => {
   const classes = useStyles();
   const searchPage = useLocation(); // для получения строки запроса
@@ -136,7 +145,12 @@ const Content: React.FC<PropsType> = ({
   // console.log(info);
   return (
     <>
-      {typeMessage && <AlertType setTypeMessage={setTypeMessage} />}
+      {alertMessage && (
+        <AlertMessage
+          setAlertMessage={setAlertMessage}
+          alertMessage={alertMessage}
+        />
+      )}
       <Grid item container>
         <Grid item xs={12} sm={2} className={classes.grid}>
           {isFetchErrorTypes ? (
@@ -163,9 +177,13 @@ const Content: React.FC<PropsType> = ({
           ) : (
             <TypeBar
               types={types}
+              brands={brands}
               setTypeId={setTypeId}
               setBrandId={setBrandId}
               removeType={removeType}
+              removeBrand={removeBrand}
+              isAuth={isAuth}
+              auth={auth}
             />
           )}
         </Grid>
@@ -228,6 +246,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
   return {
     devices: state.devices.devices, //устройства
     types: state.devices.types, //типы устройств
+    brands: state.devices.brands, //брэнды устройств
     pageQty: state.devices.pageQty, //количества страниц
     limit: state.devices.limit, //сколько устройств на странице
     typeId: state.devices.typeId, // айдишник типа
@@ -238,7 +257,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка типов
     auth: state.auth.auth, //авторизация
     isAuth: state.auth.isAuth, //маркер авторизации
-    typeMessage: state.devices.typeMessage, // маркер получения сообщения о невозможности удаления типа устройства
+    alertMessage: state.devices.alertMessage, // маркер получения сообщения о невозможности удаления типа устройства
   };
 };
 export default connect<
@@ -252,5 +271,6 @@ export default connect<
   setBrandId,
   removeDevice,
   removeType,
-  setTypeMessage,
+  removeBrand,
+  setAlertMessage,
 })(Content);
