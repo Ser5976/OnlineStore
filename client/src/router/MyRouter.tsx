@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import AuthContainer from '../pages/AuthContainer';
 import Content from '../pages/Content';
 import AddDevicesContainer from '../pages/AddDevicesContainer';
+import ProfileDevice from '../pages/ProfileDevice';
 
 const MyRouter: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const MyRouter: React.FC = () => {
           path="/addDevicesContainer"
           exact
         />
+        <Route component={ProfileDevice} path="/profile/:id" />
       </Switch>
     </Grid>
   );

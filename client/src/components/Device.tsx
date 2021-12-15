@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { DeviceType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
 import { AuthReducerType } from '../store/reducer/authReducer';
+import { useHistory } from 'react-router-dom';
 
 //типизация----------------------
 
@@ -23,11 +24,12 @@ type PropsType = {
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345,
+    maxWidth: 250,
   },
   media: {
-    height: 0,
-    paddingTop: '56.25%',
+    height: 100,
+    width: 'auto',
+    padding: 25,
   },
   cardActions: {
     display: 'flex',
@@ -38,15 +40,16 @@ const useStyles = makeStyles({
 const Device: React.FC<PropsType> = ({ item, auth, isAuth, removeDevice }) => {
   const { name, picture, price } = item;
   const classes = useStyles();
+  const history = useHistory();
 
   return (
     <Card className={classes.root} raised={false}>
-      <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image={`${ROOT_URL}/${picture[0]}`}
-          title="Contemplative Reptile"
-        />
+      <CardActionArea
+        onClick={() => {
+          history.push(`/profile/${item._id}`);
+        }}
+      >
+        <img src={`${ROOT_URL}/${picture[0]}`} className={classes.media} />
       </CardActionArea>
       <CardContent>
         <Typography gutterBottom variant="h6">

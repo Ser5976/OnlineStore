@@ -141,7 +141,7 @@ const Content: React.FC<PropsType> = ({
   }, []);
 
   console.log(devices);
-  // const { name, picture, price, info } = devices[1];
+
   // console.log(info);
   return (
     <>

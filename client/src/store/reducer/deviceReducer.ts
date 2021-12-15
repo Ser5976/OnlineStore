@@ -1,5 +1,6 @@
 const SET_DEVICES = 'SET_DEVICES';
-const SET_TYPES = 'SET_TYPE';
+const SET_SELECTED_DEVICE = 'SET_SELECTED_DEVICE';
+const SET_TYPES = 'SET_TYPES';
 const SET_BRANDS = 'SET_BRANDS';
 const SET_PAGE_QTY = 'SET_PAGE_QTY';
 const SET_TYPE_ID = 'SET_TYPE_ID';
@@ -29,11 +30,8 @@ export type TypeDeviceType = {
   __v: number;
 };
 export type InfoType = {
-  id?: number;
-  _id?: string;
   title: string;
   description: string;
-  __v?: number;
 };
 
 export type DeviceType = {
@@ -62,6 +60,7 @@ export type addedDeviceType = {
 
 export type InitialStateType = {
   devices: DeviceType[];
+  selectedDevice: DeviceType;
   brands: BrandType[];
   types: TypeDeviceType[];
   pageQty: number;
@@ -80,6 +79,10 @@ export type InitialStateType = {
 export type setDevicesActionType = {
   type: typeof SET_DEVICES;
   payload: DeviceType[];
+};
+export type setSelectedDeviceActionType = {
+  type: typeof SET_SELECTED_DEVICE;
+  payload: DeviceType;
 };
 export type setTypesActionType = {
   type: typeof SET_TYPES;
@@ -132,6 +135,7 @@ export type setAlertMessageActionType = {
 
 export type DeviceAtionType =
   | setDevicesActionType
+  | setSelectedDeviceActionType
   | setTypesActionType
   | setBrandsActionType
   | setPageQtyActionType
@@ -149,11 +153,12 @@ export type DeviceAtionType =
 
 const initialState: InitialStateType = {
   devices: [], //массив устройств
+  selectedDevice: {} as DeviceType, //выбранное устройство
   types: [], //массив типов устройств
   brands: [], // массив брэндов устройств
   //---пагинация----
   pageQty: 0, // общее количество страниц(для пагинации)
-  limit: 6, // количество устройств на станице
+  limit: 10, // количество устройств на станице
   //----для фильтрации---
   typeId: null, // выбранный тип устройства
   brandId: null, // выбранный брэнд устройства
@@ -183,6 +188,12 @@ export const deviceReducer = (
       return {
         ...state,
         devices: action.payload,
+        isLoadinDevice: false,
+      };
+    case SET_SELECTED_DEVICE:
+      return {
+        ...state,
+        selectedDevice: action.payload,
         isLoadinDevice: false,
       };
     case SET_TYPES:
@@ -259,6 +270,13 @@ export const setDevices = (data: DeviceType[]): setDevicesActionType => ({
 // записываем общее количество страниц (вычисляем на бэке,для пагинации)
 export const setPageQty = (data: number): setPageQtyActionType => ({
   type: SET_PAGE_QTY,
+  payload: data,
+});
+// записывает выбранное устройство
+export const setSelectedDevice = (
+  data: DeviceType
+): setSelectedDeviceActionType => ({
+  type: SET_SELECTED_DEVICE,
   payload: data,
 });
 // записываем типы устройств

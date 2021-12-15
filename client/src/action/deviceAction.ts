@@ -4,6 +4,7 @@ import {
   setFetchErrorDevice, //ошибка для устройств
   setFetchErrorTypes, //ошибка для типов
   setDevices, // запись устройств в стейт
+  setSelectedDevice, // запись выбранного устройства в стейт
   setTypes, // запись типов в стейт
   setBrands, // запись брэндов
   setPageQty, // запись количества страниц в стейт
@@ -61,6 +62,22 @@ export const getDevices = (
     }
   };
 };
+// получение выбранного устройства
+export const getSelectedDevice = (id: string): ThunkType => {
+  //console.log(id);
+  return async (dispatch) => {
+    try {
+      dispatch(setIsLoadinDevice(true));
+      const response = await axios.get(ModelUrls.DEVICES + '/' + id);
+      //запись в стейт
+      dispatch(setSelectedDevice(response.data));
+    } catch (e) {
+      console.log(e);
+      dispatch(setFetchErrorDevice(true));
+      dispatch(setIsLoadinDevice(false));
+    }
+  };
+};
 
 // получение типов устройств и запись в стейт
 export const getTypes = (): ThunkType => {
@@ -109,6 +126,7 @@ export const addDevice = (data: any, history: any): ThunkType => {
       dispatch(setAddedDeviceError(false));
       //обнуляем добавленное устройство в стейте
       dispatch(setAddedDevice(copyAddedDevice));
+      dispatch(getTypes());
       history.push('/');
     } catch (e) {
       console.log(e);

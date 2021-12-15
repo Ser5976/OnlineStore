@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const breakpoints = {
-  default: 4,
+  default: 5,
   1100: 2,
   700: 1,
 }; // это для Masonry,компонент регулирет расположение карточек(отдельно установлен)
