@@ -18,6 +18,14 @@ const useStyles = makeStyles(() => ({
     marginTop: 5,
     padding: 5,
   },
+  imageBig: {
+    height: 150,
+    width: 'auto',
+    '@media (min-width:600px)': {
+      height: 250,
+      width: 'auto',
+    },
+  },
   image: {
     height: 50,
     width: 'auto',
@@ -32,8 +40,9 @@ const LineImageList: React.FC<PropsType> = ({ image }) => {
   return (
     <Box>
       <img
+        className={classes.imageBig}
         src={`${ROOT_URL}/${image[index]}`}
-        style={{ height: '250px', width: 'auto' }}
+        alt="картинка"
       />
       <div className={classes.root}>
         {image.map((item, index) => (

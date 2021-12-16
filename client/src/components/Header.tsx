@@ -73,44 +73,42 @@ const Header: React.FC<PropsType> = ({
   }, []);
 
   return (
-    <Grid item>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography
-            className={classes.title}
-            variant="h6"
+    <AppBar position="static">
+      <Toolbar>
+        <Typography
+          className={classes.title}
+          variant="h6"
+          color="inherit"
+          noWrap
+        >
+          OnlineStore
+        </Typography>
+        {isAuth && auth.role === 'ADMIN' && (
+          <Button
             color="inherit"
-            noWrap
+            onClick={() => {
+              history.push('/addDevicesContainer');
+            }}
           >
-            OnlineStore
-          </Typography>
-          {isAuth && auth.role === 'ADMIN' && (
-            <Button
-              color="inherit"
-              onClick={() => {
-                history.push('/addDevicesContainer');
-              }}
-            >
-              Админ панель
-            </Button>
-          )}
-          {isAuth ? (
-            <>
-              <IconButton color="inherit">
-                <Badge badgeContent={0} color="secondary">
-                  <ShoppingCart />
-                </Badge>
-              </IconButton>
-              <Logout setLogout={setLogout} />
-            </>
-          ) : (
-            <Button color="inherit" onClick={() => history.push('/login')}>
-              Войти
-            </Button>
-          )}
-        </Toolbar>
-      </AppBar>
-    </Grid>
+            Админ панель
+          </Button>
+        )}
+        {isAuth ? (
+          <>
+            <IconButton color="inherit">
+              <Badge badgeContent={0} color="secondary">
+                <ShoppingCart />
+              </Badge>
+            </IconButton>
+            <Logout setLogout={setLogout} />
+          </>
+        ) : (
+          <Button color="inherit" onClick={() => history.push('/login')}>
+            Войти
+          </Button>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };
 

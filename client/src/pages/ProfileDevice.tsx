@@ -4,11 +4,12 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import { RootStateType } from '../store/store'; // типизация всего стейта( для типизации state)
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Box } from '@material-ui/core';
+import { Box, Container } from '@material-ui/core';
 import { getSelectedDevice } from '../action/deviceAction';
 import { DeviceType, InfoType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
 import ImageList from '../components/ImageList';
+import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import { connect } from 'react-redux';
 
 //типизация---------------------------------------------------------------------
@@ -24,8 +25,21 @@ type ParamsType = {
 };
 //-----------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(7),
+  breadcrumb: {
+    marginTop: 15,
+  },
+  grid_container: {
+    marginTop: 25,
+  },
+  name: {
+    fontSize: '1.2rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.5rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '2rem',
+    },
+    marginTop: 35,
   },
   listImage: {
     display: 'flex',
@@ -57,17 +71,25 @@ const ProfileDevice: React.FC<PropsType> = ({
 
   let params: InfoType[];
   info ? (params = [...info]) : (params = []);
-  console.log(params[0]);
+  //console.log(params[0]);
   let image: string[];
   picture ? (image = [...picture]) : (image = []);
   return (
-    <Grid container spacing={2} className={classes.root}>
-      <Grid item xs={12} sm={4}>
-        <ImageList image={image} />
+    <Container maxWidth="lg">
+      <Box className={classes.breadcrumb}>
+        <ActiveLastBreadcrumb name={name} />
+      </Box>
+      <Typography className={classes.name} variant="h3">
+        {name}
+      </Typography>
+      <Grid container spacing={2} className={classes.grid_container}>
+        <Grid item xs={12} sm={4}>
+          <ImageList image={image} />
+        </Grid>
+        <Grid item xs={12} sm={5}></Grid>
+        <Grid item xs={12} sm={2}></Grid>
       </Grid>
-      <Grid item xs={12} sm={5}></Grid>
-      <Grid item xs={12} sm={2}></Grid>
-    </Grid>
+    </Container>
   );
 };
 
