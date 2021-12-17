@@ -73,7 +73,7 @@ const Header: React.FC<PropsType> = ({
   }, []);
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" color="secondary">
       <Toolbar>
         <Typography
           className={classes.title}
