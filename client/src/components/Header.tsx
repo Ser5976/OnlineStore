@@ -22,6 +22,7 @@ import { getBrands, getTypes } from '../action/deviceAction'; //запрос н�
 import { RootStateType } from '../store/store';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Box } from '@material-ui/core';
 
 //типизация--------------------------------
 type MapStateToPropsType = { isAuth: boolean; auth: AuthReducerType };
@@ -38,10 +39,21 @@ type PropsType = MapDispathPropsType & MapStateToPropsType;
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
     flexGrow: 1,
+    //fontStyle: 'italic',
+    //fontWeight: 'bold',
+
+    // fontSize: 30,
   },
-  login: {
+  subTitle: {
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+    textTransform: 'uppercase',
+    fontSize: 9,
+    textAlign: 'center',
+  },
+  /* login: {
     ...theme.typography.button,
-  },
+  }, */
 }));
 
 const Header: React.FC<PropsType> = ({
@@ -75,14 +87,22 @@ const Header: React.FC<PropsType> = ({
   return (
     <AppBar position="static" color="secondary">
       <Toolbar>
-        <Typography
-          className={classes.title}
-          variant="h6"
-          color="inherit"
-          noWrap
-        >
-          OnlineStore
-        </Typography>
+        <Box className={classes.title}>
+          <img
+            src="/images/logo2.png"
+            style={{ height: '100px', width: 'auto' }}
+          />
+        </Box>
+        {/*  <Typography
+            className={classes.title}
+            variant="h6"
+            color="inherit"
+            noWrap
+          >
+            OnlineStore
+            <div className={classes.subTitle}>Иртернет магазин</div>
+          </Typography> */}
+
         {isAuth && auth.role === 'ADMIN' && (
           <Button
             color="inherit"

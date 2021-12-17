@@ -4,7 +4,8 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import { RootStateType } from '../store/store'; // типизация всего стейта( для типизации state)
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Box, Container } from '@material-ui/core';
+import { Box, Container, Divider, Button } from '@material-ui/core';
+//import Divider from '@material-ui/core/Divider';
 import { getSelectedDevice } from '../action/deviceAction';
 import { DeviceType, InfoType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
@@ -54,6 +55,12 @@ const useStyles = makeStyles((theme) => ({
     margin: 5,
     cursor: 'pointer',
   },
+  italic: {
+    fontStyle: 'italic',
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
 }));
 
 const ProfileDevice: React.FC<PropsType> = ({
@@ -83,12 +90,61 @@ const ProfileDevice: React.FC<PropsType> = ({
         {name}
       </Typography>
       <Grid container spacing={2} className={classes.grid_container}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6}>
           <ImageList image={image} />
+          <Typography
+            variant="h5"
+            component="h6"
+            align="center"
+            className={classes.bold}
+          >
+            Цена: {price} p
+          </Typography>
+          <Grid container spacing={2} style={{ marginTop: '25px' }}>
+            <Grid item xs={12} sm={6}>
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                style={{ marginBottom: 15, fontSize: 12 }}
+                onClick={() => {}}
+              >
+                Купить
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                style={{ marginBottom: 15, fontSize: 12 }}
+                onClick={() => {}}
+              >
+                Добавить в корзину
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={5}></Grid>
-        <Grid item xs={12} sm={2}></Grid>
+
+        <Grid item xs={12} sm={6}>
+          {params.length !== 0 ? (
+            <>
+              <Typography variant="h5" component="h6" align="center">
+                Характеристики
+              </Typography>
+              {params.map((item: InfoType, index: number) => {
+                return (
+                  <Typography style={{ marginLeft: '25px' }} key={index}>
+                    <span className={classes.bold}>{item.title}</span>:
+                    <span className={classes.italic}> {item.description}</span>
+                  </Typography>
+                );
+              })}
+            </>
+          ) : null}
+        </Grid>
       </Grid>
+      <hr />
     </Container>
   );
 };

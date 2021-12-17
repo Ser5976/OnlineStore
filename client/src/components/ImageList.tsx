@@ -41,7 +41,7 @@ const LineImageList: React.FC<PropsType> = ({ image }) => {
     <Box>
       <img
         className={classes.imageBig}
-        src={`${ROOT_URL}/${image[index]}`}
+        src={image.length !== 0 ? `${ROOT_URL}/${image[index]}` : ''}
         alt="картинка"
       />
       <div className={classes.root}>
