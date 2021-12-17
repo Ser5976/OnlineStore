@@ -1,5 +1,6 @@
 import React from 'react';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { useHistory } from 'react-router-dom';
 
@@ -21,15 +22,7 @@ const ActiveLastBreadcrumb: React.FC<PropsType> = ({ name }) => {
       <Link color="inherit" href="/" onClick={handleClick}>
         Главная
       </Link>
-
-      <Link
-        color="textPrimary"
-        href="/components/breadcrumbs/"
-        onClick={(e) => e.preventDefault()}
-        aria-current="page"
-      >
-        {name}
-      </Link>
+      <Typography color="textPrimary">{name}</Typography>
     </Breadcrumbs>
   );
 };
