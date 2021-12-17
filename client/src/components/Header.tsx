@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
+import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import Logout from './Logout';
 import {
   setAuth, //записть авторизации в стор
@@ -43,6 +44,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     //fontWeight: 'bold',
 
     // fontSize: 30,
+    backgroundImage: "url('/images/logo3.png')",
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'left',
   },
   subTitle: {
     fontStyle: 'normal',
@@ -85,23 +89,9 @@ const Header: React.FC<PropsType> = ({
   }, []);
 
   return (
-    <AppBar position="static" color="secondary">
+    <AppBar position="static" style={{ background: '#7a7a7a', padding: '0' }}>
       <Toolbar>
-        <Box className={classes.title}>
-          <img
-            src="/images/logo2.png"
-            style={{ height: '100px', width: 'auto' }}
-          />
-        </Box>
-        {/*  <Typography
-            className={classes.title}
-            variant="h6"
-            color="inherit"
-            noWrap
-          >
-            OnlineStore
-            <div className={classes.subTitle}>Иртернет магазин</div>
-          </Typography> */}
+        <Box py={{ xs: 5, sm: 7 }} className={classes.title}></Box>
 
         {isAuth && auth.role === 'ADMIN' && (
           <Button
@@ -123,9 +113,15 @@ const Header: React.FC<PropsType> = ({
             <Logout setLogout={setLogout} />
           </>
         ) : (
-          <Button color="inherit" onClick={() => history.push('/login')}>
-            Войти
-          </Button>
+          <>
+            <ShoppingCart />
+            <IconButton>
+              <AddShoppingCart style={{ fontSize: '35px', color: 'white' }} />
+            </IconButton>
+            <Button color="inherit" onClick={() => history.push('/login')}>
+              Войти
+            </Button>
+          </>
         )}
       </Toolbar>
     </AppBar>
