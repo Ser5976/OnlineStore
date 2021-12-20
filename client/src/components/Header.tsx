@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
+import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
 import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
-import ShoppingCart from '@material-ui/icons/ShoppingCart';
-import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
+import Divider from '@material-ui/core/Divider';
 import Logout from './Logout';
+import MenuBar from './MenuBar';
 import {
   setAuth, //записть авторизации в стор
   setIsAuth, // маркер авторизации
@@ -19,14 +20,18 @@ import {
   SetLogoutActionType, // типизация экшена выхода из авторизации
   SetIsAuthActionType, // типизация экшена маркера типизации
 } from '../store/reducer/authReducer';
+import { TypeDeviceType } from '../store/reducer/deviceReducer';
 import { getBrands, getTypes } from '../action/deviceAction'; //запрос на получениe типов устройств
 import { RootStateType } from '../store/store';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Box } from '@material-ui/core';
 
 //типизация--------------------------------
-type MapStateToPropsType = { isAuth: boolean; auth: AuthReducerType };
+type MapStateToPropsType = {
+  isAuth: boolean;
+  auth: AuthReducerType;
+  types: TypeDeviceType[];
+};
 type MapDispathPropsType = {
   setAuth: (value: AuthReducerType) => SetAuthActionType;
   setIsAuth: (value: boolean) => SetIsAuthActionType;
@@ -40,29 +45,23 @@ type PropsType = MapDispathPropsType & MapStateToPropsType;
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
     flexGrow: 1,
-    //fontStyle: 'italic',
-    //fontWeight: 'bold',
-
-    // fontSize: 30,
     backgroundImage: "url('/images/logo3.png')",
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'left',
   },
-  subTitle: {
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    textTransform: 'uppercase',
-    fontSize: 9,
-    textAlign: 'center',
+
+  toolBar: {
+    display: 'block',
+    '@media (min-width:600px)': {
+      display: 'flex',
+    },
   },
-  /* login: {
-    ...theme.typography.button,
-  }, */
 }));
 
 const Header: React.FC<PropsType> = ({
   auth,
   isAuth,
+  types,
   setAuth,
   setLogout,
   setIsAuth,
@@ -71,6 +70,7 @@ const Header: React.FC<PropsType> = ({
 }) => {
   const history = useHistory();
   const classes = useStyles();
+
   useEffect(() => {
     setIsAuth(!!sessionStorage.getItem('token')); //берём токен из sessionStorage и приводим его к булевому значению
 
@@ -89,42 +89,57 @@ const Header: React.FC<PropsType> = ({
   }, []);
 
   return (
-    <AppBar position="static" style={{ background: '#7a7a7a', padding: '0' }}>
-      <Toolbar>
-        <Box py={{ xs: 5, sm: 7 }} className={classes.title}></Box>
+    <>
+      <AppBar
+        position="static"
+        style={{ background: '#fff', padding: '0' }}
+        elevation={0}
+      >
+        <Toolbar className={classes.toolBar}>
+          <div style={{ flexGrow: 1 }}>
+            <img
+              src="images/logo7.png"
+              style={{ height: '100px', width: 'auto' }}
+            />
+          </div>
 
-        {isAuth && auth.role === 'ADMIN' && (
-          <Button
-            color="inherit"
-            onClick={() => {
-              history.push('/addDevicesContainer');
-            }}
-          >
-            Админ панель
-          </Button>
-        )}
-        {isAuth ? (
-          <>
-            <IconButton color="inherit">
-              <Badge badgeContent={0} color="secondary">
-                <ShoppingCart />
-              </Badge>
-            </IconButton>
-            <Logout setLogout={setLogout} />
-          </>
-        ) : (
-          <>
-            <ShoppingCart />
-            <IconButton>
-              <AddShoppingCart style={{ fontSize: '35px', color: 'white' }} />
-            </IconButton>
-            <Button color="inherit" onClick={() => history.push('/login')}>
-              Войти
+          {/* <Box py={{ xs: 12, sm: 7 }} className={classes.title}></Box> */}
+
+          {isAuth && auth.role === 'ADMIN' && (
+            <Button
+              color="inherit"
+              onClick={() => {
+                history.push('/addDevicesContainer');
+              }}
+            >
+              <SupervisorAccountOutlinedIcon
+                style={{ fontSize: '35px', color: 'black' }}
+              />
             </Button>
-          </>
-        )}
-      </Toolbar>
-    </AppBar>
+          )}
+          {isAuth ? (
+            <>
+              <IconButton color="inherit">
+                <Badge badgeContent={3} color="secondary">
+                  <ShoppingCartOutlinedIcon
+                    style={{ fontSize: '35px', color: 'black' }}
+                  />
+                </Badge>
+              </IconButton>
+              <Logout setLogout={setLogout} />
+            </>
+          ) : (
+            <IconButton onClick={() => history.push('/login')}>
+              <PersonAddOutlinedIcon
+                style={{ fontSize: '35px', color: 'black' }}
+              />
+            </IconButton>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Divider />
+      <MenuBar types={types} />
+    </>
   );
 };
 
@@ -132,6 +147,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
   return {
     isAuth: state.auth.isAuth, //  маркер авторизации
     auth: state.auth.auth, //авторизация для role
+    types: state.devices.types, //  типы устройств
   };
 };
 export default connect<

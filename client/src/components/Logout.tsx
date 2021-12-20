@@ -1,6 +1,6 @@
 import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { SetLogoutActionType } from '../store/reducer/authReducer';
@@ -32,7 +32,9 @@ const Logout: React.FC<PropsType> = ({ setLogout }) => {
         onClick={handleMenu}
         color="inherit"
       >
-        <AccountCircle />
+        <AccountCircleOutlinedIcon
+          style={{ fontSize: '35px', color: 'black' }}
+        />
       </IconButton>
       <Menu
         id="menu-appbar"
