@@ -10,12 +10,17 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import { TypeDeviceType } from '../store/reducer/deviceReducer';
-import { types } from 'util';
+import {
+  TypeDeviceType, // типизация типов устройст
+  setBrandIdActionType, //типизация экшена запись брэнда в стейт
+  setTypeIdActionType, //типизация экшена запись типа в стейт
+} from '../store/reducer/deviceReducer';
 
 //----типизация пропсов----
 type PropsType = {
   types: TypeDeviceType[];
+  setTypeId: (data: string | null) => setTypeIdActionType;
+  setBrandId: (data: string | null) => setBrandIdActionType;
 };
 //-------------------------
 const useStyles = makeStyles((theme: Theme) => ({
@@ -34,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const MenuBar: React.FC<PropsType> = ({ types }) => {
+const MenuBar: React.FC<PropsType> = ({ types, setBrandId, setTypeId }) => {
   const classes = useStyles();
   // для меню
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -46,6 +51,11 @@ const MenuBar: React.FC<PropsType> = ({ types }) => {
     setAnchorEl(null);
   };
   //--------------------------
+  //запись выбранного типа устройства в стейт и удаление существующего брэнда из стейта
+  const handleDevice = (id: string) => {
+    setTypeId(id);
+    setBrandId(null);
+  };
   return (
     <>
       <Container maxWidth="md">
@@ -104,12 +114,23 @@ const MenuBar: React.FC<PropsType> = ({ types }) => {
         {types &&
           types.map((type) => {
             return (
-              <MenuItem onClick={handleClose} key={type._id}>
-                {' '}
-                <Link to="/" className={classes.link}>
-                  {type.name}
-                </Link>
-              </MenuItem>
+              <div key={type._id}>
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    handleDevice(type._id);
+                  }}
+                >
+                  {' '}
+                  <Link
+                    to={`/profileType/${type._id}`}
+                    className={classes.link}
+                  >
+                    {type.name}
+                  </Link>
+                </MenuItem>
+                <Divider />
+              </div>
             );
           })}
       </Menu>

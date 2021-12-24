@@ -20,10 +20,17 @@ import {
   SetLogoutActionType, // типизация экшена выхода из авторизации
   SetIsAuthActionType, // типизация экшена маркера типизации
 } from '../store/reducer/authReducer';
-import { TypeDeviceType } from '../store/reducer/deviceReducer';
+import {
+  TypeDeviceType, //типизация типа
+  setTypeIdActionType, //типизация экшена
+  setBrandIdActionType, //экшена
+  setBrandId, //запись в стейт выбранного типа
+  setTypeId, //запись в стейт выбранного ,h'ylf
+} from '../store/reducer/deviceReducer';
 import { getBrands, getTypes } from '../action/deviceAction'; //запрос на получениe типов устройств
-import { RootStateType } from '../store/store';
+import { RootStateType } from '../store/store'; //типизация всего стейта
 import { useHistory } from 'react-router-dom';
+import Logo7 from '../img/logo7.png';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -35,6 +42,8 @@ type MapStateToPropsType = {
 type MapDispathPropsType = {
   setAuth: (value: AuthReducerType) => SetAuthActionType;
   setIsAuth: (value: boolean) => SetIsAuthActionType;
+  setTypeId: (data: string | null) => setTypeIdActionType;
+  setBrandId: (data: string | null) => setBrandIdActionType;
   setLogout: () => SetLogoutActionType;
   getTypes: () => void;
   getBrands: () => void;
@@ -67,6 +76,8 @@ const Header: React.FC<PropsType> = ({
   setIsAuth,
   getTypes,
   getBrands,
+  setBrandId,
+  setTypeId,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -97,10 +108,7 @@ const Header: React.FC<PropsType> = ({
       >
         <Toolbar className={classes.toolBar}>
           <div style={{ flexGrow: 1 }}>
-            <img
-              src="images/logo7.png"
-              style={{ height: '100px', width: 'auto' }}
-            />
+            <img src={Logo7} style={{ height: '100px', width: 'auto' }} />
           </div>
 
           {/* <Box py={{ xs: 12, sm: 7 }} className={classes.title}></Box> */}
@@ -138,7 +146,7 @@ const Header: React.FC<PropsType> = ({
         </Toolbar>
       </AppBar>
       <Divider />
-      <MenuBar types={types} />
+      <MenuBar types={types} setBrandId={setBrandId} setTypeId={setTypeId} />
     </>
   );
 };
@@ -155,6 +163,12 @@ export default connect<
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(mapStateToProps, { setAuth, setLogout, setIsAuth, getTypes, getBrands })(
-  Header
-);
+>(mapStateToProps, {
+  setAuth,
+  setLogout,
+  setIsAuth,
+  getTypes,
+  getBrands,
+  setBrandId,
+  setTypeId,
+})(Header);

@@ -8,6 +8,12 @@ import { Box, Container, Divider, Button } from '@material-ui/core';
 //import Divider from '@material-ui/core/Divider';
 import { getSelectedDevice } from '../action/deviceAction';
 import { DeviceType, InfoType } from '../store/reducer/deviceReducer';
+import {
+  setTypeId, //запись выбранного типа устройства
+  setBrandId, //запись выбранного  брэнда устройства
+  setTypeIdActionType, //типизация экшенов
+  setBrandIdActionType,
+} from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
 import ImageList from '../components/ImageList';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
@@ -19,6 +25,8 @@ type MapStateToPropsType = {
 };
 type MapDispathPropsType = {
   getSelectedDevice: (id: string) => void;
+  setTypeId: (data: string | null) => setTypeIdActionType;
+  setBrandId: (data: string | null) => setBrandIdActionType;
 };
 type PropsType = MapStateToPropsType & MapDispathPropsType;
 type ParamsType = {
@@ -66,6 +74,8 @@ const useStyles = makeStyles((theme) => ({
 const ProfileDevice: React.FC<PropsType> = ({
   getSelectedDevice,
   selectedDevice,
+  setBrandId,
+  setTypeId,
 }) => {
   const classes = useStyles();
   const { id } = useParams<ParamsType>(); //  хук роутера ,который помогает получить значение params
@@ -84,7 +94,11 @@ const ProfileDevice: React.FC<PropsType> = ({
   return (
     <Container maxWidth="lg">
       <Box className={classes.breadcrumb}>
-        <ActiveLastBreadcrumb name={name} />
+        <ActiveLastBreadcrumb
+          name={name}
+          setTypeId={setTypeId}
+          setBrandId={setBrandId}
+        />
       </Box>
       <Typography className={classes.name} variant="h3">
         {name}
@@ -159,4 +173,4 @@ export default connect<
   MapDispathPropsType,
   unknown, // первичные пропсы
   RootStateType
->(mapStateToProps, { getSelectedDevice })(ProfileDevice);
+>(mapStateToProps, { getSelectedDevice, setBrandId, setTypeId })(ProfileDevice);

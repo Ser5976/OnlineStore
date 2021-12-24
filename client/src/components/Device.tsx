@@ -7,6 +7,13 @@ import { ROOT_URL } from '../constants/url';
 import { AuthReducerType } from '../store/reducer/authReducer';
 import { useHistory } from 'react-router-dom';
 
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import IconButton from '@material-ui/core/IconButton';
+import { DeleteOutline } from '@material-ui/icons';
 //типизация----------------------
 
 type PropsType = {
@@ -19,11 +26,15 @@ type PropsType = {
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 250,
+    maxWidth: 'auto',
+    '&:hover': {
+      boxShadow: '0 3px 10px rgb(0 0 0/0.2)',
+    },
   },
+
   media: {
-    height: 100,
-    width: 'auto',
+    height: 150,
+
     padding: 15,
     cursor: 'pointer',
   },
@@ -39,12 +50,43 @@ const Device: React.FC<PropsType> = ({ item, auth, isAuth, removeDevice }) => {
   const history = useHistory();
 
   return (
-    <div className={classes.root}>
+    <Card elevation={0} className={classes.root}>
+      <CardMedia
+        children={
+          <img
+            src={`${ROOT_URL}/${picture[0]}`}
+            style={{ height: '150px', width: 'auto' }}
+          />
+        }
+        className={classes.media}
+        title={name}
+        onClick={() => {
+          history.push(`/profileDevice/${item._id}`);
+        }}
+      />
+      <CardHeader
+        action={
+          isAuth &&
+          auth.role === 'ADMIN' && (
+            <IconButton
+              onClick={() => {
+                removeDevice(item._id);
+              }}
+            >
+              <DeleteOutline />
+            </IconButton>
+          )
+        }
+        title={`${price} p`}
+        subheader={name}
+      />
+    </Card>
+    /*  <div className={classes.root}>
       <img
         src={`${ROOT_URL}/${picture[0]}`}
         className={classes.media}
         onClick={() => {
-          history.push(`/profile/${item._id}`);
+          history.push(`/profileDevice/${item._id}`);
         }}
       />
 
@@ -71,7 +113,7 @@ const Device: React.FC<PropsType> = ({ item, auth, isAuth, removeDevice }) => {
           </Button>
         )}
       </div>
-    </div>
+    </div> */
   );
 };
 

@@ -120,7 +120,6 @@ const TypeBar: React.FC<PropsType> = ({
                     ? classes.activListType
                     : classes.listType
                 }
-                button
                 onClick={() => {
                   handleType(indexType); //управление типом
                   setTypeId(type._id); //запись в стейт выбранного типа

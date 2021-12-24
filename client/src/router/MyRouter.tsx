@@ -6,6 +6,7 @@ import AuthContainer from '../pages/AuthContainer';
 import Content from '../pages/Content';
 import AddDevicesContainer from '../pages/AddDevicesContainer';
 import ProfileDevice from '../pages/ProfileDevice';
+import ProfileType from '../pages/ProfileType';
 import Footer from '../components/Footer';
 
 const MyRouter: React.FC = () => {
@@ -21,7 +22,8 @@ const MyRouter: React.FC = () => {
           path="/addDevicesContainer"
           exact
         />
-        <Route component={ProfileDevice} path="/profile/:id" />
+        <Route component={ProfileDevice} path="/profileDevice/:id" />
+        <Route component={ProfileType} path="/profileType/:id" />
       </Switch>
       <Footer />
     </Grid>
