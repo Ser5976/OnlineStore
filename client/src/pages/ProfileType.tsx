@@ -137,6 +137,7 @@ const ProfileType: React.FC<PropsType> = ({
   useEffect(() => {
     getSelectedType(id);
     setTypeId(id);
+    setBrandId(null);
     // eslint-disable-next-line
   }, [id]);
   //удаление выбранного брэнда
@@ -150,11 +151,7 @@ const ProfileType: React.FC<PropsType> = ({
     <>
       <Container maxWidth="lg">
         <Box className={classes.breadcrumb}>
-          <ActiveLastBreadcrumb
-            name={selectedType.name}
-            setTypeId={setTypeId}
-            setBrandId={setBrandId}
-          />
+          <ActiveLastBreadcrumb name={selectedType.name} />
         </Box>
       </Container>
       <Container maxWidth="lg">

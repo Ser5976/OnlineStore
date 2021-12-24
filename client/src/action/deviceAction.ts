@@ -50,7 +50,7 @@ export const getDevices = (
       // console.log(response);
       //если число страниц меньше активной страницы,текущую страницу ставим 1
       if (response.data.pageQty < page) {
-        setPage(1); //записываем текущую страницу в локальный стейт,(в Content)
+        setPage(1); //записываем текущую страницу в локальный стейт,(в ProfileType)
         history.replace(`/profileType/${typeId}?page=1`);
       }
       //запись в стейт

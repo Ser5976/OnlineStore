@@ -1,20 +1,12 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { RootStateType } from '../store/store'; // типизация всего стейта( для типизации state)
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Box, Container, Divider, Button } from '@material-ui/core';
-//import Divider from '@material-ui/core/Divider';
+import { Box, Container, Button } from '@material-ui/core';
 import { getSelectedDevice } from '../action/deviceAction';
 import { DeviceType, InfoType } from '../store/reducer/deviceReducer';
-import {
-  setTypeId, //запись выбранного типа устройства
-  setBrandId, //запись выбранного  брэнда устройства
-  setTypeIdActionType, //типизация экшенов
-  setBrandIdActionType,
-} from '../store/reducer/deviceReducer';
-import { ROOT_URL } from '../constants/url';
 import ImageList from '../components/ImageList';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import { connect } from 'react-redux';
@@ -25,8 +17,6 @@ type MapStateToPropsType = {
 };
 type MapDispathPropsType = {
   getSelectedDevice: (id: string) => void;
-  setTypeId: (data: string | null) => setTypeIdActionType;
-  setBrandId: (data: string | null) => setBrandIdActionType;
 };
 type PropsType = MapStateToPropsType & MapDispathPropsType;
 type ParamsType = {
@@ -74,8 +64,6 @@ const useStyles = makeStyles((theme) => ({
 const ProfileDevice: React.FC<PropsType> = ({
   getSelectedDevice,
   selectedDevice,
-  setBrandId,
-  setTypeId,
 }) => {
   const classes = useStyles();
   const { id } = useParams<ParamsType>(); //  хук роутера ,который помогает получить значение params
@@ -94,11 +82,7 @@ const ProfileDevice: React.FC<PropsType> = ({
   return (
     <Container maxWidth="lg">
       <Box className={classes.breadcrumb}>
-        <ActiveLastBreadcrumb
-          name={name}
-          setTypeId={setTypeId}
-          setBrandId={setBrandId}
-        />
+        <ActiveLastBreadcrumb name={name} />
       </Box>
       <Typography className={classes.name} variant="h3">
         {name}
@@ -173,4 +157,4 @@ export default connect<
   MapDispathPropsType,
   unknown, // первичные пропсы
   RootStateType
->(mapStateToProps, { getSelectedDevice, setBrandId, setTypeId })(ProfileDevice);
+>(mapStateToProps, { getSelectedDevice })(ProfileDevice);
