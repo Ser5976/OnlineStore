@@ -1,6 +1,7 @@
 const SET_DEVICES = 'SET_DEVICES';
 const SET_SELECTED_DEVICE = 'SET_SELECTED_DEVICE';
 const SET_TYPES = 'SET_TYPES';
+const SET_SELECTED_TYPE = 'SET_SELECTED_TYPE';
 const SET_BRANDS = 'SET_BRANDS';
 const SET_PAGE_QTY = 'SET_PAGE_QTY';
 const SET_TYPE_ID = 'SET_TYPE_ID';
@@ -61,6 +62,7 @@ export type addedDeviceType = {
 export type InitialStateType = {
   devices: DeviceType[];
   selectedDevice: DeviceType;
+  selectedType: TypeDeviceType;
   brands: BrandType[];
   types: TypeDeviceType[];
   pageQty: number;
@@ -79,6 +81,10 @@ export type InitialStateType = {
 export type setDevicesActionType = {
   type: typeof SET_DEVICES;
   payload: DeviceType[];
+};
+export type setSelectedTypeActionType = {
+  type: typeof SET_SELECTED_TYPE;
+  payload: TypeDeviceType;
 };
 export type setSelectedDeviceActionType = {
   type: typeof SET_SELECTED_DEVICE;
@@ -136,6 +142,7 @@ export type setAlertMessageActionType = {
 export type DeviceAtionType =
   | setDevicesActionType
   | setSelectedDeviceActionType
+  | setSelectedTypeActionType
   | setTypesActionType
   | setBrandsActionType
   | setPageQtyActionType
@@ -154,6 +161,7 @@ export type DeviceAtionType =
 const initialState: InitialStateType = {
   devices: [], //массив устройств
   selectedDevice: {} as DeviceType, //выбранное устройство
+  selectedType: {} as TypeDeviceType, //выбранный тип устройства
   types: [], //массив типов устройств
   brands: [], // массив брэндов устройств
   //---пагинация----
@@ -201,6 +209,12 @@ export const deviceReducer = (
         ...state,
         types: action.payload,
         isLoadinTypes: false,
+      };
+    case SET_SELECTED_TYPE:
+      return {
+        ...state,
+        selectedType: action.payload,
+        isLoadinDevice: false,
       };
     case SET_BRANDS:
       return {
@@ -282,6 +296,13 @@ export const setSelectedDevice = (
 // записываем типы устройств
 export const setTypes = (data: TypeDeviceType[]): setTypesActionType => ({
   type: SET_TYPES,
+  payload: data,
+});
+// записывает выбранный тип устройства
+export const setSelectedType = (
+  data: TypeDeviceType
+): setSelectedTypeActionType => ({
+  type: SET_SELECTED_TYPE,
   payload: data,
 });
 // записываем бренды устройств

@@ -6,6 +6,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
     top: 'auto',
     bottom: 0,
+    display: 'flex',
+    position: 'relative',
   },
 
   login: {
@@ -22,17 +24,17 @@ const Footer = () => {
     <Box
       px={{ xs: 3, sm: 10 }}
       py={{ xs: 5, sm: 10 }}
-      bgcolor="primary.main"
+      bgcolor="#0910a4"
       color="white"
       className={classes.appBar}
     >
+      <img
+        src="images/logo1.png"
+        style={{ position: 'absolute', top: '0', left: '0' }}
+      />
       <Container maxWidth="lg">
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={3}>
-            <Typography variant="h6" color="inherit" className={classes.login}>
-              OnlineStore
-            </Typography>
-          </Grid>
+          <Grid item xs={12} sm={3}></Grid>
           <Grid item xs={12} sm={3}>
             <Box>Статьи</Box>
             <Box>

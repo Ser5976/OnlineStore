@@ -20,6 +20,22 @@ class typeController {
     }
   }
 
+  async getOne(req, res) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        res.status(400).json({ massage: 'Id не указан' });
+      }
+
+      const type = await Type.findById(id).populate('brands');
+
+      return res.json(type);
+    } catch (e) {
+      res.status(500).json(e);
+    }
+  }
+
   async delete(req, res) {
     try {
       const { id } = req.params;

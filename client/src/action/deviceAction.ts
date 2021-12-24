@@ -6,6 +6,7 @@ import {
   setDevices, // запись устройств в стейт
   setSelectedDevice, // запись выбранного устройства в стейт
   setTypes, // запись типов в стейт
+  setSelectedType, //запись выбранного типа устройства в стейт
   setBrands, // запись брэндов
   setPageQty, // запись количества страниц в стейт
   addedDeviceType, //типизация добавленного устройства
@@ -50,7 +51,7 @@ export const getDevices = (
       //если число страниц меньше активной страницы,текущую страницу ставим 1
       if (response.data.pageQty < page) {
         setPage(1); //записываем текущую страницу в локальный стейт,(в Content)
-        history.replace('/');
+        history.replace(`/profileType/${typeId}?page=1`);
       }
       //запись в стейт
       dispatch(setDevices(response.data.device));
@@ -92,6 +93,23 @@ export const getTypes = (): ThunkType => {
       console.log(e);
       dispatch(setFetchErrorTypes(true));
       dispatch(setIsLoadinTypes(false));
+    }
+  };
+};
+// получение выбранного устройства
+export const getSelectedType = (id: string): ThunkType => {
+  //console.log(id);
+  return async (dispatch) => {
+    try {
+      dispatch(setIsLoadinDevice(true));
+      const response = await axios.get(ModelUrls.TYPES + '/' + id);
+      console.log(response.data);
+      //запись в стейт
+      dispatch(setSelectedType(response.data));
+    } catch (e) {
+      console.log(e);
+      dispatch(setFetchErrorDevice(true));
+      dispatch(setIsLoadinDevice(false));
     }
   };
 };

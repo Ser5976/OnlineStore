@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Box } from '@material-ui/core';
+import { Box, Divider } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { useLocation, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -76,12 +76,12 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       '& > *': {
-        marginTop: theme.spacing(2),
+        marginTop: theme.spacing(7),
       },
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'center',
-      marginBottom: theme.spacing(2),
+      marginBottom: theme.spacing(7),
     },
     grid: {
       width: '100%',
@@ -152,7 +152,7 @@ const Content: React.FC<PropsType> = ({
         />
       )}
       <Grid item container>
-        <Grid item xs={12} sm={2} className={classes.grid}>
+        {/*  <Grid item xs={12} sm={2} className={classes.grid}>
           {isFetchErrorTypes ? (
             <Typography
               align="center"
@@ -186,8 +186,8 @@ const Content: React.FC<PropsType> = ({
               auth={auth}
             />
           )}
-        </Grid>
-        <Grid item xs={12} sm={10}>
+        </Grid> */}
+        <Grid item xs={12} sm={12}>
           {isFetchErrorDevice ? (
             <Typography
               align="center"
@@ -213,6 +213,9 @@ const Content: React.FC<PropsType> = ({
             <>
               <DeviceContainer
                 devices={devices}
+                types={types}
+                setBrandId={setBrandId}
+                setTypeId={setTypeId}
                 auth={auth}
                 isAuth={isAuth}
                 removeDevice={removeDevice}
