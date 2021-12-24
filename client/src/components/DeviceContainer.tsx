@@ -133,16 +133,12 @@ const DeviceContainer: React.FC<PropsType> = ({
                           handleDevice(type._id);
                         }}
                       >
-                        <ListItemText
-                          primary={
-                            <Link
-                              to={`/profileType/${type._id}`}
-                              className={classes.link}
-                            >
-                              {type.name}
-                            </Link>
-                          }
-                        />
+                        <Link
+                          to={`/profileType/${type._id}`}
+                          className={classes.link}
+                        >
+                          {type.name}
+                        </Link>
                       </ListItem>
                       <Divider />
                     </div>
