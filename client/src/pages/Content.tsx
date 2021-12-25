@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Box } from '@material-ui/core';
+import { Box, Container, Divider } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { useLocation, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import PaginationItem from '@material-ui/lab/PaginationItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TypeBar from '../components/TypeBar';
+import ImageContainer from '../components/ImageContainer';
 import AlertMessage from '../components/AlertMessage';
 import DeviceContainer from '../components/DeviceContainer';
 import { RootStateType } from '../store/store'; //типизиция всего стора
@@ -34,6 +35,10 @@ import {
   removeType, //удаление типа
   removeBrand, //удаление брэнда
 } from '../action/deviceAction';
+
+import byk1 from '../img/byk1.jpg';
+import planshet1 from '../img/planshet1.jpg';
+import reclama1 from '../img/reclama1.jpg';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -83,11 +88,6 @@ const useStyles = makeStyles((theme) =>
       justifyContent: 'center',
       marginBottom: theme.spacing(7),
     },
-    /*  grid: {
-      width: '100%',
-      height: 650,
-      overflow: 'auto',
-    }, */
     textTitle: {
       marginTop: '25px',
     },
@@ -156,6 +156,7 @@ const Content: React.FC<PropsType> = ({
 
   // console.log(info);
   // console.log('рендеринг');
+
   return (
     <>
       {alertMessage && (
@@ -164,98 +165,115 @@ const Content: React.FC<PropsType> = ({
           alertMessage={alertMessage}
         />
       )}
-
-      <Grid item container>
-        {/*  <Grid item xs={12} sm={2} className={classes.grid}>
-          {isFetchErrorTypes ? (
-            <Typography
-              align="center"
-              color="error"
-              className={classes.textTitle}
-            >
-              Что-то пошло не так!
+      <ImageContainer />
+      <Container maxWidth="lg">
+        <Grid container spacing={10}>
+          <Grid item xs={12} sm={3}>
+            <Typography style={{ marginTop: '115px', fontWeight: 'bold' }}>
+              {' '}
+              Каталог товаров
             </Typography>
-          ) : isLoadinTypes ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              style={{ height: window.innerHeight - 65.6 }}
-            >
-              <CircularProgress />
-            </Box>
-          ) : types.length === 0 ? (
-            <Typography align="center" className={classes.textTitle}>
-              Пока типов товаров нет!
-            </Typography>
-          ) : (
-            <TypeBar
-              types={types}
-              brands={brands}
-              setTypeId={setTypeId}
-              setBrandId={setBrandId}
-              removeType={removeType}
-              removeBrand={removeBrand}
-              isAuth={isAuth}
-              auth={auth}
-            />
-          )}
-        </Grid> */}
-        <Grid item xs={12} sm={12}>
-          {isFetchErrorDevice ? (
-            <Typography
-              align="center"
-              color="error"
-              className={classes.textTitle}
-            >
-              Что-то пошло не так!
-            </Typography>
-          ) : isLoadinDevice ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              style={{ height: window.innerHeight - 65.6 }}
-            >
-              <CircularProgress />
-            </Box>
-          ) : devices.length === 0 ? (
-            <Typography align="center" className={classes.textTitle}>
-              Пока товаров нет!
-            </Typography>
-          ) : (
-            <>
-              <DeviceContainer
-                devices={devices}
+            {isFetchErrorTypes ? (
+              <Typography
+                align="center"
+                color="error"
+                className={classes.textTitle}
+              >
+                Что-то пошло не так!
+              </Typography>
+            ) : isLoadinTypes ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: window.innerHeight - 65.6 }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : types.length === 0 ? (
+              <Typography align="center" className={classes.textTitle}>
+                Пока каталог пуст !
+              </Typography>
+            ) : (
+              <TypeBar
                 types={types}
-                setBrandId={setBrandId}
                 setTypeId={setTypeId}
-                auth={auth}
-                isAuth={isAuth}
-                removeDevice={removeDevice}
+                setBrandId={setBrandId}
               />
-              {!!pageQty && (
-                <Pagination
-                  className={classes.pagination}
-                  count={pageQty}
-                  page={page}
-                  showFirstButton
-                  showLastButton
-                  onChange={handleChange}
-                  // интегрируем роутер
-                  renderItem={(item) => (
-                    <PaginationItem
-                      component={Link}
-                      to={`/?page=${item.page}`}
-                      {...item}
-                    />
-                  )}
+            )}
+            <div style={{ marginBottom: '25px' }}>
+              <img
+                src={reclama1}
+                style={{ height: '200px', width: 'auto', marginTop: '25px' }}
+              />
+              <img
+                src={planshet1}
+                style={{ height: '205px', width: 'auto', marginTop: '25px' }}
+              />
+              <img
+                src={byk1}
+                style={{ height: '205px', width: 'auto', marginTop: '25px' }}
+              />
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={9}>
+            <Typography variant="h6" style={{ marginTop: '50px' }}>
+              {' '}
+              Все товары
+            </Typography>
+            <Divider />
+            {isFetchErrorDevice ? (
+              <Typography
+                align="center"
+                color="error"
+                className={classes.textTitle}
+              >
+                Что-то пошло не так!
+              </Typography>
+            ) : isLoadinDevice ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: window.innerHeight - 65.6 }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : devices.length === 0 ? (
+              <Typography align="center" className={classes.textTitle}>
+                Пока товаров нет!
+              </Typography>
+            ) : (
+              <>
+                <DeviceContainer
+                  devices={devices}
+                  auth={auth}
+                  isAuth={isAuth}
+                  removeDevice={removeDevice}
                 />
-              )}
-            </>
-          )}
+              </>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
+        {!!pageQty && (
+          <Pagination
+            className={classes.pagination}
+            count={pageQty}
+            page={page}
+            showFirstButton
+            showLastButton
+            onChange={handleChange}
+            // интегрируем роутер
+            renderItem={(item) => (
+              <PaginationItem
+                component={Link}
+                to={`/?page=${item.page}`}
+                {...item}
+              />
+            )}
+          />
+        )}
+      </Container>
     </>
   );
 };

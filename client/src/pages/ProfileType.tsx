@@ -86,20 +86,6 @@ const useStyles = makeStyles((theme) =>
       cursor: 'pointer',
     },
 
-    /* root: {
-      maxWidth: 'auto',
-    },
-    media: {
-      height: 200,
-      width: 'auto',
-      padding: 15,
-      cursor: 'pointer',
-    },
-    cardActions: {
-      display: 'flex',
-      justifyContent: 'space-between',
-    }, */
-
     root: {
       maxWidth: 'auto',
       '&:hover': {
@@ -152,13 +138,7 @@ const ProfileType: React.FC<PropsType> = ({
     }
     // eslint-disable-next-line
   }, [searchPage]);
-  // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
-  useEffect(() => {
-    // setPage(searchPage); //костыль,чтобы синхронизировать пагинацию и строку запроса
-    getDevices(typeId, brandId, limit, page, setPage, history);
 
-    // eslint-disable-next-line
-  }, [typeId, brandId, page]);
   // запрос на сервак для получения выбранного типа с брэндами
   useEffect(() => {
     getSelectedType(id);
@@ -167,6 +147,15 @@ const ProfileType: React.FC<PropsType> = ({
     console.log('id:', id);
     // eslint-disable-next-line
   }, [id]);
+
+  // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
+  useEffect(() => {
+    // setPage(searchPage); //костыль,чтобы синхронизировать пагинацию и строку запроса
+    getDevices(typeId, brandId, limit, page, setPage, history);
+
+    // eslint-disable-next-line
+  }, [typeId, brandId, page]);
+
   //удаление выбранного брэнда
   const removeBrand = () => {
     setBrandId(null);
@@ -227,7 +216,7 @@ const ProfileType: React.FC<PropsType> = ({
                 <CircularProgress />
               </Box>
             ) : devices.length === 0 ? (
-              <Typography align="center" className={classes.textTitle}>
+              <Typography align="center" style={{ margin: '100px' }}>
                 Пока товаров нет!
               </Typography>
             ) : (

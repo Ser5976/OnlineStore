@@ -8,7 +8,7 @@ import Menu from '@material-ui/core/Menu';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import {
   TypeDeviceType, // типизация типов устройст
@@ -23,7 +23,7 @@ type PropsType = {
   setBrandId: (data: string | null) => setBrandIdActionType;
 };
 //-------------------------
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
   menu: {
     marginTop: '25px',
   },
