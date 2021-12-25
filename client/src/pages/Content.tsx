@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Box, Divider } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { useLocation, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -74,7 +74,7 @@ type PropsType = MapDispathPropsType & MapStateToPropsType;
 //-----------------------------------------
 const useStyles = makeStyles((theme) =>
   createStyles({
-    root: {
+    pagination: {
       '& > *': {
         marginTop: theme.spacing(7),
       },
@@ -83,11 +83,11 @@ const useStyles = makeStyles((theme) =>
       justifyContent: 'center',
       marginBottom: theme.spacing(7),
     },
-    grid: {
+    /*  grid: {
       width: '100%',
       height: 650,
       overflow: 'auto',
-    },
+    }, */
     textTitle: {
       marginTop: '25px',
     },
@@ -118,20 +118,32 @@ const Content: React.FC<PropsType> = ({
   alertMessage,
 }) => {
   const classes = useStyles();
-  const searchPage = useLocation(); // для получения строки запроса
   const history = useHistory(); //для изменения строки запроса
-  //console.log(search);
+  // console.log('история', history);
+  const location = useLocation(); // для получения строки запроса
+  const searchPage = parseInt(location.search?.split('=')[1] || '1'); // получаем число страницы из строки запроса
+  // console.log(searchPage);
   // пагинация, данные о текущей странице( по умолчанию: 1 или, если есть ,информация о текущей странице в адресной строке )
-  const [page, setPage] = useState(
-    parseInt(searchPage.search?.split('=')[1] || '1')
-  );
+
+  const [page, setPage] = useState(searchPage);
+
+  // console.log('номер страницы:', page);
   // изменения текущей страницы
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
+  //костыль,чтобы синхронизировать пагинацию и строку запроса
+  useEffect(() => {
+    //console.log('костыль');
+    if (history.action === 'POP') {
+      setPage(searchPage);
+    }
+    // eslint-disable-next-line
+  }, [searchPage]);
+
   // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
   useEffect(() => {
-    console.log('рендеринг');
+    // console.log('рендеринг');
     getDevices(null, null, limit, page, setPage, history);
     // eslint-disable-next-line
   }, [page]);
@@ -141,7 +153,7 @@ const Content: React.FC<PropsType> = ({
     // eslint-disable-next-line
   }, []);
 
-  console.log(devices);
+  //console.log(devices);
 
   // console.log(info);
   return (
@@ -223,7 +235,7 @@ const Content: React.FC<PropsType> = ({
               />
               {!!pageQty && (
                 <Pagination
-                  className={classes.root}
+                  className={classes.pagination}
                   count={pageQty}
                   page={page}
                   showFirstButton

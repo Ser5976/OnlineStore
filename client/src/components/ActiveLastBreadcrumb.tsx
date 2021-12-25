@@ -21,7 +21,7 @@ const ActiveLastBreadcrumb: React.FC<PropsType> = ({ name }) => {
     event.preventDefault();
     history.push('/');
   }
-  console.log(name);
+  // console.log(name);
   return (
     <Breadcrumbs aria-label="breadcrumb">
       <Link color="inherit" href="/" onClick={handleClick}>

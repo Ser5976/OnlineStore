@@ -103,7 +103,7 @@ export const getSelectedType = (id: string): ThunkType => {
     try {
       dispatch(setIsLoadinDevice(true));
       const response = await axios.get(ModelUrls.TYPES + '/' + id);
-      console.log(response.data);
+      //console.log(response.data);
       //запись в стейт
       dispatch(setSelectedType(response.data));
     } catch (e) {

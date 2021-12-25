@@ -15,6 +15,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { ROOT_URL } from '../constants/url';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import { RootStateType } from '../store/store'; //типизиция всего стора
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
 
 import {
   setTypeId, //запись выбранного типа устройства
@@ -83,7 +86,7 @@ const useStyles = makeStyles((theme) =>
       cursor: 'pointer',
     },
 
-    root: {
+    /* root: {
       maxWidth: 'auto',
     },
     media: {
@@ -95,6 +98,20 @@ const useStyles = makeStyles((theme) =>
     cardActions: {
       display: 'flex',
       justifyContent: 'space-between',
+    }, */
+
+    root: {
+      maxWidth: 'auto',
+      '&:hover': {
+        boxShadow: '0 3px 10px rgb(0 0 0/0.2)',
+      },
+    },
+
+    media: {
+      height: 150,
+
+      padding: 15,
+      cursor: 'pointer',
     },
   })
 );
@@ -117,20 +134,29 @@ const ProfileType: React.FC<PropsType> = ({
 }) => {
   const classes = useStyles();
   const { id } = useParams<ParamsType>(); //  хук роутера ,который помогает получить значение params(это выбранный typeId)
-  const searchPage = useLocation(); // для получения строки запроса
   const history = useHistory(); //для изменения строки запроса
+  const location = useLocation(); // для получения строки запроса
+  const searchPage = parseInt(location.search?.split('=')[1] || '1'); // получаем число страницы из строки запроса
   //console.log(search);
   // пагинация, данные о текущей странице( по умолчанию: 1 или, если есть ,информация о текущей странице в адресной строке )
-  const [page, setPage] = useState(
-    parseInt(searchPage.search?.split('=')[1] || '1')
-  );
+  const [page, setPage] = useState(searchPage);
   // изменения текущей страницы
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
+  //костыль,чтобы синхронизировать пагинацию и строку запроса
+  useEffect(() => {
+    console.log('костыль');
+    if (history.action === 'POP') {
+      setPage(searchPage);
+    }
+    // eslint-disable-next-line
+  }, [searchPage]);
   // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
   useEffect(() => {
+    // setPage(searchPage); //костыль,чтобы синхронизировать пагинацию и строку запроса
     getDevices(typeId, brandId, limit, page, setPage, history);
+
     // eslint-disable-next-line
   }, [typeId, brandId, page]);
   // запрос на сервак для получения выбранного типа с брэндами
@@ -138,6 +164,7 @@ const ProfileType: React.FC<PropsType> = ({
     getSelectedType(id);
     setTypeId(id);
     setBrandId(null);
+    console.log('id:', id);
     // eslint-disable-next-line
   }, [id]);
   //удаление выбранного брэнда
@@ -145,7 +172,7 @@ const ProfileType: React.FC<PropsType> = ({
     setBrandId(null);
   };
 
-  console.log(selectedType);
+  //console.log(selectedType);
 
   return (
     <>
@@ -209,31 +236,25 @@ const ProfileType: React.FC<PropsType> = ({
                   devices.map((item) => {
                     return (
                       <Grid item xs={12} sm={4} key={item._id}>
-                        <div className={classes.root}>
-                          <img
-                            src={`${ROOT_URL}/${item.picture[0]}`}
+                        <Card elevation={0} className={classes.root}>
+                          <CardMedia
+                            children={
+                              <img
+                                src={`${ROOT_URL}/${item.picture[0]}`}
+                                style={{ height: '150px', width: 'auto' }}
+                              />
+                            }
                             className={classes.media}
+                            title={item.name}
                             onClick={() => {
                               history.push(`/profileDevice/${item._id}`);
                             }}
                           />
-
-                          <Typography
-                            gutterBottom
-                            variant="h6"
-                            component="div"
-                            align="center"
-                          >
-                            {item.price} p
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            component="div"
-                          >
-                            {item.name}
-                          </Typography>
-                        </div>
+                          <CardHeader
+                            title={`${item.price} p`}
+                            subheader={item.name}
+                          />
+                        </Card>
                       </Grid>
                     );
                   })}
@@ -289,60 +310,3 @@ export default connect<
   setTypeId,
   setBrandId,
 })(ProfileType);
-
-{
-  /*
-   <Grid item container xs={12} sm={9}>
-            
-   
-{ devices&&devices.map((item) => {
-              return (
-                <Grid item xs={12} sm={4} key={item._id}>
-                  <div className={classes.root}>
-                    <img
-                      src={`${ROOT_URL}/${item.picture[0]}`}
-                      className={classes.media}
-                      onClick={() => {
-                        history.push(`/profileDevice/${item._id}`);
-                      }}
-                    />
-
-                    <Typography gutterBottom variant="h6" component="div">
-                      {item.price} p
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="div"
-                    >
-                      {item.name}
-                    </Typography>
-                  </div>
-                </Grid>
-              );
-            })}
-         
-
-          </Grid>
-  
-       
-
-      {!!pageQty && (
-        <Pagination
-          className={classes.pagination}
-          count={pageQty}
-          page={page}
-          showFirstButton
-          showLastButton
-          onChange={handleChange}
-          // интегрируем роутер
-          renderItem={(item) => (
-            <PaginationItem
-              component={Link}
-              to={`/profileType/${id}?page=${item.page}`}
-              {...item}
-            />
-          )}
-        />
-      )} */
-}

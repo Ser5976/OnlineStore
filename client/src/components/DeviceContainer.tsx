@@ -8,7 +8,7 @@ import { AuthReducerType } from '../store/reducer/authReducer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   TypeDeviceType, // типизация типов устройст
   setBrandIdActionType, //типизация экшена запись брэнда в стейт
@@ -94,8 +94,10 @@ const DeviceContainer: React.FC<PropsType> = ({
   removeDevice,
 }) => {
   const classes = useStyles();
+  const history = useHistory();
   //запись выбранного типа устройства в стейт и удаление существующего брэнда из стейта
   const handleDevice = (id: string) => {
+    history.push(`/profileType/${id}`);
     setTypeId(id);
     setBrandId(null);
   };
@@ -133,12 +135,7 @@ const DeviceContainer: React.FC<PropsType> = ({
                           handleDevice(type._id);
                         }}
                       >
-                        <Link
-                          to={`/profileType/${type._id}`}
-                          className={classes.link}
-                        >
-                          {type.name}
-                        </Link>
+                        <ListItemText primary={type.name} />
                       </ListItem>
                       <Divider />
                     </div>
