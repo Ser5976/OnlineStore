@@ -95,7 +95,7 @@ const DeviceContainer: React.FC<PropsType> = ({
 }) => {
   const classes = useStyles();
   const history = useHistory();
-  //запись выбранного типа устройства в стейт и удаление существующего брэнда из стейта
+  //запись выбранного типа устройства в стейт и удаление существующего брэнда из стейта и маршрутизация
   const handleDevice = (id: string) => {
     history.push(`/profileType/${id}`);
     setTypeId(id);

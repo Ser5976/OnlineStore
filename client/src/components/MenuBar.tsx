@@ -9,7 +9,7 @@ import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   TypeDeviceType, // типизация типов устройст
   setBrandIdActionType, //типизация экшена запись брэнда в стейт
@@ -25,12 +25,9 @@ type PropsType = {
 //-------------------------
 const useStyles = makeStyles((theme: Theme) => ({
   menu: {
-    marginTop: '58px',
+    marginTop: '25px',
   },
-  link: {
-    textDecoration: 'none',
-    color: 'initial',
-  },
+
   span: {
     // display: 'block',
     '@media (max-width:600px)': {
@@ -40,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const MenuBar: React.FC<PropsType> = ({ types, setBrandId, setTypeId }) => {
+  const history = useHistory();
   const classes = useStyles();
   // для меню
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -51,8 +49,9 @@ const MenuBar: React.FC<PropsType> = ({ types, setBrandId, setTypeId }) => {
     setAnchorEl(null);
   };
   //--------------------------
-  //запись выбранного типа устройства в стейт и удаление существующего брэнда из стейта
+  //запись выбранного типа устройства в стейт и удаление существующего брэнда из стейта и маршрутизация
   const handleDevice = (id: string) => {
+    history.push(`/profileType/${id}`);
     setTypeId(id);
     setBrandId(null);
   };
@@ -103,8 +102,7 @@ const MenuBar: React.FC<PropsType> = ({ types, setBrandId, setTypeId }) => {
       <Divider />
       <Menu
         variant="menu"
-        elevation={0}
-        id="simple-menu"
+        elevation={2}
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
@@ -121,15 +119,10 @@ const MenuBar: React.FC<PropsType> = ({ types, setBrandId, setTypeId }) => {
                     handleDevice(type._id);
                   }}
                 >
-                  {' '}
-                  <Link
-                    to={`/profileType/${type._id}`}
-                    className={classes.link}
-                  >
-                    {type.name}
-                  </Link>
+                  <ListItemText
+                    primary={<Typography>{type.name}</Typography>}
+                  />
                 </MenuItem>
-                <Divider />
               </div>
             );
           })}

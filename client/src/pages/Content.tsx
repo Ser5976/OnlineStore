@@ -134,7 +134,6 @@ const Content: React.FC<PropsType> = ({
   };
   //костыль,чтобы синхронизировать пагинацию и строку запроса
   useEffect(() => {
-    //console.log('костыль');
     if (history.action === 'POP') {
       setPage(searchPage);
     }
@@ -156,6 +155,7 @@ const Content: React.FC<PropsType> = ({
   //console.log(devices);
 
   // console.log(info);
+  // console.log('рендеринг');
   return (
     <>
       {alertMessage && (
@@ -164,6 +164,7 @@ const Content: React.FC<PropsType> = ({
           alertMessage={alertMessage}
         />
       )}
+
       <Grid item container>
         {/*  <Grid item xs={12} sm={2} className={classes.grid}>
           {isFetchErrorTypes ? (
