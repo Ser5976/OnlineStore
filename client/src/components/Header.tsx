@@ -31,6 +31,7 @@ import { getBrands, getTypes } from '../action/deviceAction'; //запрос н�
 import { RootStateType } from '../store/store'; //типизация всего стейта
 import { useHistory } from 'react-router-dom';
 import Logo7 from '../img/logo7.png';
+import MenuAdmin from './MenuAdmin';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -115,18 +116,7 @@ const Header: React.FC<PropsType> = ({
 
           {/* <Box py={{ xs: 12, sm: 7 }} className={classes.title}></Box> */}
 
-          {isAuth && auth.role === 'ADMIN' && (
-            <Button
-              color="inherit"
-              onClick={() => {
-                history.push('/addDevicesContainer');
-              }}
-            >
-              <SupervisorAccountOutlinedIcon
-                style={{ fontSize: '35px', color: 'black' }}
-              />
-            </Button>
-          )}
+          {isAuth && auth.role === 'ADMIN' && <MenuAdmin />}
           {isAuth ? (
             <>
               <IconButton color="inherit">
