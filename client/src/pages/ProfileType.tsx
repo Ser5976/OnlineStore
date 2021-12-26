@@ -44,8 +44,8 @@ type MapStateToPropsType = {
   brandId: string | null;
   isLoadinDevice: boolean;
   isFetchErrorDevice: boolean;
-  isLoadinTypes: boolean;
-  isFetchErrorTypes: boolean;
+  isLoadinSelectedType: boolean;
+  isFetchErrorSelectedType: boolean;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -91,13 +91,13 @@ const useStyles = makeStyles((theme) =>
       '&:hover': {
         boxShadow: '0 3px 10px rgb(0 0 0/0.2)',
       },
+      cursor: 'pointer',
     },
 
     media: {
       height: 150,
 
       padding: 15,
-      cursor: 'pointer',
     },
   })
 );
@@ -115,11 +115,12 @@ const ProfileType: React.FC<PropsType> = ({
   brandId,
   isLoadinDevice,
   isFetchErrorDevice,
-  isLoadinTypes,
-  isFetchErrorTypes,
+  isLoadinSelectedType,
+  isFetchErrorSelectedType,
 }) => {
   const classes = useStyles();
   const { id } = useParams<ParamsType>(); //  хук роутера ,который помогает получить значение params(это выбранный typeId)
+
   const history = useHistory(); //для изменения строки запроса
   const location = useLocation(); // для получения строки запроса
   const searchPage = parseInt(location.search?.split('=')[1] || '1'); // получаем число страницы из строки запроса
@@ -182,19 +183,43 @@ const ProfileType: React.FC<PropsType> = ({
         <Grid container spacing={7}>
           <Grid item xs={12} sm={3}>
             <Typography variant="h5">Производители</Typography>
-            <List component="nav">
-              {selectedType.brands &&
-                selectedType.brands.map((brand) => {
-                  return (
-                    <div key={brand._id}>
-                      <ListItem button onClick={() => setBrandId(brand._id)}>
-                        <ListItemText primary={brand.name} />
-                      </ListItem>
-                      <Divider />
-                    </div>
-                  );
-                })}
-            </List>
+
+            {isFetchErrorSelectedType ? (
+              <Typography
+                align="center"
+                color="error"
+                style={{ marginTop: '25px' }}
+              >
+                Что-то пошло не так!
+              </Typography>
+            ) : isLoadinSelectedType ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: window.innerHeight - 65.6 }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : selectedType.brands.length === 0 ? (
+              <Typography align="center" style={{ margin: '100px' }}>
+                Пока производителей нет!
+              </Typography>
+            ) : (
+              <List component="nav">
+                {selectedType.brands &&
+                  selectedType.brands.map((brand) => {
+                    return (
+                      <div key={brand._id}>
+                        <ListItem button onClick={() => setBrandId(brand._id)}>
+                          <ListItemText primary={brand.name} />
+                        </ListItem>
+                        <Divider />
+                      </div>
+                    );
+                  })}
+              </List>
+            )}
           </Grid>
 
           <Grid item container xs={12} spacing={2} sm={9}>
@@ -283,9 +308,9 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     typeId: state.devices.typeId, // айдишник типа
     brandId: state.devices.brandId, // айдишник брэнда
     isLoadinDevice: state.devices.isLoadinDevice, //крутилка у стройств
-    isLoadinTypes: state.devices.isLoadinTypes, //крутилка типов
+    isLoadinSelectedType: state.devices.isLoadinSelectedType, //крутилка типов
     isFetchErrorDevice: state.devices.isFetchErrorDevice, //ошибка устройств
-    isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка типов
+    isFetchErrorSelectedType: state.devices.isFetchErrorSelectedType, //ошибка типов
   };
 };
 export default connect<

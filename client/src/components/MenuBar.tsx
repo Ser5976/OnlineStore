@@ -19,6 +19,7 @@ import {
 //----типизация пропсов----
 type PropsType = {
   types: TypeDeviceType[];
+  isFetchErrorTypes: boolean;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
 };
@@ -36,7 +37,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const MenuBar: React.FC<PropsType> = ({ types, setBrandId, setTypeId }) => {
+const MenuBar: React.FC<PropsType> = ({
+  types,
+  isFetchErrorTypes,
+  setBrandId,
+  setTypeId,
+}) => {
   const history = useHistory();
   const classes = useStyles();
   // для меню
@@ -109,7 +115,12 @@ const MenuBar: React.FC<PropsType> = ({ types, setBrandId, setTypeId }) => {
         className={classes.menu}
         onClose={handleClose}
       >
-        {types &&
+        {isFetchErrorTypes ? (
+          <Typography align="center" color="error" style={{ margin: '15px' }}>
+            Что-то пошло не так!
+          </Typography>
+        ) : (
+          types &&
           types.map((type) => {
             return (
               <div key={type._id}>
@@ -125,7 +136,8 @@ const MenuBar: React.FC<PropsType> = ({ types, setBrandId, setTypeId }) => {
                 </MenuItem>
               </div>
             );
-          })}
+          })
+        )}
       </Menu>
     </>
   );

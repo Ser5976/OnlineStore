@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { RootStateType } from '../store/store'; // типизация всего стейта( для типизации state)
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Box, Container, Button } from '@material-ui/core';
 import { getSelectedDevice } from '../action/deviceAction';
 import { DeviceType, InfoType } from '../store/reducer/deviceReducer';
@@ -14,6 +15,8 @@ import { connect } from 'react-redux';
 //типизация---------------------------------------------------------------------
 type MapStateToPropsType = {
   selectedDevice: DeviceType;
+  isLoadinSelectedDevice: boolean;
+  isFetchErrorSelectedDevice: boolean;
 };
 type MapDispathPropsType = {
   getSelectedDevice: (id: string) => void;
@@ -59,11 +62,16 @@ const useStyles = makeStyles((theme) => ({
   bold: {
     fontWeight: 'bold',
   },
+  textTitle: {
+    marginTop: '25px',
+  },
 }));
 
 const ProfileDevice: React.FC<PropsType> = ({
   getSelectedDevice,
   selectedDevice,
+  isFetchErrorSelectedDevice,
+  isLoadinSelectedDevice,
 }) => {
   const classes = useStyles();
   const { id } = useParams<ParamsType>(); //  хук роутера ,который помогает получить значение params
@@ -84,64 +92,85 @@ const ProfileDevice: React.FC<PropsType> = ({
       <Box className={classes.breadcrumb}>
         <ActiveLastBreadcrumb name={name} />
       </Box>
-      <Typography className={classes.name} variant="h3">
-        {name}
-      </Typography>
-      <Grid container spacing={2} className={classes.grid_container}>
-        <Grid item xs={12} sm={6}>
-          <ImageList image={image} />
-          <Typography
-            variant="h5"
-            component="h6"
-            align="center"
-            className={classes.bold}
-          >
-            Цена: {price} p
+
+      {isFetchErrorSelectedDevice ? (
+        <Typography align="center" color="error" className={classes.textTitle}>
+          Что-то пошло не так!
+        </Typography>
+      ) : isLoadinSelectedDevice ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          style={{ height: window.innerHeight - 65.6 }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <Typography className={classes.name} variant="h3">
+            {name}
           </Typography>
-          <Grid container spacing={2} style={{ marginTop: '25px' }}>
+          <Grid container spacing={2} className={classes.grid_container}>
             <Grid item xs={12} sm={6}>
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                style={{ marginBottom: 15, fontSize: 12 }}
-                onClick={() => {}}
+              <ImageList image={image} />
+              <Typography
+                variant="h5"
+                component="h6"
+                align="center"
+                className={classes.bold}
               >
-                Купить
-              </Button>
+                Цена: {price} p
+              </Typography>
+              <Grid container spacing={2} style={{ marginTop: '25px' }}>
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    style={{ marginBottom: 15, fontSize: 12 }}
+                    onClick={() => {}}
+                  >
+                    Купить
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    style={{ marginBottom: 15, fontSize: 12 }}
+                    onClick={() => {}}
+                  >
+                    Добавить в корзину
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
+
             <Grid item xs={12} sm={6}>
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                style={{ marginBottom: 15, fontSize: 12 }}
-                onClick={() => {}}
-              >
-                Добавить в корзину
-              </Button>
+              {params.length !== 0 ? (
+                <>
+                  <Typography variant="h5" component="h6" align="center">
+                    Характеристики
+                  </Typography>
+                  {params.map((item: InfoType, index: number) => {
+                    return (
+                      <Typography style={{ marginLeft: '25px' }} key={index}>
+                        <span className={classes.bold}>{item.title}</span>:
+                        <span className={classes.italic}>
+                          {' '}
+                          {item.description}
+                        </span>
+                      </Typography>
+                    );
+                  })}
+                </>
+              ) : null}
             </Grid>
           </Grid>
-        </Grid>
-
-        <Grid item xs={12} sm={6}>
-          {params.length !== 0 ? (
-            <>
-              <Typography variant="h5" component="h6" align="center">
-                Характеристики
-              </Typography>
-              {params.map((item: InfoType, index: number) => {
-                return (
-                  <Typography style={{ marginLeft: '25px' }} key={index}>
-                    <span className={classes.bold}>{item.title}</span>:
-                    <span className={classes.italic}> {item.description}</span>
-                  </Typography>
-                );
-              })}
-            </>
-          ) : null}
-        </Grid>
-      </Grid>
+        </>
+      )}
       <hr />
     </Container>
   );
@@ -150,6 +179,8 @@ const ProfileDevice: React.FC<PropsType> = ({
 const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
   return {
     selectedDevice: state.devices.selectedDevice,
+    isLoadinSelectedDevice: state.devices.isLoadinSelectedDevice,
+    isFetchErrorSelectedDevice: state.devices.isFetchErrorSelectedDevice,
   };
 };
 export default connect<

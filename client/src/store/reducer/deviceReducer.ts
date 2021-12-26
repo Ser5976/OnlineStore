@@ -8,9 +8,14 @@ const SET_TYPE_ID = 'SET_TYPE_ID';
 const SET_BRAND_ID = 'SET_BRAND_ID';
 
 const IS_LOADIN_DEVICES = 'IS_LOADIN_DEVICES';
+const IS_LOADIN_SELECTED_DEVICE = 'IS_LOADIN_SELECTED_DEVICE';
 const IS_LOADIN_TYPES = 'IS_LOADIN_TYPES';
+const IS_LOADIN_SELECTED_TYPE = 'IS_LOADIN_SELECTED_TYPE';
+
 const SET_FETCH_ERROR_DEVICE = 'SET_FETCH_ERROR_DEVICE';
+const SET_FETCH_ERROR_SELECTED_DEVICE = 'SET_FETCH_ERROR_SELECTED_DEVICE';
 const SET_FETCH_ERROR_TYPES = 'SET_FETCH_ERROR_TYPES';
+const SET_FETCH_ERROR_SELECTED_TYPE = 'SET_FETCH_ERROR_SELECTED_TYPE';
 
 const SET_ADDED_DEVICE = 'SET_ADDED_DEVICE';
 const SET_ADDED_DEVICE_ERROR = 'SET_ADDED_DEVICE_ERROR';
@@ -69,10 +74,17 @@ export type InitialStateType = {
   limit: number;
   typeId: string | null;
   brandId: string | null;
+
   isLoadinDevice: boolean;
-  isFetchErrorDevice: boolean;
+  isLoadinSelectedDevice: boolean;
   isLoadinTypes: boolean;
+  isLoadinSelectedType: boolean;
+
+  isFetchErrorDevice: boolean;
   isFetchErrorTypes: boolean;
+  isFetchErrorSelectedType: boolean;
+  isFetchErrorSelectedDevice: boolean;
+
   addedDevice: addedDeviceType;
   addedDeviceError: boolean;
   alertMessage: string | null;
@@ -114,16 +126,32 @@ export type setIsLoadinDeviceActionType = {
   type: typeof IS_LOADIN_DEVICES;
   payload: boolean;
 };
-export type setFetchErrorDeviceActionType = {
-  type: typeof SET_FETCH_ERROR_DEVICE;
+export type setIsLoadinSelectedDeviceActionType = {
+  type: typeof IS_LOADIN_SELECTED_DEVICE;
+  payload: boolean;
+};
+export type setIsLoadinSelectedTypeActionType = {
+  type: typeof IS_LOADIN_SELECTED_TYPE;
   payload: boolean;
 };
 export type setIsLoadinTypesActionType = {
   type: typeof IS_LOADIN_TYPES;
   payload: boolean;
 };
+export type setFetchErrorDeviceActionType = {
+  type: typeof SET_FETCH_ERROR_DEVICE;
+  payload: boolean;
+};
+export type setFetchErrorSelectedDeviceActionType = {
+  type: typeof SET_FETCH_ERROR_SELECTED_DEVICE;
+  payload: boolean;
+};
 export type setFetchErrorTypesActionType = {
   type: typeof SET_FETCH_ERROR_TYPES;
+  payload: boolean;
+};
+export type setFetchErrorSelectedTypeActionType = {
+  type: typeof SET_FETCH_ERROR_SELECTED_TYPE;
   payload: boolean;
 };
 export type setAddedDeviceActionType = {
@@ -152,6 +180,10 @@ export type DeviceAtionType =
   | setFetchErrorDeviceActionType
   | setIsLoadinTypesActionType
   | setFetchErrorTypesActionType
+  | setIsLoadinSelectedDeviceActionType
+  | setIsLoadinSelectedTypeActionType
+  | setFetchErrorSelectedDeviceActionType
+  | setFetchErrorSelectedTypeActionType
   | setAddedDeviceActionType
   | setAddedDeviceErrorActionType
   | setAlertMessageActionType;
@@ -172,9 +204,14 @@ const initialState: InitialStateType = {
   brandId: null, // выбранный брэнд устройства
   //------загрузка и ошибки-----
   isLoadinDevice: true,
-  isFetchErrorDevice: false,
+  isLoadinSelectedDevice: true,
   isLoadinTypes: true,
+  isLoadinSelectedType: true,
+
+  isFetchErrorDevice: false,
+  isFetchErrorSelectedDevice: false,
   isFetchErrorTypes: false,
+  isFetchErrorSelectedType: false,
   //------добавленное устройство
   addedDevice: {
     name: '',
@@ -197,24 +234,28 @@ export const deviceReducer = (
         ...state,
         devices: action.payload,
         isLoadinDevice: false,
+        isFetchErrorDevice: false,
       };
     case SET_SELECTED_DEVICE:
       return {
         ...state,
         selectedDevice: action.payload,
-        isLoadinDevice: false,
+        isLoadinSelectedDevice: false,
+        isFetchErrorSelectedDevice: false,
       };
     case SET_TYPES:
       return {
         ...state,
         types: action.payload,
         isLoadinTypes: false,
+        isFetchErrorTypes: false,
       };
     case SET_SELECTED_TYPE:
       return {
         ...state,
         selectedType: action.payload,
-        isLoadinDevice: false,
+        isLoadinSelectedType: false,
+        isFetchErrorSelectedType: false,
       };
     case SET_BRANDS:
       return {
@@ -236,26 +277,45 @@ export const deviceReducer = (
         ...state,
         brandId: action.payload,
       };
-
     case IS_LOADIN_DEVICES:
       return {
         ...state,
         isLoadinDevice: action.payload,
+      };
+    case IS_LOADIN_SELECTED_DEVICE:
+      return {
+        ...state,
+        isLoadinSelectedDevice: action.payload,
       };
     case SET_FETCH_ERROR_DEVICE:
       return {
         ...state,
         isFetchErrorDevice: action.payload,
       };
+    case SET_FETCH_ERROR_SELECTED_DEVICE:
+      return {
+        ...state,
+        isFetchErrorSelectedDevice: action.payload,
+      };
     case IS_LOADIN_TYPES:
       return {
         ...state,
         isLoadinTypes: action.payload,
       };
+    case IS_LOADIN_SELECTED_TYPE:
+      return {
+        ...state,
+        isLoadinSelectedType: action.payload,
+      };
     case SET_FETCH_ERROR_TYPES:
       return {
         ...state,
         isFetchErrorTypes: action.payload,
+      };
+    case SET_FETCH_ERROR_SELECTED_TYPE:
+      return {
+        ...state,
+        isFetchErrorSelectedType: action.payload,
       };
     case SET_ADDED_DEVICE:
       return {
@@ -327,22 +387,44 @@ export const setIsLoadinDevice = (
   type: IS_LOADIN_DEVICES,
   payload: bul,
 });
-
+export const setIsLoadinSelectedDevice = (
+  bul: boolean
+): setIsLoadinSelectedDeviceActionType => ({
+  type: IS_LOADIN_SELECTED_DEVICE,
+  payload: bul,
+});
 export const setFetchErrorDevice = (
   bul: boolean
 ): setFetchErrorDeviceActionType => ({
   type: SET_FETCH_ERROR_DEVICE,
   payload: bul,
 });
+export const setFetchErrorSelectedDevice = (
+  bul: boolean
+): setFetchErrorSelectedDeviceActionType => ({
+  type: SET_FETCH_ERROR_SELECTED_DEVICE,
+  payload: bul,
+});
 export const setIsLoadinTypes = (bul: boolean): setIsLoadinTypesActionType => ({
   type: IS_LOADIN_TYPES,
   payload: bul,
 });
-
+export const setIsLoadinSelectedType = (
+  bul: boolean
+): setIsLoadinSelectedTypeActionType => ({
+  type: IS_LOADIN_SELECTED_TYPE,
+  payload: bul,
+});
 export const setFetchErrorTypes = (
   bul: boolean
 ): setFetchErrorTypesActionType => ({
   type: SET_FETCH_ERROR_TYPES,
+  payload: bul,
+});
+export const setFetchErrorSelectedType = (
+  bul: boolean
+): setFetchErrorSelectedTypeActionType => ({
+  type: SET_FETCH_ERROR_SELECTED_TYPE,
   payload: bul,
 });
 

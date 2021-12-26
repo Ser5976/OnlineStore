@@ -38,6 +38,7 @@ type MapStateToPropsType = {
   isAuth: boolean;
   auth: AuthReducerType;
   types: TypeDeviceType[];
+  isFetchErrorTypes: boolean;
 };
 type MapDispathPropsType = {
   setAuth: (value: AuthReducerType) => SetAuthActionType;
@@ -71,6 +72,7 @@ const Header: React.FC<PropsType> = ({
   auth,
   isAuth,
   types,
+  isFetchErrorTypes,
   setAuth,
   setLogout,
   setIsAuth,
@@ -146,7 +148,12 @@ const Header: React.FC<PropsType> = ({
         </Toolbar>
       </AppBar>
       <Divider />
-      <MenuBar types={types} setBrandId={setBrandId} setTypeId={setTypeId} />
+      <MenuBar
+        types={types}
+        setBrandId={setBrandId}
+        setTypeId={setTypeId}
+        isFetchErrorTypes={isFetchErrorTypes}
+      />
     </>
   );
 };
@@ -156,6 +163,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     isAuth: state.auth.isAuth, //  маркер авторизации
     auth: state.auth.auth, //авторизация для role
     types: state.devices.types, //  типы устройств
+    isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка загруки типов устройств
   };
 };
 export default connect<

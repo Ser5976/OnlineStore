@@ -1,8 +1,12 @@
 import {
   setIsLoadinDevice, //крутилка для устройств
+  setIsLoadinSelectedDevice, //крутилка для выбранного устройства
   setIsLoadinTypes, //крутилка для типов
+  setIsLoadinSelectedType, //крутилка для выбранного типа
   setFetchErrorDevice, //ошибка для устройств
+  setFetchErrorSelectedDevice, //ошибка для выбранного утсройства
   setFetchErrorTypes, //ошибка для типов
+  setFetchErrorSelectedType, //ошибка для выбранного типа
   setDevices, // запись устройств в стейт
   setSelectedDevice, // запись выбранного устройства в стейт
   setTypes, // запись типов в стейт
@@ -68,14 +72,14 @@ export const getSelectedDevice = (id: string): ThunkType => {
   //console.log(id);
   return async (dispatch) => {
     try {
-      dispatch(setIsLoadinDevice(true));
+      dispatch(setIsLoadinSelectedDevice(true));
       const response = await axios.get(ModelUrls.DEVICES + '/' + id);
       //запись в стейт
       dispatch(setSelectedDevice(response.data));
     } catch (e) {
       console.log(e);
-      dispatch(setFetchErrorDevice(true));
-      dispatch(setIsLoadinDevice(false));
+      dispatch(setFetchErrorSelectedDevice(true));
+      dispatch(setIsLoadinSelectedDevice(false));
     }
   };
 };
@@ -96,20 +100,20 @@ export const getTypes = (): ThunkType => {
     }
   };
 };
-// получение выбранного устройства
+// получение типа выбранного устройства
 export const getSelectedType = (id: string): ThunkType => {
   //console.log(id);
   return async (dispatch) => {
     try {
-      dispatch(setIsLoadinDevice(true));
+      dispatch(setIsLoadinSelectedType(true));
       const response = await axios.get(ModelUrls.TYPES + '/' + id);
       //console.log(response.data);
       //запись в стейт
       dispatch(setSelectedType(response.data));
     } catch (e) {
       console.log(e);
-      dispatch(setFetchErrorDevice(true));
-      dispatch(setIsLoadinDevice(false));
+      dispatch(setFetchErrorSelectedType(true));
+      dispatch(setIsLoadinSelectedType(false));
     }
   };
 };
