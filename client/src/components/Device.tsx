@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { DeviceType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
-import { AuthReducerType } from '../store/reducer/authReducer';
 import { useHistory } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -13,9 +12,6 @@ import { DeleteOutline } from '@material-ui/icons';
 
 type PropsType = {
   item: DeviceType;
-  auth: AuthReducerType;
-  isAuth: boolean;
-  removeDevice: (id: string | undefined) => void;
 };
 //---------------------------------
 
@@ -35,7 +31,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Device: React.FC<PropsType> = ({ item, auth, isAuth, removeDevice }) => {
+const Device: React.FC<PropsType> = ({ item }) => {
   const { name, picture, price } = item;
   const classes = useStyles();
   const history = useHistory();
@@ -55,22 +51,7 @@ const Device: React.FC<PropsType> = ({ item, auth, isAuth, removeDevice }) => {
           history.push(`/profileDevice/${item._id}`);
         }}
       />
-      <CardHeader
-        action={
-          isAuth &&
-          auth.role === 'ADMIN' && (
-            <IconButton
-              onClick={() => {
-                removeDevice(item._id);
-              }}
-            >
-              <DeleteOutline />
-            </IconButton>
-          )
-        }
-        title={`${price} p`}
-        subheader={name}
-      />
+      <CardHeader title={`${price} p`} subheader={name} />
     </Card>
   );
 };

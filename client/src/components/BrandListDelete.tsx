@@ -13,8 +13,8 @@ import { BrandType } from '../store/reducer/deviceReducer'; //типизация
 
 //----типизация пропсов----
 type PropsType = {
-  brands: BrandType[];
-  removeBrand: (id: string) => void;
+  brands: BrandType[]; // типизация выбранного списка брэндов
+  removeBrand: (id: string) => void; //  типизация удаление брэнда
 };
 //-------------------------
 const useStyles = makeStyles((theme: Theme) => ({
@@ -42,11 +42,7 @@ const BrandListDelete: React.FC<PropsType> = ({ brands, removeBrand }) => {
       <ListItem className={classes.list} button onClick={handleClick}>
         <ListItemText
           disableTypography
-          primary={
-            <Typography variant="subtitle1" gutterBottom>
-              удалить брэнд товара
-            </Typography>
-          }
+          primary={<Typography variant="h6">Удалить брэнд товара</Typography>}
         />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
@@ -66,9 +62,7 @@ const BrandListDelete: React.FC<PropsType> = ({ brands, removeBrand }) => {
                   <ListItemText
                     disableTypography
                     primary={
-                      <Typography variant="subtitle2" gutterBottom>
-                        {item.name}
-                      </Typography>
+                      <Typography variant="subtitle1">{item.name}</Typography>
                     }
                   />
                   <ListItemIcon style={{ color: 'red' }}>

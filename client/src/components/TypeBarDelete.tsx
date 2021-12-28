@@ -13,7 +13,6 @@ import {
   setTypeIdActionType,
   setBrandIdActionType,
 } from '../store/reducer/deviceReducer'; //типизация
-import { AuthReducerType } from '../store/reducer/authReducer';
 import TypeListDelete from './TypeListDelete';
 import BrandListDelete from './BrandListDelete';
 
@@ -21,12 +20,11 @@ import BrandListDelete from './BrandListDelete';
 type PropsType = {
   types: TypeDeviceType[];
   brands: BrandType[];
-  isAuth: boolean;
-  auth: AuthReducerType;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
   removeType: (id: string) => void;
   removeBrand: (id: string) => void;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
 };
 //-------------------------
 
@@ -35,10 +33,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: 20,
     padding: '0px 5px',
   },
-  products: { paddingLeft: theme.spacing(2), marginBottom: 50 },
+  products: { paddingLeft: theme.spacing(2), marginBottom: 25 },
   activProducts: {
     paddingLeft: theme.spacing(2),
-    marginBottom: 50,
+    marginBottom: 25,
     backgroundColor: '#e0e0e0',
   },
   listType: { paddingLeft: theme.spacing(5) },
@@ -52,15 +50,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const TypeBar: React.FC<PropsType> = ({
-  types,
-  brands,
-  isAuth,
-  auth,
-  setTypeId,
-  setBrandId,
-  removeType,
-  removeBrand,
+const TypeBarDelete: React.FC<PropsType> = ({
+  types, //типы товаров
+  brands, // брынды
+  setTypeId, // запись типа товара в стейт
+  setBrandId, // запись брэнда товара в стейт
+  removeType, // удаление типа товара
+  removeBrand, // удаление брэнда товара
+  setCategory, // изменение категории
 }) => {
   const classes = useStyles();
   //создаём объект с булевыми значениями для управления элементами списка(открытие закрытие)(чтобы реагировать на каждый элемент)
@@ -98,13 +95,14 @@ const TypeBar: React.FC<PropsType> = ({
             setOpen(objType); //закрытие списка
             setActivType(null); //удаление выделения типа
             setAllDevice(true); //выделение всех товаров
+            setCategory('Все товары');
           }}
         >
           <ListItemText
             disableTypography
             primary={
               <Typography variant="subtitle1" gutterBottom>
-                все товары
+                Все товары
               </Typography>
             }
           />
@@ -115,6 +113,7 @@ const TypeBar: React.FC<PropsType> = ({
           return (
             <div key={type._id}>
               <ListItem
+                button
                 className={
                   activType === indexType
                     ? classes.activListType
@@ -125,14 +124,13 @@ const TypeBar: React.FC<PropsType> = ({
                   setTypeId(type._id); //запись в стейт выбранного типа
                   setBrandId(null); // удаление из стейта существующего брэнда
                   setAllDevice(false); // удаление выделения всех товаров
+                  setCategory(type.name);
                 }}
               >
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="subtitle1" gutterBottom>
-                      {type.name}
-                    </Typography>
+                    <Typography variant="subtitle1">{type.name}</Typography>
                   }
                 />
                 {open[indexType] ? <ExpandLess /> : <ExpandMore />}
@@ -161,7 +159,7 @@ const TypeBar: React.FC<PropsType> = ({
                                 : undefined
                             }
                             primary={
-                              <Typography variant="subtitle2" gutterBottom>
+                              <Typography variant="subtitle1">
                                 {brand.name}
                               </Typography>
                             }
@@ -176,14 +174,10 @@ const TypeBar: React.FC<PropsType> = ({
           );
         })}
       </List>
-      {isAuth && auth.role === 'ADMIN' && (
-        <TypeListDelete types={types} removeType={removeType} />
-      )}
-      {isAuth && auth.role === 'ADMIN' && (
-        <BrandListDelete brands={brands} removeBrand={removeBrand} />
-      )}
+      <TypeListDelete types={types} removeType={removeType} />
+      <BrandListDelete brands={brands} removeBrand={removeBrand} />
     </>
   );
 };
 
-export default TypeBar;
+export default TypeBarDelete;

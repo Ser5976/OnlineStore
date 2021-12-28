@@ -8,6 +8,7 @@ import AddDevicesContainer from '../pages/AddDevicesContainer';
 import ProfileDevice from '../pages/ProfileDevice';
 import ProfileType from '../pages/ProfileType';
 import Footer from '../components/Footer';
+import DeleteContainer from '../pages/DeleteContainer';
 
 const MyRouter: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const MyRouter: React.FC = () => {
       <Header />
       <Switch>
         <Route component={Content} path="/" exact />
+        <Route component={DeleteContainer} path="/deleteContainer" exact />
         <Route component={AuthContainer} path="/login" exact />
         <Route component={AuthContainer} path="/registration" exact />
         <Route

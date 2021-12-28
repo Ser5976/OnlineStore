@@ -2,15 +2,10 @@ import React from 'react';
 import Masonry from 'react-masonry-css'; // контейнерный компонент для стиля(расположение элементов)
 import Device from './Device';
 import { DeviceType } from '../store/reducer/deviceReducer'; //типизация устройств
-import { AuthReducerType } from '../store/reducer/authReducer';
 
 //----типизация пропсов----
 type PropsType = {
   devices: DeviceType[];
-
-  auth: AuthReducerType;
-  isAuth: boolean;
-  removeDevice: (id: string | undefined) => void;
 };
 //-------------------------
 
@@ -21,10 +16,6 @@ const breakpoints = {
 }; // это для Masonry,компонент регулирет расположение карточек(отдельно установлен)
 const DeviceContainer: React.FC<PropsType> = ({
   devices, // устройства
-
-  auth,
-  isAuth,
-  removeDevice,
 }) => {
   return (
     <Masonry
@@ -33,15 +24,7 @@ const DeviceContainer: React.FC<PropsType> = ({
       columnClassName="my-masonry-grid_column"
     >
       {devices.map((item) => {
-        return (
-          <Device
-            item={item}
-            key={Math.random()}
-            auth={auth}
-            isAuth={isAuth}
-            removeDevice={removeDevice}
-          />
-        );
+        return <Device item={item} key={Math.random()} />;
       })}
     </Masonry>
   );

@@ -67,6 +67,7 @@ const MenuAdmin: React.FC<PropsType> = ({}) => {
         <MenuItem
           onClick={() => {
             handleClose();
+            history.push('/deleteContainer');
           }}
         >
           Удалить товар

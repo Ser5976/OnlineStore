@@ -13,9 +13,8 @@ import { TypeDeviceType } from '../store/reducer/deviceReducer'; //типиза�
 
 //----типизация пропсов----
 type PropsType = {
-  types: TypeDeviceType[];
-
-  removeType: (id: string) => void;
+  types: TypeDeviceType[]; //типизация списка типов устройств
+  removeType: (id: string) => void; //типизация удаления выбранного типа
 };
 //-------------------------
 const useStyles = makeStyles((theme: Theme) => ({
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const TypeListDelete: React.FC<PropsType> = ({ types, removeType }) => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     setOpen(!open);
@@ -44,8 +43,8 @@ const TypeListDelete: React.FC<PropsType> = ({ types, removeType }) => {
         <ListItemText
           disableTypography
           primary={
-            <Typography variant="subtitle1" gutterBottom>
-              удалить тип товара
+            <Typography variant="h6" gutterBottom>
+              Удалить тип товара
             </Typography>
           }
         />
@@ -67,9 +66,7 @@ const TypeListDelete: React.FC<PropsType> = ({ types, removeType }) => {
                   <ListItemText
                     disableTypography
                     primary={
-                      <Typography variant="subtitle2" gutterBottom>
-                        {item.name}
-                      </Typography>
+                      <Typography variant="subtitle1">{item.name}</Typography>
                     }
                   />
                   <ListItemIcon style={{ color: 'red' }}>

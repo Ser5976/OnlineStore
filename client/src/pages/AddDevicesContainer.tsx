@@ -6,6 +6,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import DeviceData from '../components/DeviceData';
 import DeviceProperty from '../components/DeviceProperty';
@@ -21,8 +22,10 @@ import {
   setAddedDeviceError, //изменения ошибки
 } from '../store/reducer/deviceReducer';
 import { addDevice, addType, addBrand } from '../action/deviceAction';
-import { connect } from 'react-redux';
 import ModalWindow from '../components/ModalWindow';
+import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
+import { connect } from 'react-redux';
+import MenuAdmin from '../components/MenuAdmin';
 
 //типизация--------------------------------
 type MapStateToPropsType = {
@@ -198,63 +201,69 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   };
 
   return (
-    <main className={classes.layout}>
-      <div className={classes.paper}>
-        <Typography component="h1" variant="h5" align="center">
-          Добавить товар
-        </Typography>
-        <Stepper activeStep={activeStep} className={classes.stepper}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <React.Fragment>
-          {activeStep === steps.length ? (
-            <React.Fragment>
-              {addedDeviceError && (
-                <Typography
-                  align="center"
-                  color="error"
-                  className={classes.textTitle}
-                >
-                  Что-то пошло не так!
-                </Typography>
-              )}
-              <Grid container component="main">
-                <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    fullWidth
-                    style={{ marginBottom: 15, fontSize: 12 }}
-                    onClick={() => {
-                      setActiveStep(0);
-                    }}
+    <>
+      <Box style={{ margin: '25px' }}>
+        <ActiveLastBreadcrumb name="Добавить товар" />
+      </Box>
+
+      <main className={classes.layout}>
+        <div className={classes.paper}>
+          <Typography component="h1" variant="h5" align="center">
+            Добавить товар
+          </Typography>
+          <Stepper activeStep={activeStep} className={classes.stepper}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <React.Fragment>
+            {activeStep === steps.length ? (
+              <React.Fragment>
+                {addedDeviceError && (
+                  <Typography
+                    align="center"
+                    color="error"
+                    className={classes.textTitle}
                   >
-                    Отмена
-                  </Button>
+                    Что-то пошло не так!
+                  </Typography>
+                )}
+                <Grid container component="main">
+                  <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      fullWidth
+                      style={{ marginBottom: 15, fontSize: 12 }}
+                      onClick={() => {
+                        setActiveStep(0);
+                      }}
+                    >
+                      Отмена
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      fullWidth
+                      style={{ marginBottom: 15, fontSize: 12 }}
+                      onClick={appendDevice}
+                    >
+                      Сохранить
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    fullWidth
-                    style={{ marginBottom: 15, fontSize: 12 }}
-                    onClick={appendDevice}
-                  >
-                    Сохранить
-                  </Button>
-                </Grid>
-              </Grid>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>{getStepContent(activeStep)}</React.Fragment>
-          )}
-        </React.Fragment>
-      </div>
-    </main>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>{getStepContent(activeStep)}</React.Fragment>
+            )}
+          </React.Fragment>
+        </div>
+      </main>
+    </>
   );
 };
 const mapStateToProps = (state: RootStateType): MapStateToPropsType => {

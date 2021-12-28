@@ -10,14 +10,11 @@ import PaginationItem from '@material-ui/lab/PaginationItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TypeBar from '../components/TypeBar';
 import ImageContainer from '../components/ImageContainer';
-import AlertMessage from '../components/AlertMessage';
 import DeviceContainer from '../components/DeviceContainer';
 import { RootStateType } from '../store/store'; //типизиция всего стора
-import { AuthReducerType } from '../store/reducer/authReducer';
 import {
   setTypeId, //запись выбранного типа устройства
   setBrandId, //запись выбранного  брэнда устройства
-  setAlertMessage, // изменения маркера получения сообщения о невозможности удаления типа/брэнда устройства
 } from '../store/reducer/deviceReducer';
 import {
   setTypeIdActionType,
@@ -31,9 +28,6 @@ import {
 import {
   getDevices, //запрос на получение устройств
   getTypes, //запрос на получение типов
-  removeDevice, //удаление устройства
-  removeType, //удаление типа
-  removeBrand, //удаление брэнда
 } from '../action/deviceAction';
 
 import byk1 from '../img/byk1.jpg';
@@ -54,9 +48,6 @@ type MapStateToPropsType = {
   isFetchErrorDevice: boolean;
   isLoadinTypes: boolean;
   isFetchErrorTypes: boolean;
-  auth: AuthReducerType;
-  isAuth: boolean;
-  alertMessage: string | null;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -69,10 +60,6 @@ type MapDispathPropsType = {
   ) => void;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
-  removeDevice: (id: string | undefined) => void;
-  removeType: (id: string) => void;
-  removeBrand: (id: string) => void;
-  setAlertMessage: (data: string | null) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -98,10 +85,7 @@ const Content: React.FC<PropsType> = ({
   getDevices,
   setTypeId,
   setBrandId,
-  removeDevice,
-  removeType,
-  removeBrand,
-  setAlertMessage,
+
   devices,
   types,
   brands,
@@ -113,9 +97,6 @@ const Content: React.FC<PropsType> = ({
   isFetchErrorDevice,
   isLoadinTypes,
   isFetchErrorTypes,
-  auth,
-  isAuth,
-  alertMessage,
 }) => {
   const classes = useStyles();
   const history = useHistory(); //для изменения строки запроса
@@ -159,12 +140,6 @@ const Content: React.FC<PropsType> = ({
 
   return (
     <>
-      {alertMessage && (
-        <AlertMessage
-          setAlertMessage={setAlertMessage}
-          alertMessage={alertMessage}
-        />
-      )}
       <ImageContainer />
       <Container maxWidth="lg">
         <Grid container spacing={10}>
@@ -245,12 +220,7 @@ const Content: React.FC<PropsType> = ({
               </Typography>
             ) : (
               <>
-                <DeviceContainer
-                  devices={devices}
-                  auth={auth}
-                  isAuth={isAuth}
-                  removeDevice={removeDevice}
-                />
+                <DeviceContainer devices={devices} />
               </>
             )}
           </Grid>
@@ -290,9 +260,6 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     isLoadinTypes: state.devices.isLoadinTypes, //крутилка типов
     isFetchErrorDevice: state.devices.isFetchErrorDevice, //ошибка устройств
     isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка типов
-    auth: state.auth.auth, //авторизация
-    isAuth: state.auth.isAuth, //маркер авторизации
-    alertMessage: state.devices.alertMessage, // маркер получения сообщения о невозможности удаления типа устройства
   };
 };
 export default connect<
@@ -304,8 +271,4 @@ export default connect<
   getDevices,
   setTypeId,
   setBrandId,
-  removeDevice,
-  removeType,
-  removeBrand,
-  setAlertMessage,
 })(Content);
