@@ -20,6 +20,7 @@ import BrandListDelete from './BrandListDelete';
 type PropsType = {
   types: TypeDeviceType[];
   brands: BrandType[];
+  isFetchErrorBrands: boolean;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
   removeType: (id: string) => void;
@@ -53,6 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const TypeBarDelete: React.FC<PropsType> = ({
   types, //типы товаров
   brands, // брынды
+  isFetchErrorBrands, //ошибка загрузки брэндов
   setTypeId, // запись типа товара в стейт
   setBrandId, // запись брэнда товара в стейт
   removeType, // удаление типа товара
@@ -175,7 +177,13 @@ const TypeBarDelete: React.FC<PropsType> = ({
         })}
       </List>
       <TypeListDelete types={types} removeType={removeType} />
-      <BrandListDelete brands={brands} removeBrand={removeBrand} />
+      {isFetchErrorBrands ? (
+        <Typography align="center" color="error">
+          Брэнды не загрузились. Что-то пошло не так!
+        </Typography>
+      ) : (
+        <BrandListDelete brands={brands} removeBrand={removeBrand} />
+      )}
     </>
   );
 };

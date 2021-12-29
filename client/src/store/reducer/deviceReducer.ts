@@ -16,6 +16,7 @@ const SET_FETCH_ERROR_DEVICE = 'SET_FETCH_ERROR_DEVICE';
 const SET_FETCH_ERROR_SELECTED_DEVICE = 'SET_FETCH_ERROR_SELECTED_DEVICE';
 const SET_FETCH_ERROR_TYPES = 'SET_FETCH_ERROR_TYPES';
 const SET_FETCH_ERROR_SELECTED_TYPE = 'SET_FETCH_ERROR_SELECTED_TYPE';
+const SET_FETCH_ERROR_BRANDS = 'SET_FETCH_ERROR_BRANDS';
 
 const SET_ADDED_DEVICE = 'SET_ADDED_DEVICE';
 const SET_ADDED_DEVICE_ERROR = 'SET_ADDED_DEVICE_ERROR';
@@ -84,6 +85,7 @@ export type InitialStateType = {
   isFetchErrorTypes: boolean;
   isFetchErrorSelectedType: boolean;
   isFetchErrorSelectedDevice: boolean;
+  isFetchErrorBrands: boolean;
 
   addedDevice: addedDeviceType;
   addedDeviceError: boolean;
@@ -154,6 +156,10 @@ export type setFetchErrorSelectedTypeActionType = {
   type: typeof SET_FETCH_ERROR_SELECTED_TYPE;
   payload: boolean;
 };
+export type setFetchErrorBrandsActionType = {
+  type: typeof SET_FETCH_ERROR_BRANDS;
+  payload: boolean;
+};
 export type setAddedDeviceActionType = {
   type: typeof SET_ADDED_DEVICE;
   payload: addedDeviceType;
@@ -162,6 +168,7 @@ export type setAddedDeviceErrorActionType = {
   type: typeof SET_ADDED_DEVICE_ERROR;
   payload: boolean;
 };
+
 export type setAlertMessageActionType = {
   type: typeof SET_ALERT_MESSAGE;
   payload: string | null;
@@ -184,6 +191,7 @@ export type DeviceAtionType =
   | setIsLoadinSelectedTypeActionType
   | setFetchErrorSelectedDeviceActionType
   | setFetchErrorSelectedTypeActionType
+  | setFetchErrorBrandsActionType
   | setAddedDeviceActionType
   | setAddedDeviceErrorActionType
   | setAlertMessageActionType;
@@ -212,6 +220,8 @@ const initialState: InitialStateType = {
   isFetchErrorSelectedDevice: false,
   isFetchErrorTypes: false,
   isFetchErrorSelectedType: false,
+  isFetchErrorBrands: false,
+
   //------добавленное устройство
   addedDevice: {
     name: '',
@@ -261,6 +271,7 @@ export const deviceReducer = (
       return {
         ...state,
         brands: action.payload,
+        isFetchErrorBrands: false,
       };
     case SET_PAGE_QTY:
       return {
@@ -296,6 +307,11 @@ export const deviceReducer = (
       return {
         ...state,
         isFetchErrorSelectedDevice: action.payload,
+      };
+    case SET_FETCH_ERROR_BRANDS:
+      return {
+        ...state,
+        isFetchErrorBrands: action.payload,
       };
     case IS_LOADIN_TYPES:
       return {
@@ -425,6 +441,12 @@ export const setFetchErrorSelectedType = (
   bul: boolean
 ): setFetchErrorSelectedTypeActionType => ({
   type: SET_FETCH_ERROR_SELECTED_TYPE,
+  payload: bul,
+});
+export const setFetchErrorBrands = (
+  bul: boolean
+): setFetchErrorBrandsActionType => ({
+  type: SET_FETCH_ERROR_BRANDS,
   payload: bul,
 });
 

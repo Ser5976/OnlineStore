@@ -1,6 +1,7 @@
 import Device from '../models/Device.js';
 import FileServise from '../FileServise.js'; //даём имя файлу,записываем его в папку статик
 import Type from '../models/Type.js';
+//import { mongoose_fuzzy_searching } from 'mongoose_fuzzy_searching';
 
 class deviceController {
   async create(req, res) {
@@ -51,8 +52,8 @@ class deviceController {
   }
   async getAll(req, res) {
     try {
-      let { typeId, brandId, limit, page } = req.query;
-      //console.log(req.query);
+      let { typeId, brandId, limit, page, name } = req.query;
+      console.log(req.query);
       //пагинация
       limit = parseInt(limit, 10) || 5;
       page = parseInt(page, 10) || 1;
@@ -61,23 +62,31 @@ class deviceController {
       let device;
       let count; // число устройств
       let pageQty; // количества страниц
+
+      //поиск по слову(предпологалось неполное слова,но не работает)для полного(слова) поиска device = await Device.find({ $text: { $search: name } })
+      if (!typeId && !brandId && name) {
+        device = await Device.fuzzySearch(name).skip(offset).limit(limit);
+        count = await Device.fuzzySearch(name).count();
+        pageQty = Math.ceil(count / limit);
+      }
+      //------------------------------------------------
       // условия для типа и брэнда
-      if (!typeId && !brandId) {
+      if (!typeId && !brandId && !name) {
         device = await Device.find().skip(offset).limit(limit);
         count = await Device.find().count();
         pageQty = Math.ceil(count / limit);
       }
-      if (typeId && !brandId) {
+      if (typeId && !brandId && !name) {
         device = await Device.find({ typeId }).skip(offset).limit(limit);
         count = await Device.find({ typeId }).count();
         pageQty = Math.ceil(count / limit);
       }
-      if (!typeId && brandId) {
+      if (!typeId && brandId && !name) {
         device = await Device.find({ brandId }).skip(offset).limit(limit);
         count = await Device.find({ brandId }).count();
         pageQty = Math.ceil(count / limit);
       }
-      if (typeId && brandId) {
+      if (typeId && brandId && !name) {
         device = await Device.find({ typeId, brandId })
           .skip(offset)
           .limit(limit);
@@ -130,5 +139,4 @@ class deviceController {
     }
   }
 }
-
 export default new deviceController();

@@ -12,6 +12,8 @@ const app = express();
 
 const PORT = config.get('port') || 8000;
 
+mongoose.Promise = global.Promise;
+
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(fileUpload({}));
@@ -27,6 +29,8 @@ async function startApp() {
     await mongoose.connect(config.get('db_url'), {
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      // useFindAndModify: false,
+      // useCreateIndex: true,
     });
     app.listen(PORT, () => console.log(`Сервер запущен на ${PORT}...`));
   } catch (e) {

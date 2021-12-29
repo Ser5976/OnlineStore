@@ -53,6 +53,7 @@ type MapStateToPropsType = {
   isFetchErrorDevice: boolean;
   isLoadinTypes: boolean;
   isFetchErrorTypes: boolean;
+  isFetchErrorBrands: boolean;
   alertMessage: string | null;
 };
 type MapDispathPropsType = {
@@ -110,6 +111,7 @@ const DeleteContainer: React.FC<PropsType> = ({
   isFetchErrorDevice,
   isLoadinTypes,
   isFetchErrorTypes,
+  isFetchErrorBrands,
   alertMessage,
 }) => {
   const classes = useStyles();
@@ -199,6 +201,7 @@ const DeleteContainer: React.FC<PropsType> = ({
                 removeType={removeType}
                 removeBrand={removeBrand}
                 setCategory={setCategory}
+                isFetchErrorBrands={isFetchErrorBrands}
               />
             )}
           </Grid>
@@ -282,6 +285,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     isLoadinTypes: state.devices.isLoadinTypes, //крутилка типов
     isFetchErrorDevice: state.devices.isFetchErrorDevice, //ошибка устройств
     isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка типов
+    isFetchErrorBrands: state.devices.isFetchErrorBrands, //ошибка загрузки брэндов
     alertMessage: state.devices.alertMessage, // маркер получения сообщения о невозможности удаления типа устройства
   };
 };

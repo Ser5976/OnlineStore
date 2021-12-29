@@ -7,6 +7,7 @@ import {
   setFetchErrorSelectedDevice, //ошибка для выбранного утсройства
   setFetchErrorTypes, //ошибка для типов
   setFetchErrorSelectedType, //ошибка для выбранного типа
+  setFetchErrorBrands, //ошибка загрузки брэндов
   setDevices, // запись устройств в стейт
   setSelectedDevice, // запись выбранного устройства в стейт
   setTypes, // запись типов в стейт
@@ -133,6 +134,7 @@ export const getBrands = (): ThunkType => {
       dispatch(setBrands(response.data));
     } catch (e) {
       console.log(e);
+      dispatch(setFetchErrorBrands(true));
     }
   };
 };
