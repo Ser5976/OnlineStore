@@ -3,14 +3,18 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
-import Container from '@material-ui/core/Container';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import {
+  setBrandIdActionType,
+  setTypeIdActionType,
+} from '../store/reducer/deviceReducer';
 
 //----типизация пропсов----
-type PropsType = {};
+type PropsType = {
+  setTypeId: (data: string | null) => setTypeIdActionType;
+  setBrandId: (data: string | null) => setBrandIdActionType;
+};
 //-------------------------
 const useStyles = makeStyles(() => ({
   menu: {
@@ -25,7 +29,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const MenuAdmin: React.FC<PropsType> = ({}) => {
+const MenuAdmin: React.FC<PropsType> = ({ setTypeId, setBrandId }) => {
   const history = useHistory();
   const classes = useStyles();
   // для меню
@@ -68,6 +72,8 @@ const MenuAdmin: React.FC<PropsType> = ({}) => {
           onClick={() => {
             handleClose();
             history.push('/deleteContainer');
+            setTypeId(null);
+            setBrandId(null);
           }}
         >
           Удалить товар

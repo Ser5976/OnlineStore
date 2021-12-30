@@ -23,6 +23,8 @@ const SET_ADDED_DEVICE_ERROR = 'SET_ADDED_DEVICE_ERROR';
 
 const SET_ALERT_MESSAGE = 'SET_ALERT_MESSAGE';
 
+const SET_NAME = 'SET_NAME';
+
 //типизация--------------------------------
 //----------стейта-------------------------
 export type Brands = {
@@ -89,7 +91,10 @@ export type InitialStateType = {
 
   addedDevice: addedDeviceType;
   addedDeviceError: boolean;
+
   alertMessage: string | null;
+
+  name: string | null;
 };
 //------- action---------------------------
 export type setDevicesActionType = {
@@ -173,6 +178,10 @@ export type setAlertMessageActionType = {
   type: typeof SET_ALERT_MESSAGE;
   payload: string | null;
 };
+export type setNameActionType = {
+  type: typeof SET_NAME;
+  payload: string | null;
+};
 
 export type DeviceAtionType =
   | setDevicesActionType
@@ -194,7 +203,8 @@ export type DeviceAtionType =
   | setFetchErrorBrandsActionType
   | setAddedDeviceActionType
   | setAddedDeviceErrorActionType
-  | setAlertMessageActionType;
+  | setAlertMessageActionType
+  | setNameActionType;
 
 //-----------------------------------------
 
@@ -233,6 +243,8 @@ const initialState: InitialStateType = {
   },
   addedDeviceError: false, //ошибка при добавлении устройства в базу данных
   alertMessage: null, // маркер получения сообщения о невозможности удаления типа/брэнда устройства
+
+  name: null, //поиск товара по имени
 };
 export const deviceReducer = (
   state = initialState,
@@ -282,6 +294,7 @@ export const deviceReducer = (
       return {
         ...state,
         typeId: action.payload,
+        name: null,
       };
     case SET_BRAND_ID:
       return {
@@ -347,6 +360,13 @@ export const deviceReducer = (
       return {
         ...state,
         alertMessage: action.payload,
+      };
+    case SET_NAME:
+      return {
+        ...state,
+        name: action.payload,
+        typeId: null,
+        brandId: null,
       };
     default:
       return state;
@@ -469,5 +489,10 @@ export const setAlertMessage = (
   data: string | null
 ): setAlertMessageActionType => ({
   type: SET_ALERT_MESSAGE,
+  payload: data,
+});
+// запись имени товара(для поиска) в стейт
+export const setName = (data: string | null): setNameActionType => ({
+  type: SET_NAME,
   payload: data,
 });

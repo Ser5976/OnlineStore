@@ -12,7 +12,7 @@ const app = express();
 
 const PORT = config.get('port') || 8000;
 
-mongoose.Promise = global.Promise;
+//mongoose.Promise = global.Promise;
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());

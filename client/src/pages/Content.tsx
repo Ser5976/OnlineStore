@@ -39,6 +39,7 @@ import { connect } from 'react-redux';
 type MapStateToPropsType = {
   devices: DeviceType[];
   types: TypeDeviceType[];
+  name: string | null;
   brands: BrandType[];
   pageQty: number;
   limit: number;
@@ -55,6 +56,7 @@ type MapDispathPropsType = {
     brandId: string | null,
     limit: number,
     page: number,
+    name: string | null,
     setPage: React.Dispatch<React.SetStateAction<number>>,
     history: any
   ) => void;
@@ -85,7 +87,7 @@ const Content: React.FC<PropsType> = ({
   getDevices,
   setTypeId,
   setBrandId,
-
+  name,
   devices,
   types,
   brands,
@@ -124,9 +126,9 @@ const Content: React.FC<PropsType> = ({
   // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
   useEffect(() => {
     // console.log('рендеринг');
-    getDevices(null, null, limit, page, setPage, history);
+    getDevices(null, null, limit, page, name, setPage, history);
     // eslint-disable-next-line
-  }, [page]);
+  }, [page, name]);
   // запрос на сервак для получения типов устройств
   useEffect(() => {
     getTypes();
@@ -252,6 +254,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     devices: state.devices.devices, //устройства
     types: state.devices.types, //типы устройств
     brands: state.devices.brands, //брэнды устройств
+    name: state.devices.name, // имя для поиска
     pageQty: state.devices.pageQty, //количества страниц
     limit: state.devices.limit, //сколько устройств на странице
     typeId: state.devices.typeId, // айдишник типа

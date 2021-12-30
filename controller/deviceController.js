@@ -53,7 +53,7 @@ class deviceController {
   async getAll(req, res) {
     try {
       let { typeId, brandId, limit, page, name } = req.query;
-      console.log(req.query);
+      //console.log(req.query);
       //пагинация
       limit = parseInt(limit, 10) || 5;
       page = parseInt(page, 10) || 1;
@@ -63,10 +63,17 @@ class deviceController {
       let count; // число устройств
       let pageQty; // количества страниц
 
-      //поиск по слову(предпологалось неполное слова,но не работает)для полного(слова) поиска device = await Device.find({ $text: { $search: name } })
+      //поиск по слову(предпологалось неполное слова,но  работает  по полному device = await Device.fuzzySearch(name)
       if (!typeId && !brandId && name) {
-        device = await Device.fuzzySearch(name).skip(offset).limit(limit);
-        count = await Device.fuzzySearch(name).count();
+        // console.log(name);
+        device = await Device.find(
+          { $text: { $search: name } },
+          { score: { $meta: 'textScore' } }
+        )
+          .sort({ score: { $meta: 'textScore' } })
+          .skip(offset)
+          .limit(limit);
+        count = await Device.find({ $text: { $search: name } }).count();
         pageQty = Math.ceil(count / limit);
       }
       //------------------------------------------------

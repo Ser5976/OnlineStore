@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
 import Badge from '@material-ui/core/Badge';
-import Button from '@material-ui/core/Button';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import Divider from '@material-ui/core/Divider';
-import Logout from './Logout';
-import MenuBar from './MenuBar';
 import {
   setAuth, //записть авторизации в стор
   setIsAuth, // маркер авторизации
@@ -23,15 +19,20 @@ import {
 import {
   TypeDeviceType, //типизация типа
   setTypeIdActionType, //типизация экшена
-  setBrandIdActionType, //экшена
-  setBrandId, //запись в стейт выбранного типа
-  setTypeId, //запись в стейт выбранного ,h'ylf
+  setBrandIdActionType, //типтзация экшена
+  setNameActionType, // типизация экшен
+  setBrandId, //запись в стейт выбранного брэнда
+  setTypeId, //запись в стейт выбранного типа
+  setName, //запись имени товара(для поиска)
 } from '../store/reducer/deviceReducer';
 import { getBrands, getTypes } from '../action/deviceAction'; //запрос на получениe типов устройств
 import { RootStateType } from '../store/store'; //типизация всего стейта
 import { useHistory } from 'react-router-dom';
 import Logo7 from '../img/logo7.png';
 import MenuAdmin from './MenuAdmin';
+import Logout from './Logout';
+import MenuBar from './MenuBar';
+import SearchInput from './SearchInput';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -46,6 +47,7 @@ type MapDispathPropsType = {
   setIsAuth: (value: boolean) => SetIsAuthActionType;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
+  setName: (data: string | null) => setNameActionType;
   setLogout: () => SetLogoutActionType;
   getTypes: () => void;
   getBrands: () => void;
@@ -53,21 +55,23 @@ type MapDispathPropsType = {
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 //-----------------------------------------
 
-const useStyles = makeStyles((theme: Theme) => ({
-  title: {
-    flexGrow: 1,
-    backgroundImage: "url('/images/logo3.png')",
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'left',
-  },
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    /*  title: {
+      display: 'none',
+      [theme.breakpoints.up('sm')]: {
+        display: 'block',
+      }, 
+    },*/
 
-  toolBar: {
-    display: 'block',
-    '@media (min-width:600px)': {
-      display: 'flex',
+    toolBar: {
+      display: 'block',
+      '@media (min-width:600px)': {
+        display: 'flex',
+      },
     },
-  },
-}));
+  })
+);
 
 const Header: React.FC<PropsType> = ({
   auth,
@@ -81,6 +85,7 @@ const Header: React.FC<PropsType> = ({
   getBrands,
   setBrandId,
   setTypeId,
+  setName,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -110,13 +115,13 @@ const Header: React.FC<PropsType> = ({
         elevation={0}
       >
         <Toolbar className={classes.toolBar}>
-          <div style={{ flexGrow: 1 }}>
+          <div style={{ marginRight: '300px' }}>
             <img src={Logo7} style={{ height: '100px', width: 'auto' }} />
           </div>
-
-          {/* <Box py={{ xs: 12, sm: 7 }} className={classes.title}></Box> */}
-
-          {isAuth && auth.role === 'ADMIN' && <MenuAdmin />}
+          <SearchInput setName={setName} />
+          {isAuth && auth.role === 'ADMIN' && (
+            <MenuAdmin setTypeId={setTypeId} setBrandId={setBrandId} />
+          )}
           {isAuth ? (
             <>
               <IconButton color="inherit">
@@ -169,4 +174,5 @@ export default connect<
   getBrands,
   setBrandId,
   setTypeId,
+  setName,
 })(Header);

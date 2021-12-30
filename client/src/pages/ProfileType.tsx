@@ -40,6 +40,7 @@ type MapStateToPropsType = {
   selectedType: TypeDeviceType;
   pageQty: number;
   limit: number;
+  name: string | null;
   typeId: string | null;
   brandId: string | null;
   isLoadinDevice: boolean;
@@ -53,6 +54,7 @@ type MapDispathPropsType = {
     brandId: string | null,
     limit: number,
     page: number,
+    name: string | null,
     setPage: React.Dispatch<React.SetStateAction<number>>,
     history: any
   ) => void;
@@ -110,6 +112,7 @@ const ProfileType: React.FC<PropsType> = ({
   devices,
   selectedType,
   pageQty,
+  name,
   limit,
   typeId,
   brandId,
@@ -152,10 +155,10 @@ const ProfileType: React.FC<PropsType> = ({
   // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
   useEffect(() => {
     // setPage(searchPage); //костыль,чтобы синхронизировать пагинацию и строку запроса
-    getDevices(typeId, brandId, limit, page, setPage, history);
+    getDevices(typeId, brandId, limit, page, name, setPage, history);
 
     // eslint-disable-next-line
-  }, [typeId, brandId, page]);
+  }, [typeId, brandId, page, name]);
 
   //удаление выбранного брэнда
   const removeBrand = () => {
@@ -302,6 +305,7 @@ const ProfileType: React.FC<PropsType> = ({
 const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
   return {
     devices: state.devices.devices, //устройства
+    name: state.devices.name, // имя для поиска
     selectedType: state.devices.selectedType, //выбранный тип устройства
     pageQty: state.devices.pageQty, //количества страниц
     limit: state.devices.limit, //сколько устройств на странице

@@ -38,6 +38,7 @@ export const getDevices = (
   brandId: string | null,
   limit: number,
   page: number,
+  name: string | null,
   setPage: React.Dispatch<React.SetStateAction<number>>,
   history: any
 ): ThunkType => {
@@ -50,6 +51,7 @@ export const getDevices = (
           brandId,
           limit,
           page,
+          name,
         },
       });
       // console.log(response);
