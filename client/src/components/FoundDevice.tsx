@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Button,
   Typography,
   Divider,
   createStyles,
@@ -14,7 +13,6 @@ import { useHistory } from 'react-router-dom';
 
 type PropsType = {
   item: DeviceType; //типизация  выбранного устройства
-  removeDevice: (id: string | undefined) => void; // типизация удаление устройства
 };
 //---------------------------------
 
@@ -42,7 +40,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const DeleteDevice: React.FC<PropsType> = ({ item, removeDevice }) => {
+const FoundDevice: React.FC<PropsType> = ({ item }) => {
   const { name, picture, price } = item;
   const classes = useStyles();
   const history = useHistory();
@@ -71,25 +69,10 @@ const DeleteDevice: React.FC<PropsType> = ({ item, removeDevice }) => {
           </Typography>
         </div>
       </div>
-      <div className={classes.button}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            if (
-              window.confirm(`Вы действительно хотите удалить ${item.name}`)
-            ) {
-              removeDevice(item._id);
-            }
-          }}
-        >
-          Удалить
-        </Button>
-      </div>
 
       <Divider />
     </div>
   );
 };
 
-export default DeleteDevice;
+export default FoundDevice;

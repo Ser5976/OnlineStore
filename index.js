@@ -10,7 +10,7 @@ import typeRouter from './router/typeRouter.js';
 
 const app = express();
 
-const PORT = config.get('port') || 8000;
+const PORT = process.env.PORT || config.get('port');
 
 //mongoose.Promise = global.Promise;
 

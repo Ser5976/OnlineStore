@@ -56,7 +56,13 @@ const BrandListDelete: React.FC<PropsType> = ({ brands, removeBrand }) => {
                   button
                   className={classes.listType}
                   onClick={() => {
-                    removeBrand(item._id);
+                    if (
+                      window.confirm(
+                        `Вы действительно хотите удалить брэнд ${item.name} ?`
+                      )
+                    ) {
+                      removeBrand(item._id);
+                    }
                   }}
                 >
                   <ListItemText

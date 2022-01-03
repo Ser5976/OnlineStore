@@ -60,7 +60,13 @@ const TypeListDelete: React.FC<PropsType> = ({ types, removeType }) => {
                   button
                   className={classes.listType}
                   onClick={() => {
-                    removeType(item._id);
+                    if (
+                      window.confirm(
+                        `Вы действительно хотите удалить тип ${item.name}?`
+                      )
+                    ) {
+                      removeType(item._id);
+                    }
                   }}
                 >
                   <ListItemText

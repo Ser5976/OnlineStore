@@ -9,6 +9,7 @@ import ProfileDevice from '../pages/ProfileDevice';
 import ProfileType from '../pages/ProfileType';
 import Footer from '../components/Footer';
 import DeleteContainer from '../pages/DeleteContainer';
+import SearchPage from '../pages/SearchPage';
 
 const MyRouter: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const MyRouter: React.FC = () => {
       <Switch>
         <Route component={Content} path="/" exact />
         <Route component={DeleteContainer} path="/deleteContainer" exact />
+        <Route component={SearchPage} path="/searchPage" exact />
         <Route component={AuthContainer} path="/login" exact />
         <Route component={AuthContainer} path="/registration" exact />
         <Route

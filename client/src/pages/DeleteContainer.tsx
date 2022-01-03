@@ -119,8 +119,8 @@ const DeleteContainer: React.FC<PropsType> = ({
 }) => {
   const classes = useStyles();
   const history = useHistory(); //для изменения строки запроса
-  //console.log('история', history);
   const location = useLocation(); // для получения строки запроса
+  // console.log('история:', history.location);
   const searchPage = parseInt(location.search?.split('=')[1] || '1'); // получаем номер страницы из строки запроса
   // console.log(searchPage);
   // пагинация, данные о текущей странице( по умолчанию: 1 или, если есть ,информация о текущей странице в адресной строке )
@@ -211,7 +211,7 @@ const DeleteContainer: React.FC<PropsType> = ({
           <Grid item xs={12} sm={8}>
             <Typography variant="h6" style={{ marginTop: '50px' }}>
               {' '}
-              {category}
+              {name ? 'результаты поиска' : category}
             </Typography>
             <Divider />
             {isFetchErrorDevice ? (

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   alpha,
   createStyles,
@@ -13,6 +14,10 @@ import { setNameActionType } from '../store/reducer/deviceReducer';
 type PropsType = {
   setName: (data: string) => setNameActionType;
 };
+// типизация location.state
+interface stateType {
+  from: string;
+}
 //-------------------------------------------
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -68,6 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const SearchInput: React.FC<PropsType> = ({ setName }) => {
+  const history = useHistory();
   const classes = useStyles();
   const [value, setValue] = useState('');
   // извлекаем значение импута
@@ -79,7 +85,19 @@ const SearchInput: React.FC<PropsType> = ({ setName }) => {
     if (e.key === 'Enter' && value !== '') {
       setName(value);
       setValue('');
-      console.log('Энтер:', value);
+      //запись данных в sessionStorage(если произойдёт перезагрузка на странице SearchPage)
+      sessionStorage.setItem('name', value);
+      // console.log('Энтер:', value);
+
+      // console.log(history.location.pathname);
+
+      history.push(
+        //что бы результаты поиска отображались на странице Удалить товар, еcли находишься на этой странице
+        history.location.pathname &&
+          history.location.pathname === '/deleteContainer'
+          ? '/deleteContainer'
+          : '/searchPage'
+      );
     }
   };
 
@@ -98,7 +116,6 @@ const SearchInput: React.FC<PropsType> = ({ setName }) => {
           }}
           onChange={handleInput}
           onKeyPress={pressEnter} //событие на нажатия клавиатуры
-          // inputProps={{ 'aria-label': 'search' }}
         />
       </div>
     </div>

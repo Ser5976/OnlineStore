@@ -127,7 +127,11 @@ const Header: React.FC<PropsType> = ({
               <IconButton color="inherit">
                 <Badge badgeContent={3} color="secondary">
                   <ShoppingCartOutlinedIcon
-                    style={{ fontSize: '35px', color: 'black' }}
+                    style={{
+                      fontSize: '35px',
+                      color: 'black',
+                      fontWeight: 'lighter',
+                    }}
                   />
                 </Badge>
               </IconButton>

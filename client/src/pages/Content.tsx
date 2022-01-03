@@ -126,7 +126,7 @@ const Content: React.FC<PropsType> = ({
   // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
   useEffect(() => {
     // console.log('рендеринг');
-    getDevices(null, null, limit, page, name, setPage, history);
+    getDevices(null, null, limit, page, null, setPage, history);
     // eslint-disable-next-line
   }, [page, name]);
   // запрос на сервак для получения типов устройств

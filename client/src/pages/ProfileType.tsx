@@ -176,7 +176,8 @@ const ProfileType: React.FC<PropsType> = ({
       </Container>
       <Container maxWidth="lg">
         <Typography
-          variant="h3"
+          component="h1"
+          variant="h5"
           align="center"
           className={classes.textTitle}
           onClick={removeBrand}
@@ -185,7 +186,7 @@ const ProfileType: React.FC<PropsType> = ({
         </Typography>
         <Grid container spacing={7}>
           <Grid item xs={12} sm={3}>
-            <Typography variant="h5">Производители</Typography>
+            <Typography variant="h6">Производители</Typography>
 
             {isFetchErrorSelectedType ? (
               <Typography
