@@ -47,6 +47,7 @@ export type DeviceType = {
   _id?: string;
   name: string;
   price: number | null;
+  description?: string;
   picture: string[] | any[];
   info: any;
   typeId: string;
@@ -61,6 +62,7 @@ export type BrandType = {
 export type addedDeviceType = {
   name: string;
   price: string;
+  description: string;
   picture: any[];
   info: InfoType[];
   typeId: string;
@@ -236,6 +238,7 @@ const initialState: InitialStateType = {
   addedDevice: {
     name: '',
     price: '',
+    description: '',
     picture: [],
     info: [],
     typeId: '',

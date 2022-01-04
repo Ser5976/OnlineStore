@@ -146,6 +146,7 @@ export const addDevice = (data: any, history: any): ThunkType => {
   const copyAddedDevice: addedDeviceType = {
     name: '',
     price: '',
+    description: '',
     picture: [],
     info: [],
     typeId: '',

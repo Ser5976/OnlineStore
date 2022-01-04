@@ -6,7 +6,7 @@ const Device = new Schema({
   name: { type: String, required: true, index: 'text' },
   price: { type: Number, required: true },
   picture: [{ type: String, required: true }],
-
+  description: { type: String, required: true },
   info: [{}],
   typeId: { type: String },
   brandId: { type: String },

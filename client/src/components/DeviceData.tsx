@@ -23,6 +23,7 @@ const schema = yup.object().shape({
   brandId: yup.string().required('Пожалуйста, выберите брэнд'),
   name: yup.string().required('Поле обязательное для заполнения'),
   price: yup.string().required('Поле обязательное для заполнения'),
+  description: yup.string().required('Поле обязательное для заполнения'),
 });
 //-----------------------------------------
 // типизация пропсов
@@ -78,6 +79,7 @@ const DeviceData: React.FC<PropsType> = ({
       ...addedDevice,
       name: data.name,
       price: data.price,
+      description: data.description,
       typeId: data.typeId,
       brandId: data.brandId,
     };
@@ -196,6 +198,26 @@ const DeviceData: React.FC<PropsType> = ({
               label="Введите стоимость устройства"
               error={!!errors.price}
               helperText={errors.price ? errors.price?.message : null}
+            />
+          )}
+        />
+        <Controller
+          name="description"
+          control={control}
+          defaultValue={addedDevice.price}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              //variant="outlined"
+              margin="normal"
+              required
+              multiline
+              fullWidth
+              label="Введите описание устройства"
+              error={!!errors.description}
+              helperText={
+                errors.description ? errors.description?.message : null
+              }
             />
           )}
         />

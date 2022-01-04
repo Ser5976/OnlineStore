@@ -33,7 +33,7 @@ const useStyles = makeStyles(() =>
 );
 
 const FoundDevice: React.FC<PropsType> = ({ item }) => {
-  const { name, picture, price } = item;
+  const { name, picture, price, description } = item;
   const classes = useStyles();
   const history = useHistory();
 
@@ -66,9 +66,7 @@ const FoundDevice: React.FC<PropsType> = ({ item }) => {
               color="textSecondary"
               style={{ wordWrap: 'break-word' }}
             >
-              2 SIM, Android, экран 6.4 ", Super AMOLED, 1440x2960, Exynos 9810,
-              оперативная память 6 Гб, встроенная память 128 Гб, камера 12 Мп,
-              аккумулятор 4000 мАч, цвет синий.
+              {description && description}
             </Typography>
             <Box display="flex" marginTop={2}>
               <Typography

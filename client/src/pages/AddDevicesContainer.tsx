@@ -187,10 +187,12 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   };
   //отправка добаленного устройства  на сервак,используем FormData из за файлов,history чтобы вернуться на главную
   const appendDevice = () => {
-    const { picture, price, name, typeId, brandId, info } = addedDevice;
+    const { picture, price, description, name, typeId, brandId, info } =
+      addedDevice;
     const formData: any = new FormData();
     formData.append('price', price);
     formData.append('name', name);
+    formData.append('description', description);
     formData.append('typeId', typeId);
     formData.append('brandId', brandId);
     formData.append('info', JSON.stringify(info));
