@@ -24,7 +24,7 @@ const ActiveLastBreadcrumb: React.FC<PropsType> = ({ name }) => {
   // console.log(name);
   return (
     <Breadcrumbs aria-label="breadcrumb">
-      <Link color="inherit" href="/" onClick={handleClick}>
+      <Link color="primary" href="/" onClick={handleClick}>
         Главная
       </Link>
       <Typography color="textPrimary">{name}</Typography>

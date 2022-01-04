@@ -26,7 +26,6 @@ import {
   setBrandIdActionType,
   DeviceType,
   TypeDeviceType,
-  BrandType, //типизация данных
 } from '../store/reducer/deviceReducer';
 import {
   getDevices, //запрос на получение устройств
