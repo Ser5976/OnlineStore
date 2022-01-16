@@ -10,11 +10,13 @@ import ProfileType from '../pages/ProfileType';
 import Footer from '../components/Footer';
 import DeleteContainer from '../pages/DeleteContainer';
 import SearchPage from '../pages/SearchPage';
+import Cart from '../pages/Cart';
 
 const MyRouter: React.FC = () => {
   return (
-    <Grid container direction="column">
+    <div className="wrapper">
       <Header />
+
       <Switch>
         <Route component={Content} path="/" exact />
         <Route component={DeleteContainer} path="/deleteContainer" exact />
@@ -28,9 +30,11 @@ const MyRouter: React.FC = () => {
         />
         <Route component={ProfileDevice} path="/profileDevice/:id" />
         <Route component={ProfileType} path="/profileType/:id" />
+        <Route component={Cart} path="/cart" />
       </Switch>
+
       <Footer />
-    </Grid>
+    </div>
   );
 };
 

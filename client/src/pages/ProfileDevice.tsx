@@ -171,7 +171,6 @@ const ProfileDevice: React.FC<PropsType> = ({
           </Grid>
         </>
       )}
-      <hr />
     </Container>
   );
 };

@@ -16,7 +16,7 @@ import { DeviceType } from '../store/reducer/deviceReducer'; //типизаци�
 import {
   getDevices, //запрос на получение устройств
 } from '../action/deviceAction';
-import FoundDevice from '../components/FoundDevice';
+import Device from '../components/Device';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import { connect } from 'react-redux';
 
@@ -147,7 +147,7 @@ const DeleteContainer: React.FC<PropsType> = ({
             <Box style={{ display: 'flex', flexDirection: 'column' }}>
               {devices &&
                 devices.map((item) => {
-                  return <FoundDevice item={item} key={Math.random()} />;
+                  return <Device item={item} key={Math.random()} />;
                 })}
             </Box>
           </>

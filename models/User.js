@@ -4,7 +4,15 @@ const { Schema, model } = mongoose;
 const User = new Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-  basket: [{ name: String, price: Number, picture: String, id: String }],
+  basket: [
+    {
+      name: String,
+      price: Number,
+      picture: String,
+      id: String,
+      quantity: Number,
+    },
+  ],
   role: { type: String, default: 'USER' },
 });
 

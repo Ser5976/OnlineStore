@@ -34,7 +34,6 @@ import Logout from './Logout';
 import MenuBar from './MenuBar';
 import SearchInput from './SearchInput';
 import { connect } from 'react-redux';
-
 //типизация--------------------------------
 type MapStateToPropsType = {
   isAuth: boolean;
@@ -124,7 +123,7 @@ const Header: React.FC<PropsType> = ({
           )}
           {isAuth ? (
             <>
-              <IconButton color="inherit">
+              <IconButton color="inherit" onClick={() => history.push('/cart')}>
                 <Badge badgeContent={3} color="secondary">
                   <ShoppingCartOutlinedIcon
                     style={{

@@ -1,58 +1,104 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  Typography,
+  Divider,
+  createStyles,
+  makeStyles,
+  Grid,
+  Box,
+} from '@material-ui/core';
 import { DeviceType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
 import { useHistory } from 'react-router-dom';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import IconButton from '@material-ui/core/IconButton';
-import { DeleteOutline } from '@material-ui/icons';
+
 //типизация----------------------
 
 type PropsType = {
-  item: DeviceType;
+  item: DeviceType; //типизация  выбранного устройства
 };
 //---------------------------------
 
-const useStyles = makeStyles({
-  root: {
-    maxWidth: 'auto',
-    '&:hover': {
-      boxShadow: '0 3px 10px rgb(0 0 0/0.2)',
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      padding: '15px 0px 0px 15px',
     },
-  },
 
-  media: {
-    height: 150,
-
-    padding: 15,
-    cursor: 'pointer',
-  },
-});
+    media: {
+      height: 100,
+      cursor: 'pointer',
+      paddingTop: 50,
+    },
+    lower_typography: {
+      cursor: 'pointer',
+      marginRight: '50px',
+      color: '#0047ae',
+      '&:hover': {
+        color: '#29b6f6',
+      },
+    },
+  })
+);
 
 const Device: React.FC<PropsType> = ({ item }) => {
-  const { name, picture, price } = item;
+  const { name, picture, price, description } = item;
   const classes = useStyles();
   const history = useHistory();
 
   return (
-    <Card elevation={0} className={classes.root}>
-      <CardMedia
-        children={
+    <div>
+      <Grid container spacing={2} className={classes.root}>
+        <Grid
+          item
+          md={3}
+          className={classes.media}
+          onClick={() => {
+            history.push(`/profileDevice/${item._id}`);
+          }}
+        >
           <img
             src={`${ROOT_URL}/${picture[0]}`}
-            style={{ height: '150px', width: 'auto' }}
+            style={{ height: '100px', width: 'auto' }}
           />
-        }
-        className={classes.media}
-        title={name}
-        onClick={() => {
-          history.push(`/profileDevice/${item._id}`);
-        }}
-      />
-      <CardHeader title={`${price} p`} subheader={name} />
-    </Card>
+        </Grid>
+        <Grid item md={8}>
+          <Box>
+            <Typography component="h5" variant="h5" color="initial">
+              {name}
+            </Typography>
+            <Typography variant="subtitle1" color="inherit">
+              {price} p
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              color="textSecondary"
+              style={{ wordWrap: 'break-word' }}
+            >
+              {description}
+            </Typography>
+            <Box display="flex" marginTop={2}>
+              <Typography
+                variant="subtitle2"
+                className={classes.lower_typography}
+                onClick={() => {
+                  history.push(`/profileDevice/${item._id}`);
+                }}
+              >
+                Описание
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                className={classes.lower_typography}
+              >
+                Добавить в карзину
+              </Typography>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+
+      <Divider />
+    </div>
   );
 };
 

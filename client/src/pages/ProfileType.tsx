@@ -12,12 +12,9 @@ import { Link } from 'react-router-dom';
 import Pagination from '@material-ui/lab/Pagination';
 import PaginationItem from '@material-ui/lab/PaginationItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { ROOT_URL } from '../constants/url';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
+import Device from '../components/Device';
 import { RootStateType } from '../store/store'; //типизиция всего стора
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 
 import {
   setTypeId, //запись выбранного типа устройства
@@ -70,7 +67,7 @@ type ParamsType = {
 const useStyles = makeStyles((theme) =>
   createStyles({
     breadcrumb: {
-      marginTop: 15,
+      margin: 15,
     },
     pagination: {
       '& > *': {
@@ -83,7 +80,7 @@ const useStyles = makeStyles((theme) =>
     },
 
     textTitle: {
-      margin: '25px',
+      marginTop: '50px',
       cursor: 'pointer',
     },
 
@@ -93,12 +90,6 @@ const useStyles = makeStyles((theme) =>
         boxShadow: '0 3px 10px rgb(0 0 0/0.2)',
       },
       cursor: 'pointer',
-    },
-
-    media: {
-      height: 150,
-
-      padding: 15,
     },
   })
 );
@@ -168,25 +159,17 @@ const ProfileType: React.FC<PropsType> = ({
 
   return (
     <>
-      <Container maxWidth="lg">
-        <Box className={classes.breadcrumb}>
-          <ActiveLastBreadcrumb name={selectedType.name} />
-        </Box>
-      </Container>
-      <Container maxWidth="lg">
-        <Typography
-          component="h1"
-          variant="h5"
-          align="center"
-          className={classes.textTitle}
-          onClick={removeBrand}
-        >
-          {selectedType.name}
-        </Typography>
-        <Grid container spacing={7}>
-          <Grid item xs={12} sm={3}>
-            <Typography variant="h6">Производители</Typography>
+      <Box className={classes.breadcrumb}>
+        <ActiveLastBreadcrumb name={selectedType.name} />
+      </Box>
 
+      <Container maxWidth="lg">
+        <Grid container spacing={10}>
+          <Grid item xs={12} sm={3}>
+            <Typography style={{ marginTop: '115px', fontWeight: 'bold' }}>
+              {' '}
+              Производители
+            </Typography>
             {isFetchErrorSelectedType ? (
               <Typography
                 align="center"
@@ -225,7 +208,15 @@ const ProfileType: React.FC<PropsType> = ({
             )}
           </Grid>
 
-          <Grid item container xs={12} spacing={2} sm={9}>
+          <Grid item xs={12} sm={9}>
+            <Typography
+              variant="h6"
+              className={classes.textTitle}
+              onClick={removeBrand}
+            >
+              {selectedType.name}
+            </Typography>
+            <Divider />
             {isFetchErrorDevice ? (
               <Typography
                 align="center"
@@ -248,34 +239,12 @@ const ProfileType: React.FC<PropsType> = ({
                 Пока товаров нет!
               </Typography>
             ) : (
-              <>
+              <Box style={{ display: 'flex', flexDirection: 'column' }}>
                 {devices &&
                   devices.map((item) => {
-                    return (
-                      <Grid item xs={12} sm={4} key={item._id}>
-                        <Card elevation={0} className={classes.root}>
-                          <CardMedia
-                            children={
-                              <img
-                                src={`${ROOT_URL}/${item.picture[0]}`}
-                                style={{ height: '150px', width: 'auto' }}
-                              />
-                            }
-                            className={classes.media}
-                            title={item.name}
-                            onClick={() => {
-                              history.push(`/profileDevice/${item._id}`);
-                            }}
-                          />
-                          <CardHeader
-                            title={`${item.price} p`}
-                            subheader={item.name}
-                          />
-                        </Card>
-                      </Grid>
-                    );
+                    return <Device item={item} key={Math.random()} />;
                   })}
-              </>
+              </Box>
             )}
           </Grid>
         </Grid>

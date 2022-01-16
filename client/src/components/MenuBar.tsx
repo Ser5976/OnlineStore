@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Box from '@material-ui/core/Box';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -28,7 +29,13 @@ const useStyles = makeStyles(() => ({
   menu: {
     marginTop: '25px',
   },
-
+  typography: {
+    color: '#fff',
+    '&:hover': {
+      color: '#9e9e9e',
+    },
+    cursor: 'pointer',
+  },
   span: {
     // display: 'block',
     '@media (max-width:600px)': {
@@ -63,49 +70,66 @@ const MenuBar: React.FC<PropsType> = ({
   };
   return (
     <>
-      <Container maxWidth="md">
-        <List component="nav" style={{ display: 'flex', margin: '0 auto' }}>
-          <ListItem
-            button
-            aria-controls="simple-menu"
-            aria-haspopup="true"
-            onClick={handleOpenMenu}
-          >
-            <ListItemText
-              disableTypography
-              primary={
-                <Typography align="center">
-                  <MenuIcon
+      <Box display="flex" bgcolor="#0047ae" marginBottom={3}>
+        <Container maxWidth="md">
+          <List component="nav" style={{ display: 'flex', margin: '0 auto' }}>
+            <ListItem
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleOpenMenu}
+            >
+              <ListItemText
+                disableTypography
+                primary={
+                  <Typography
+                    align="center"
                     style={{
-                      display: 'initial-flex',
-                      verticalAlign: 'middle',
-                      marginRight: '10px',
+                      display: 'flex',
                     }}
-                  />
-                  <span className={classes.span}>Каталог</span>
-                </Typography>
-              }
-            />
-          </ListItem>
+                    className={classes.typography}
+                  >
+                    <MenuIcon
+                      style={{
+                        marginRight: '10px',
+                      }}
+                    />
+                    <span className={classes.span}>Каталог</span>
+                  </Typography>
+                }
+              />
+            </ListItem>
 
-          <ListItem button>
-            <ListItemText
-              primary={<Typography align="center">Оплата</Typography>}
-            />
-          </ListItem>
-          <ListItem button>
-            <ListItemText
-              primary={<Typography align="center">Доставка</Typography>}
-            />
-          </ListItem>
-          <ListItem button>
-            <ListItemText
-              primary={<Typography align="center">Контакты</Typography>}
-            />
-          </ListItem>
-        </List>
-      </Container>
-      <Divider />
+            <ListItem>
+              <ListItemText
+                primary={
+                  <Typography align="center" className={classes.typography}>
+                    Оплата
+                  </Typography>
+                }
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary={
+                  <Typography align="center" className={classes.typography}>
+                    Доставка
+                  </Typography>
+                }
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary={
+                  <Typography align="center" className={classes.typography}>
+                    Контакты
+                  </Typography>
+                }
+              />
+            </ListItem>
+          </List>
+        </Container>
+      </Box>
+
       <Menu
         variant="menu"
         elevation={2}

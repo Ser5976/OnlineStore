@@ -2,10 +2,6 @@ import React from 'react';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-import {
-  setTypeIdActionType,
-  setBrandIdActionType,
-} from '../store/reducer/deviceReducer'; // типизация экшенов
 import { useHistory } from 'react-router-dom';
 
 //типизация----------------------
@@ -20,11 +16,12 @@ const ActiveLastBreadcrumb: React.FC<PropsType> = ({ name }) => {
   function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     event.preventDefault();
     history.push('/');
+    console.log(name);
   }
-  // console.log(name);
+
   return (
     <Breadcrumbs aria-label="breadcrumb">
-      <Link color="primary" href="/" onClick={handleClick}>
+      <Link style={{ color: '#0047ae' }} href="/" onClick={handleClick}>
         Главная
       </Link>
       <Typography color="textPrimary">{name}</Typography>

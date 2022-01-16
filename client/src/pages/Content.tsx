@@ -10,8 +10,7 @@ import PaginationItem from '@material-ui/lab/PaginationItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TypeBar from '../components/TypeBar';
 import ImageContainer from '../components/ImageContainer';
-import DeviceContainer from '../components/DeviceContainer';
-import FoundDevice from '../components/FoundDevice';
+import Device from '../components/Device';
 import { RootStateType } from '../store/store'; //типизиция всего стора
 import {
   setTypeId, //запись выбранного типа устройства
@@ -223,11 +222,10 @@ const Content: React.FC<PropsType> = ({
               </Typography>
             ) : (
               <>
-                {/* <DeviceContainer devices={devices} /> */}
                 <Box style={{ display: 'flex', flexDirection: 'column' }}>
                   {devices &&
                     devices.map((item) => {
-                      return <FoundDevice item={item} key={Math.random()} />;
+                      return <Device item={item} key={Math.random()} />;
                     })}
                 </Box>
               </>
