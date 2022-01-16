@@ -78,7 +78,7 @@ class authController {
     }
   }
 
-  //=====добавляем в корзину товар(req.user.id имеется благодаря authMiddleware)===
+  //===== добавляем в корзину товар(req.user.id имеется благодаря authMiddleware) ===
   async addBasket(req, res) {
     // console.log('передоваемый объект', req.body);
     try {
@@ -97,7 +97,6 @@ class authController {
       if (indexInOrder > -1) {
         // находим в массие корзины, через индекс, наш объект и изменяем его количество(quantity)
         quantity = basket[indexInOrder].quantity + 1;
-        console.log('изменение количества:', quantity);
         //ищем объект с нашим id  и записываем quantity
         newBasket = basket.map((item) => {
           if (item.id !== id) {
@@ -111,7 +110,6 @@ class authController {
             quantity,
           };
         });
-        console.log(newBasket);
       } else {
         newBasket = [
           ...basket,
@@ -141,13 +139,14 @@ class authController {
   }
   //===============================================================
 
-  //====== удаление товара из корзины============================
+  //====== удаление товара из корзины ============================
   async deleteProduct(req, res) {
     try {
       const { id } = req.params;
       if (!id) {
         res.status(400).json({ massage: 'Id не указан' });
       }
+      // поиск одинакового товара
       const deleteDevice = await User.findByIdAndUpdate(
         req.user.id,
         { $pull: { basket: { _id: id } } },
@@ -163,9 +162,21 @@ class authController {
   //=================================================================
   //============ получение корзины===================================
   async getBasket(req, res) {
+    console.log('работает получение карзины');
     try {
       const userCart = await User.findById(req.user.id, 'basket');
-      res.json(userCart);
+      //console.log(userCart);
+      const { basket } = userCart;
+      // подсчёт количества товаров и общая стоимомсть
+      const totalPrice = basket.reduce((acc, item) => {
+        return acc + item.price * item.quantity;
+      }, 0);
+      console.log(totalPrice);
+      const totalCount = basket.reduce((acc, item) => {
+        return acc + item.quantity;
+      }, 0);
+
+      res.json({ basket, totalCount, totalPrice });
     } catch (e) {
       res.status(500).json(e);
     }
