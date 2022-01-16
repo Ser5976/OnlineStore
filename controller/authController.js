@@ -139,17 +139,49 @@ class authController {
   }
   //===============================================================
 
-  //====== удаление товара из корзины ============================
+  //====== удаление товара из корзины =============================
   async deleteProduct(req, res) {
     try {
       const { id } = req.params;
       if (!id) {
         res.status(400).json({ massage: 'Id не указан' });
       }
-      // поиск одинакового товара
+
+      //получаем корзину пользователя
+      const userCart = await User.findOne({ _id: req.user.id });
+      const { basket } = userCart;
+
+      //получаем объект,который хотим удалить
+      const removeProduct = basket.find((item) => item.id === id);
+      // console.log('удаляемый объект', removeProduct);
+      // console.log('количество', removeProduct.quantity);
+      //делаем проверку,если  удаляемого товара больше 1,то уменьшаем количество на 1,если нет удаляем полностью товар
+      let newBasket = [];
+      let quantity = 1;
+
+      if (removeProduct.quantity > 1) {
+        quantity = removeProduct.quantity - 1;
+
+        newBasket = basket.map((item) => {
+          if (item.id !== id) {
+            return item;
+          }
+          return {
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            picture: item.picture,
+            quantity,
+          };
+        });
+      } else {
+        newBasket = null;
+      }
+
+      //-------------------------------------------------------------
       const deleteDevice = await User.findByIdAndUpdate(
         req.user.id,
-        { $pull: { basket: { _id: id } } },
+        newBasket ? { basket: newBasket } : { $pull: { basket: { id: id } } },
         {
           new: true,
         }
@@ -206,32 +238,7 @@ class authController {
 }
 export default new authController();
 
-/*
- newBasket= basket.map((item) => {
-              if (item.id !== id) return item;
-
-              return {
-                  id: item.id,
-                  name: item.name,
-                  price: item.price,
-                  quantity,
-              };
-          }),
-
-
-else {
-            setOrder([
-                    ...order,
-                    {
-                        id: goodsItem.id,
-                        name: goodsItem.name,
-                        price: goodsItem.price,
-                        quantity,
-                    },
-                ],
-            );
-        }
-    };
-
-
-*/
+/*{ basket: newBasket },
+        {
+          new: true,
+        } */
