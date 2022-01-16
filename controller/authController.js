@@ -13,7 +13,7 @@ const generateAccessToken = (id, role, email) => {
   };
   return jwt.sign(payload, config.get('secret'), { expiresIn: '24h' });
 };
-
+//=============регистрация====================================
 class authController {
   async registration(req, res) {
     try {
@@ -51,7 +51,7 @@ class authController {
       res.status(400).json({ message: 'Ошибка регистрации' });
     }
   }
-
+  //===========логин==========================================
   async login(req, res) {
     try {
       const { email, password } = req.body;
@@ -77,16 +77,59 @@ class authController {
       res.status(400).json({ message: 'Ошибка авторизации' });
     }
   }
-  //добавляем в корзину товар(req.user.id имеется благодаря authMiddleware)
+
+  //=====добавляем в корзину товар(req.user.id имеется благодаря authMiddleware)===
   async addBasket(req, res) {
+    // console.log('передоваемый объект', req.body);
     try {
+      const { id, name, price, picture } = req.body; //свойства добаленного товара
       const userCart = await User.findOne({ _id: req.user.id });
-      const { basket, _id } = userCart;
-      basket.push(req.body);
-      console.log(basket);
+      const { basket, _id } = userCart; //корзина пользователя,_id пользователя
+
+      //----создание массива товаров корзины----
+      let newBasket = [];
+      let quantity = 1; //количество одинаковых товаров(записываем в объект добавленного товара)
+      // проверка есть ли добавленный товар в карзине(findIndex возвращает  индекс объекта, если нет объекта в массиве возвращает-1)
+      const indexInOrder = basket.findIndex((item) => item.id === id);
+      // console.log('старая корзина:', basket);
+      // console.log('поиск товара:', indexInOrder);
+      // делаем проверку,если есть одинаковые товары изменяем их количество и создаём новый массив корзины
+      if (indexInOrder > -1) {
+        // находим в массие корзины, через индекс, наш объект и изменяем его количество(quantity)
+        quantity = basket[indexInOrder].quantity + 1;
+        console.log('изменение количества:', quantity);
+        //ищем объект с нашим id  и записываем quantity
+        newBasket = basket.map((item) => {
+          if (item.id !== id) {
+            return item;
+          }
+          return {
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            picture: item.picture,
+            quantity,
+          };
+        });
+        console.log(newBasket);
+      } else {
+        newBasket = [
+          ...basket,
+          {
+            id: id,
+            name: name,
+            price: price,
+            picture: picture,
+            quantity,
+          },
+        ];
+      }
+      //------------------------------------------
+
+      //добавляем изменённую корзину пользователю
       const cart = await User.findByIdAndUpdate(
         _id,
-        { basket: basket },
+        { basket: newBasket },
         {
           new: true,
         }
@@ -96,8 +139,9 @@ class authController {
       res.status(500).json(e);
     }
   }
+  //===============================================================
 
-  // удаление товара из корзины
+  //====== удаление товара из корзины============================
   async deleteProduct(req, res) {
     try {
       const { id } = req.params;
@@ -116,7 +160,8 @@ class authController {
       res.status(500).json(e);
     }
   }
-  // получение корзины
+  //=================================================================
+  //============ получение корзины===================================
   async getBasket(req, res) {
     try {
       const userCart = await User.findById(req.user.id, 'basket');
@@ -125,6 +170,8 @@ class authController {
       res.status(500).json(e);
     }
   }
+  //===================================================================
+
   // получение пользователей(checkRoleMiddleware('ADMIN'),разрешено только с ролью админ)
   async getUsers(req, res) {
     try {
@@ -147,3 +194,33 @@ class authController {
   }
 }
 export default new authController();
+
+/*
+ newBasket= basket.map((item) => {
+              if (item.id !== id) return item;
+
+              return {
+                  id: item.id,
+                  name: item.name,
+                  price: item.price,
+                  quantity,
+              };
+          }),
+
+
+else {
+            setOrder([
+                    ...order,
+                    {
+                        id: goodsItem.id,
+                        name: goodsItem.name,
+                        price: goodsItem.price,
+                        quantity,
+                    },
+                ],
+            );
+        }
+    };
+
+
+*/
