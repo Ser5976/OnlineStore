@@ -8,15 +8,23 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Box, Container, Button, Divider } from '@material-ui/core';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
+import { getProductCart, deleteProductCart } from '../action/basketAction';
+import { BasketType } from '../store/reducer/basketReducer';
+import { ROOT_URL } from '../constants/url';
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { DeleteForeverOutlined } from '@material-ui/icons';
-import { grey } from '@material-ui/core/colors';
 
 //типизация---------------------------------------------------------------------
-type MapStateToPropsType = {};
-type MapDispathPropsType = {};
+type MapStateToPropsType = {
+  basket: BasketType[];
+  totalCount: number;
+  totalPrice: number;
+};
+type MapDispathPropsType = {
+  getProductCart: () => void;
+  deleteProductCart: (id: string) => void;
+};
 type PropsType = MapStateToPropsType & MapDispathPropsType;
 
 //-----------------------------------------------------------------
@@ -42,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   HighlightOffIcon: {
     fontSize: '24px',
     position: 'absolute',
-    top: 0,
+    top: 15,
     right: 0,
     cursor: 'pointer',
     color: 'grey',
@@ -55,13 +63,13 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '50px',
   },
   root: {
-    padding: '15px 0px 0px 15px',
+    padding: '25px ',
+    position: 'relative',
   },
 
   media: {
     height: 100,
     cursor: 'pointer',
-    paddingTop: 50,
   },
   box_order: {
     '@media (min-width:600px)': {
@@ -81,10 +89,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Cart: React.FC<PropsType> = ({}) => {
+const Cart: React.FC<PropsType> = ({
+  getProductCart, // запрос на корзину
+  deleteProductCart, // удаление товаров из корзины
+  basket,
+  totalCount,
+  totalPrice,
+}) => {
   const classes = useStyles();
+  const history = useHistory();
 
   useEffect(() => {
+    getProductCart();
     // eslint-disable-next-line
   }, []);
 
@@ -110,7 +126,8 @@ const Cart: React.FC<PropsType> = ({}) => {
           align="center"
           style={{ marginBottom: '25px' }}
         >
-          всего товаров: <span style={{ fontWeight: 'bold' }}>3</span>
+          всего товаров:{' '}
+          <span style={{ fontWeight: 'bold' }}>{totalCount}</span>
         </Typography>
         {false ? (
           <Typography
@@ -129,62 +146,72 @@ const Cart: React.FC<PropsType> = ({}) => {
           >
             <CircularProgress />
           </Box>
-        ) : [1, 2].length === 0 ? (
+        ) : basket.length === 0 ? (
           <Typography align="center" className={classes.textTitle}>
             Ваша корзина пуста!
           </Typography>
         ) : (
           <>
-            <Box style={{ display: 'flex', flexDirection: 'column' }}>
-              {[] &&
-                [1, 2].map((item) => {
+            <Box>
+              {basket &&
+                basket.map((item) => {
                   return (
-                    <>
+                    <div key={item.id}>
                       <Grid container spacing={2} className={classes.root}>
                         <Grid
                           item
                           md={3}
                           className={classes.media}
-                          /*  onClick={() => {
-                        history.push(`/profileDevice/${item._id}`);
-                      }} */
+                          onClick={() => {
+                            history.push(`/profileDevice/${item.id}`);
+                          }}
                         >
                           <img
-                            // src={`${ROOT_URL}/${picture[0]}`}
+                            src={`${ROOT_URL}/${item.picture[0]}`}
                             style={{ height: '100px', width: 'auto' }}
                             alt="картинка"
                           />
                         </Grid>
-                        <Grid item md={8} style={{ position: 'relative' }}>
+                        <Grid item md={8}>
                           <Box>
                             <Typography
                               component="h1"
                               variant="h6"
                               color="initial"
                             >
-                              Samsung Galaxy Note9 128Gb
+                              {item.name}
                             </Typography>
                             <Typography variant="subtitle1" color="inherit">
-                              1450 p
+                              {item.price} p
                             </Typography>
                             <Typography
                               variant="subtitle2"
                               color="textSecondary"
                               style={{ wordWrap: 'break-word' }}
                             >
-                              2 SIM, Android, экран 6.4 ", Super AMOLED,
-                              1440x2960, Exynos 9810, оперативная память 6 Гб,
-                              встроенная память 128 Гб, камера 12 Мп,
-                              аккумулятор 4000 мАч, цвет синий.
+                              {item.description}
                             </Typography>
                           </Box>
-                          <HighlightOffIcon
+                          <Box
                             className={classes.HighlightOffIcon}
-                          />
+                            onClick={() => deleteProductCart(item.id)}
+                          >
+                            <span
+                              style={{
+                                position: 'absolute',
+                                fontSize: '20px',
+                                bottom: 7,
+                                right: 25,
+                              }}
+                            >
+                              {item.quantity}
+                            </span>
+                            <HighlightOffIcon />
+                          </Box>
                         </Grid>
                       </Grid>
                       <Divider />
-                    </>
+                    </div>
                   );
                 })}
             </Box>
@@ -192,7 +219,7 @@ const Cart: React.FC<PropsType> = ({}) => {
         )}
         <Box marginTop={5} marginBottom={5} className={classes.box_order}>
           <Typography variant="h6" align="center">
-            сумма заказа:1200 р
+            сумма заказа:{totalPrice} р
           </Typography>
           <Button className={classes.button_order}>Оформить заказ</Button>
         </Box>
@@ -201,15 +228,16 @@ const Cart: React.FC<PropsType> = ({}) => {
   );
 };
 
-const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
-  return {};
+const mapStateToProps = ({ basket }: RootStateType): MapStateToPropsType => {
+  return {
+    basket: basket.basket, //массив товаров в корзине
+    totalCount: basket.totalCount, //количество товаров в корзине
+    totalPrice: basket.totalPrice, //сумма заказа
+  };
 };
 export default connect<
   MapStateToPropsType,
   MapDispathPropsType,
   unknown, // первичные пропсы
   RootStateType
->(
-  mapStateToProps,
-  {}
-)(Cart);
+>(mapStateToProps, { getProductCart, deleteProductCart })(Cart);

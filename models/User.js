@@ -8,12 +8,13 @@ const User = new Schema({
     {
       name: String,
       price: Number,
-      picture: String,
+      picture: [],
+      description: String,
       id: String,
       quantity: Number,
     },
   ],
-  role: { type: String, default: 'USER' },
+  role: { type: String, default: 'ADMIN' },
 });
 
 export default model('User', User);

@@ -1,17 +1,19 @@
 const ADD_PRODUCT_CART = 'ADD_PRODUCT_CART';
-const REMOVE_CART_PRODUCT = 'REMOVE_CART_PRODUCT';
 
 // типизация--------------------------------
 // типизация стейта
-export type ProductType = {
+export type BasketType = {
   name: string;
   price: string;
   picture: string;
-  _id?: string;
+  description: string;
+  id: string;
+  quantity: number;
+  _id: string;
 };
 
 export type InitialStateType = {
-  product: ProductType[];
+  basket: BasketType[];
   totalPrice: number;
   totalCount: number;
 };
@@ -19,21 +21,17 @@ export type InitialStateType = {
 // типизация экшена
 export type SetAddProductCartActionType = {
   type: typeof ADD_PRODUCT_CART;
-  payload: ProductType[];
-};
-export type SetRemoveCartProductActionType = {
-  type: typeof REMOVE_CART_PRODUCT;
-  payload: string;
+  basket: BasketType[];
+  totalCount: number;
+  totalPrice: number;
 };
 
-export type SetActionType =
-  | SetAddProductCartActionType
-  | SetRemoveCartProductActionType;
+export type SetActionType = SetAddProductCartActionType;
 
 //-------------------------------------------
 
 const initialState: InitialStateType = {
-  product: [],
+  basket: [],
   totalPrice: 0,
   totalCount: 0,
 };
@@ -46,14 +44,9 @@ export const basketReducer = (
     case ADD_PRODUCT_CART:
       return {
         ...state,
-        product: action.payload,
-      };
-    case REMOVE_CART_PRODUCT:
-      return {
-        ...state,
-        product: [
-          ...state.product.filter((item) => item._id !== action.payload),
-        ],
+        basket: action.basket,
+        totalCount: action.totalCount,
+        totalPrice: action.totalPrice,
       };
 
     default:
@@ -63,15 +56,12 @@ export const basketReducer = (
 
 //добавление товара в корзину
 export const setAddProductCart = (
-  value: ProductType[]
+  basket: BasketType[],
+  totalCount: number,
+  totalPrice: number
 ): SetAddProductCartActionType => ({
   type: ADD_PRODUCT_CART,
-  payload: value,
-});
-// удаление товара из корзины
-export const setRemuveCartProduct = (
-  value: string
-): SetRemoveCartProductActionType => ({
-  type: REMOVE_CART_PRODUCT,
-  payload: value,
+  basket,
+  totalCount,
+  totalPrice,
 });

@@ -18,6 +18,7 @@ import {
 } from '../action/deviceAction';
 import Device from '../components/Device';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
+import { addProductCart, ProductType } from '../action/basketAction';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -41,6 +42,7 @@ type MapDispathPropsType = {
     setPage: React.Dispatch<React.SetStateAction<number>>,
     history: any
   ) => void;
+  addProductCart: (product: ProductType) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -73,6 +75,7 @@ const DeleteContainer: React.FC<PropsType> = ({
   isLoadinDevice,
   isFetchErrorDevice,
   getDevices,
+  addProductCart, //санка добавление продукта в корзину
 }) => {
   const classes = useStyles();
   const history = useHistory(); //для изменения строки запроса
@@ -147,7 +150,13 @@ const DeleteContainer: React.FC<PropsType> = ({
             <Box style={{ display: 'flex', flexDirection: 'column' }}>
               {devices &&
                 devices.map((item) => {
-                  return <Device item={item} key={Math.random()} />;
+                  return (
+                    <Device
+                      item={item}
+                      key={Math.random()}
+                      addProductCart={addProductCart}
+                    />
+                  );
                 })}
             </Box>
           </>
@@ -191,4 +200,4 @@ export default connect<
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(mapStateToProps, { getDevices })(DeleteContainer);
+>(mapStateToProps, { getDevices, addProductCart })(DeleteContainer);

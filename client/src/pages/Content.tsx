@@ -29,7 +29,7 @@ import {
   getDevices, //запрос на получение устройств
   getTypes, //запрос на получение типов
 } from '../action/deviceAction';
-
+import { addProductCart, ProductType } from '../action/basketAction'; //санка добавления товара в корзину и типизация товара
 import byk1 from '../img/byk1.jpg';
 import planshet1 from '../img/planshet1.jpg';
 import reclama1 from '../img/reclama1.jpg';
@@ -62,6 +62,7 @@ type MapDispathPropsType = {
   ) => void;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
+  addProductCart: (product: ProductType) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -87,6 +88,7 @@ const Content: React.FC<PropsType> = ({
   getDevices,
   setTypeId,
   setBrandId,
+  addProductCart, //добавление товара в корзину
   name,
   devices,
   types,
@@ -225,7 +227,13 @@ const Content: React.FC<PropsType> = ({
                 <Box style={{ display: 'flex', flexDirection: 'column' }}>
                   {devices &&
                     devices.map((item) => {
-                      return <Device item={item} key={Math.random()} />;
+                      return (
+                        <Device
+                          item={item}
+                          key={Math.random()}
+                          addProductCart={addProductCart}
+                        />
+                      );
                     })}
                 </Box>
               </>
@@ -279,4 +287,5 @@ export default connect<
   getDevices,
   setTypeId,
   setBrandId,
+  addProductCart,
 })(Content);

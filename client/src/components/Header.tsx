@@ -26,6 +26,7 @@ import {
   setName, //запись имени товара(для поиска)
 } from '../store/reducer/deviceReducer';
 import { getBrands, getTypes } from '../action/deviceAction'; //запрос на получениe типов устройств
+import { getProductCart } from '../action/basketAction'; // запрос на получение содержимого корзины
 import { RootStateType } from '../store/store'; //типизация всего стейта
 import { useHistory } from 'react-router-dom';
 import Logo7 from '../img/logo7.png';
@@ -34,12 +35,14 @@ import Logout from './Logout';
 import MenuBar from './MenuBar';
 import SearchInput from './SearchInput';
 import { connect } from 'react-redux';
+
 //типизация--------------------------------
 type MapStateToPropsType = {
   isAuth: boolean;
   auth: AuthReducerType;
   types: TypeDeviceType[];
   isFetchErrorTypes: boolean;
+  totalCount: number;
 };
 type MapDispathPropsType = {
   setAuth: (value: AuthReducerType) => SetAuthActionType;
@@ -50,6 +53,7 @@ type MapDispathPropsType = {
   setLogout: () => SetLogoutActionType;
   getTypes: () => void;
   getBrands: () => void;
+  getProductCart: () => void;
 };
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 //-----------------------------------------
@@ -77,6 +81,7 @@ const Header: React.FC<PropsType> = ({
   isAuth,
   types,
   isFetchErrorTypes,
+  totalCount,
   setAuth,
   setLogout,
   setIsAuth,
@@ -85,6 +90,7 @@ const Header: React.FC<PropsType> = ({
   setBrandId,
   setTypeId,
   setName,
+  getProductCart,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -103,6 +109,8 @@ const Header: React.FC<PropsType> = ({
     getTypes();
     // загрузка брендов
     getBrands();
+    // загрузка корзины
+    getProductCart();
     // eslint-disable-next-line
   }, []);
 
@@ -124,7 +132,7 @@ const Header: React.FC<PropsType> = ({
           {isAuth ? (
             <>
               <IconButton color="inherit" onClick={() => history.push('/cart')}>
-                <Badge badgeContent={3} color="secondary">
+                <Badge badgeContent={totalCount} color="secondary">
                   <ShoppingCartOutlinedIcon
                     style={{
                       fontSize: '35px',
@@ -162,6 +170,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     auth: state.auth.auth, //авторизация для role
     types: state.devices.types, //  типы устройств
     isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка загруки типов устройств
+    totalCount: state.basket.totalCount, //количества товаров в корзине
   };
 };
 export default connect<
@@ -178,4 +187,5 @@ export default connect<
   setBrandId,
   setTypeId,
   setName,
+  getProductCart,
 })(Header);

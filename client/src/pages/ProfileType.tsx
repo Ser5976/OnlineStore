@@ -28,6 +28,7 @@ import {
   getDevices, //запрос на получение устройств
   getSelectedType, //запрос на получение выбранного типа устройства
 } from '../action/deviceAction';
+import { addProductCart, ProductType } from '../action/basketAction';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -57,6 +58,7 @@ type MapDispathPropsType = {
   getSelectedType: (id: string) => void;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
+  addProductCart: (product: ProductType) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -99,6 +101,7 @@ const ProfileType: React.FC<PropsType> = ({
   getSelectedType,
   setTypeId,
   setBrandId,
+  addProductCart, //санка для добавления продукта в корзину
   devices,
   selectedType,
   pageQty,
@@ -242,7 +245,13 @@ const ProfileType: React.FC<PropsType> = ({
               <Box style={{ display: 'flex', flexDirection: 'column' }}>
                 {devices &&
                   devices.map((item) => {
-                    return <Device item={item} key={Math.random()} />;
+                    return (
+                      <Device
+                        item={item}
+                        key={Math.random()}
+                        addProductCart={addProductCart}
+                      />
+                    );
                   })}
               </Box>
             )}
@@ -296,4 +305,5 @@ export default connect<
   getSelectedType,
   setTypeId,
   setBrandId,
+  addProductCart,
 })(ProfileType);

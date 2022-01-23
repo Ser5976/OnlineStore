@@ -80,9 +80,9 @@ class authController {
 
   //===== добавляем в корзину товар(req.user.id имеется благодаря authMiddleware) ===
   async addBasket(req, res) {
-    // console.log('передоваемый объект', req.body);
+    console.log('передаваемый объект', req.body);
     try {
-      const { id, name, price, picture } = req.body; //свойства добаленного товара
+      const { id, name, price, picture, description } = req.body; //свойства добаленного товара
       const userCart = await User.findOne({ _id: req.user.id });
       const { basket, _id } = userCart; //корзина пользователя,_id пользователя
 
@@ -107,6 +107,7 @@ class authController {
             name: item.name,
             price: item.price,
             picture: item.picture,
+            description: item.description,
             quantity,
           };
         });
@@ -118,6 +119,7 @@ class authController {
             name: name,
             price: price,
             picture: picture,
+            description: description,
             quantity,
           },
         ];
@@ -171,6 +173,7 @@ class authController {
             name: item.name,
             price: item.price,
             picture: item.picture,
+            description: item.description,
             quantity,
           };
         });

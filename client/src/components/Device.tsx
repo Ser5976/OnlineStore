@@ -10,11 +10,13 @@ import {
 import { DeviceType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
 import { useHistory } from 'react-router-dom';
+import { ProductType } from '../action/basketAction';
 
 //типизация----------------------
 
 type PropsType = {
   item: DeviceType; //типизация  выбранного устройства
+  addProductCart: (product: ProductType) => void;
 };
 //---------------------------------
 
@@ -40,10 +42,22 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const Device: React.FC<PropsType> = ({ item }) => {
+const Device: React.FC<PropsType> = ({ item, addProductCart }) => {
   const { name, picture, price, description } = item;
   const classes = useStyles();
   const history = useHistory();
+
+  const addToCart = (item: DeviceType) => {
+    const { name, picture, price, description, _id: id } = item;
+    const product: ProductType = {
+      name,
+      picture,
+      price,
+      description,
+      id,
+    };
+    addProductCart(product);
+  };
 
   return (
     <div>
@@ -89,8 +103,9 @@ const Device: React.FC<PropsType> = ({ item }) => {
               <Typography
                 variant="subtitle2"
                 className={classes.lower_typography}
+                onClick={() => addToCart(item)}
               >
-                Добавить в карзину
+                Добавить в корзину
               </Typography>
             </Box>
           </Box>
