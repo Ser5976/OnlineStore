@@ -10,6 +10,10 @@ import { getSelectedDevice } from '../action/deviceAction';
 import { DeviceType, InfoType } from '../store/reducer/deviceReducer';
 import ImageList from '../components/ImageList';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
+import { addProductCart, ProductType } from '../action/basketAction';
+import CustomizedSnackbars from '../components/CustomizedSnackbar';
+import { useHistory, useLocation } from 'react-router-dom';
+import { SetPathActionType, setPath } from '../store/reducer/authReducer';
 import { connect } from 'react-redux';
 
 //типизация---------------------------------------------------------------------
@@ -17,9 +21,13 @@ type MapStateToPropsType = {
   selectedDevice: DeviceType;
   isLoadinSelectedDevice: boolean;
   isFetchErrorSelectedDevice: boolean;
+  isAuth: boolean;
+  errorBasket: boolean;
 };
 type MapDispathPropsType = {
   getSelectedDevice: (id: string) => void;
+  addProductCart: (product: ProductType) => void;
+  setPath: (value: string) => SetPathActionType;
 };
 type PropsType = MapStateToPropsType & MapDispathPropsType;
 type ParamsType = {
@@ -68,19 +76,53 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProfileDevice: React.FC<PropsType> = ({
-  getSelectedDevice,
-  selectedDevice,
-  isFetchErrorSelectedDevice,
-  isLoadinSelectedDevice,
+  getSelectedDevice, // запрос на выбранный товар
+  addProductCart, // добавить товар в корзину
+  setPath, //запись пути последнего клика
+  isAuth, //маркер авторизации
+  errorBasket, //ошибка при добалении товара в корзину
+  selectedDevice, // выбранный товар
+  isFetchErrorSelectedDevice, //ошибка
+  isLoadinSelectedDevice, //крутилка
 }) => {
+  const history = useHistory();
+  const location = useLocation();
+  console.log(location);
   const classes = useStyles();
-  const { id } = useParams<ParamsType>(); //  хук роутера ,который помогает получить значение params
-  console.log(selectedDevice);
+  //для алерта,который показывает результат добавления товара в корзину
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => {
+    setOpen(true);
+  };
+  //  хук роутера ,который помогает получить значение params
+  const { id } = useParams<ParamsType>();
+  // console.log(selectedDevice);
+
+  //получаем выбранный товар
   useEffect(() => {
     getSelectedDevice(id);
     // eslint-disable-next-line
   }, []);
-  const { name, picture, price, info } = selectedDevice;
+  const { name, picture, price, info, description, _id } = selectedDevice;
+
+  // добавление товара в корзину(если ошибка - показываем алерт ошибки,если неавторизирован-авторизация,если всё норм-алерт норм)
+  const addToCart = () => {
+    if (errorBasket) {
+      handleClick(); //запускаем алерт,что есть ошибка
+    } else if (isAuth) {
+      const product: ProductType = {
+        name,
+        picture,
+        price,
+        description,
+        id: _id,
+      };
+      addProductCart(product); // передаем объек товара в базу корзины
+      handleClick(); // запускаем алерт,что всё прошло хорошо
+    } else {
+      history.push('/login');
+    }
+  };
 
   let params: InfoType[];
   info ? (params = [...info]) : (params = []);
@@ -140,7 +182,10 @@ const ProfileDevice: React.FC<PropsType> = ({
                     color="primary"
                     fullWidth
                     style={{ marginBottom: 15, fontSize: 12 }}
-                    onClick={() => {}}
+                    onClick={() => {
+                      addToCart();
+                      setPath(location.pathname);
+                    }}
                   >
                     Добавить в корзину
                   </Button>
@@ -171,15 +216,26 @@ const ProfileDevice: React.FC<PropsType> = ({
           </Grid>
         </>
       )}
+      <CustomizedSnackbars
+        setOpen={setOpen}
+        open={open}
+        errorBasket={errorBasket}
+      />
     </Container>
   );
 };
 
-const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
+const mapStateToProps = ({
+  devices,
+  auth,
+  basket,
+}: RootStateType): MapStateToPropsType => {
   return {
-    selectedDevice: state.devices.selectedDevice,
-    isLoadinSelectedDevice: state.devices.isLoadinSelectedDevice,
-    isFetchErrorSelectedDevice: state.devices.isFetchErrorSelectedDevice,
+    selectedDevice: devices.selectedDevice,
+    isLoadinSelectedDevice: devices.isLoadinSelectedDevice,
+    isFetchErrorSelectedDevice: devices.isFetchErrorSelectedDevice,
+    isAuth: auth.isAuth,
+    errorBasket: basket.errorBasket,
   };
 };
 export default connect<
@@ -187,4 +243,6 @@ export default connect<
   MapDispathPropsType,
   unknown, // первичные пропсы
   RootStateType
->(mapStateToProps, { getSelectedDevice })(ProfileDevice);
+>(mapStateToProps, { getSelectedDevice, addProductCart, setPath })(
+  ProfileDevice
+);

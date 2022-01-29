@@ -4,7 +4,8 @@ import { RootStateType } from '../store/store'; //типизация всего 
 import { ModelUrls } from '../constants/url';
 import {
   setAddProductCart,
-  SetAddProductCartActionType,
+  SetActionType,
+  setErrorBasket,
 } from '../store/reducer/basketReducer';
 //типизация товара добавляемого в карзину
 export type ProductType = {
@@ -19,7 +20,7 @@ export type ThunkType = ThunkAction<
   Promise<void>,
   RootStateType,
   unknown, //extraArgument
-  SetAddProductCartActionType
+  SetActionType //типизация экшенов корзины
 >;
 // запрос на корзину
 export const getProductCart = (): ThunkType => {
@@ -33,9 +34,11 @@ export const getProductCart = (): ThunkType => {
       dispatch(
         setAddProductCart(data.basket, data.totalCount, data.totalPrice)
       );
-      console.log(data);
+      dispatch(setErrorBasket(false));
+      // console.log(data);
     } catch (e: any) {
       console.log(e);
+      dispatch(setErrorBasket(true));
     }
   };
 };

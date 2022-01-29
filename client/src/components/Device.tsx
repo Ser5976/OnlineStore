@@ -9,21 +9,27 @@ import {
 } from '@material-ui/core';
 import { DeviceType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ProductType } from '../action/basketAction';
+import { SetPathActionType } from '../store/reducer/authReducer';
 
 //типизация----------------------
 
 type PropsType = {
   item: DeviceType; //типизация  выбранного устройства
   addProductCart: (product: ProductType) => void;
+  handleClick: () => void;
+  isAuth: boolean;
+  errorBasket: boolean;
+  setPath: (value: string) => SetPathActionType;
+  path: string;
 };
 //---------------------------------
 
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      padding: '15px 0px 0px 15px',
+      padding: 25,
     },
 
     media: {
@@ -42,21 +48,37 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const Device: React.FC<PropsType> = ({ item, addProductCart }) => {
+const Device: React.FC<PropsType> = ({
+  item, //девайс
+  addProductCart, //
+  isAuth, //маркер авторизации
+  errorBasket, //санка добавления товара в корзину
+  handleClick, //открытие алерта(добавления товара в корзину либо ошибки)
+  setPath, //запись пути последнего клика
+  path, //путь последнего клика
+}) => {
   const { name, picture, price, description } = item;
   const classes = useStyles();
   const history = useHistory();
 
+  // добавление товара в корзину(если ошибка - показываем алерт ошибки,если неавторизирован-авторизация,если всё норм-алерт норм)
   const addToCart = (item: DeviceType) => {
     const { name, picture, price, description, _id: id } = item;
-    const product: ProductType = {
-      name,
-      picture,
-      price,
-      description,
-      id,
-    };
-    addProductCart(product);
+    if (isAuth) {
+      const product: ProductType = {
+        name,
+        picture,
+        price,
+        description,
+        id,
+      };
+      addProductCart(product); // передаем объек товара в базу корзины
+      handleClick(); // запускаем алерт,что всё прошло хорошо
+    } else if (errorBasket) {
+      handleClick(); //запускаем алерт,что есть ошибка
+    } else {
+      history.push('/login');
+    }
   };
 
   return (
@@ -103,7 +125,10 @@ const Device: React.FC<PropsType> = ({ item, addProductCart }) => {
               <Typography
                 variant="subtitle2"
                 className={classes.lower_typography}
-                onClick={() => addToCart(item)}
+                onClick={() => {
+                  addToCart(item);
+                  setPath(path);
+                }}
               >
                 Добавить в корзину
               </Typography>

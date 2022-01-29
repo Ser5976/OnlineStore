@@ -2,6 +2,7 @@ const SET_AUTH = 'SET_AUTH';
 const SET_LOGOUT = 'SET_LOGOUT';
 const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 const SET_IS_AUTH = 'SET_IS_AUTH';
+const SET_PATH = 'SET_PATH';
 
 // типизация--------------------------------
 // типизация стейта
@@ -15,6 +16,7 @@ export type InitialStateType = {
   auth: AuthReducerType;
   isAuth: boolean;
   errorMessage: string | null;
+  path: string;
 };
 
 // типизация экшена
@@ -33,12 +35,17 @@ export type SetErrorMessageActionType = {
 export type SetLogoutActionType = {
   type: typeof SET_LOGOUT;
 };
+export type SetPathActionType = {
+  type: typeof SET_PATH;
+  payload: string;
+};
 
 export type SetActionType =
   | SetAuthActionType
   | SetErrorMessageActionType
   | SetLogoutActionType
-  | SetIsAuthActionType;
+  | SetIsAuthActionType
+  | SetPathActionType;
 
 //-------------------------------------------
 
@@ -46,6 +53,7 @@ const initialState: InitialStateType = {
   auth: { email: null, token: null, role: null }, //авторизация
   errorMessage: null, // ошибка авторизации
   isAuth: false, // булевое значение для авторизации
+  path: '/', // путь последнего клика
 };
 
 export const authReducer = (
@@ -75,6 +83,11 @@ export const authReducer = (
         auth: { ...state.auth, email: null, token: null },
         isAuth: false,
       };
+    case SET_PATH:
+      return {
+        ...state,
+        path: action.payload,
+      };
 
     default:
       return state;
@@ -99,4 +112,9 @@ export const setErrorMessage = (data: string): SetErrorMessageActionType => ({
 // выход из аторизации
 export const setLogout = (): SetLogoutActionType => ({
   type: SET_LOGOUT,
+});
+// запись пути последнего клика
+export const setPath = (value: string): SetPathActionType => ({
+  type: SET_PATH,
+  payload: value,
 });

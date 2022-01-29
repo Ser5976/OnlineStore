@@ -23,7 +23,8 @@ export type ThunkType = ThunkAction<
 >;
 // авторизация
 export const authorization = (value: AuthType, history: any): ThunkType => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const pathName = getState().auth.path; // путь до последнего клика
     try {
       const { data } = await axios.post(ModelUrls.LOGIN, value);
       console.log(data);
@@ -35,7 +36,7 @@ export const authorization = (value: AuthType, history: any): ThunkType => {
       //запись в стейт
       dispatch(setAuth(data));
       dispatch(setIsAuth(true));
-      history.push('/');
+      history.push(pathName);
     } catch (e: any) {
       dispatch(setErrorMessage(e.message));
     }

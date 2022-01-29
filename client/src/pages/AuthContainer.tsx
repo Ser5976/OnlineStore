@@ -52,6 +52,7 @@ const AuthContainer: React.FC<PropsType> = ({
   const classes = useStyles();
   //Чтобы поменять авторизацию на регистрацию
   const location = useLocation();
+  console.log(location);
   const isLogin: boolean = location.pathname === '/login';
 
   return (

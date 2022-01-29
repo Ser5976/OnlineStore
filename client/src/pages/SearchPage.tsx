@@ -19,6 +19,8 @@ import {
 import Device from '../components/Device';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import { addProductCart, ProductType } from '../action/basketAction';
+import { SetPathActionType, setPath } from '../store/reducer/authReducer';
+import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -31,6 +33,8 @@ type MapStateToPropsType = {
   brandId: string | null;
   isLoadinDevice: boolean;
   isFetchErrorDevice: boolean;
+  isAuth: boolean;
+  errorBasket: boolean;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -43,6 +47,7 @@ type MapDispathPropsType = {
     history: any
   ) => void;
   addProductCart: (product: ProductType) => void;
+  setPath: (value: string) => SetPathActionType;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -74,8 +79,11 @@ const DeleteContainer: React.FC<PropsType> = ({
   brandId,
   isLoadinDevice,
   isFetchErrorDevice,
+  isAuth,
+  errorBasket,
   getDevices,
   addProductCart, //санка добавление продукта в корзину
+  setPath, //запись пути последнего клика
 }) => {
   const classes = useStyles();
   const history = useHistory(); //для изменения строки запроса
@@ -100,7 +108,6 @@ const DeleteContainer: React.FC<PropsType> = ({
   // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация,поиск)
 
   useEffect(() => {
-    console.log('рендеринг');
     getDevices(
       typeId,
       brandId,
@@ -112,6 +119,11 @@ const DeleteContainer: React.FC<PropsType> = ({
     );
     // eslint-disable-next-line
   }, [typeId, brandId, page, name]);
+  //для алерта,который показывает результат добавления товара в корзину
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => {
+    setOpen(true);
+  };
 
   return (
     <>
@@ -155,6 +167,11 @@ const DeleteContainer: React.FC<PropsType> = ({
                       item={item}
                       key={Math.random()}
                       addProductCart={addProductCart}
+                      errorBasket={errorBasket}
+                      isAuth={isAuth}
+                      handleClick={handleClick}
+                      setPath={setPath}
+                      path={location.pathname}
                     />
                   );
                 })}
@@ -179,20 +196,31 @@ const DeleteContainer: React.FC<PropsType> = ({
             )}
           />
         )}
+        <CustomizedSnackbars
+          setOpen={setOpen}
+          open={open}
+          errorBasket={errorBasket}
+        />
       </Container>
     </>
   );
 };
-const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
+const mapStateToProps = ({
+  devices,
+  auth,
+  basket,
+}: RootStateType): MapStateToPropsType => {
   return {
-    devices: state.devices.devices, //устройства
-    isLoadinDevice: state.devices.isLoadinDevice, //крутилка у стройств
-    isFetchErrorDevice: state.devices.isFetchErrorDevice, //ошибка устройств
-    name: state.devices.name, //имя для поиска
-    pageQty: state.devices.pageQty, //количества страниц
-    limit: state.devices.limit, //сколько устройств на странице
-    typeId: state.devices.typeId, // айдишник типа
-    brandId: state.devices.brandId, // айдишник брэнда
+    devices: devices.devices, //устройства
+    isLoadinDevice: devices.isLoadinDevice, //крутилка у стройств
+    isFetchErrorDevice: devices.isFetchErrorDevice, //ошибка устройств
+    name: devices.name, //имя для поиска
+    pageQty: devices.pageQty, //количества страниц
+    limit: devices.limit, //сколько устройств на странице
+    typeId: devices.typeId, // айдишник типа
+    brandId: devices.brandId, // айдишник брэнда
+    isAuth: auth.isAuth, //маркер авторизации
+    errorBasket: basket.errorBasket, //ошибка добавления товара в корзину
   };
 };
 export default connect<
@@ -200,4 +228,4 @@ export default connect<
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(mapStateToProps, { getDevices, addProductCart })(DeleteContainer);
+>(mapStateToProps, { getDevices, addProductCart, setPath })(DeleteContainer);

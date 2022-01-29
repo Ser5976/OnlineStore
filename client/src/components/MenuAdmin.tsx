@@ -9,6 +9,7 @@ import {
   setBrandIdActionType,
   setTypeIdActionType,
 } from '../store/reducer/deviceReducer';
+import { Tooltip } from '@material-ui/core';
 
 //----типизация пропсов----
 type PropsType = {
@@ -20,7 +21,13 @@ const useStyles = makeStyles(() => ({
   menu: {
     marginTop: '25px',
   },
-
+  icon: {
+    fontSize: '37px',
+    color: 'gray',
+    '&:hover': {
+      color: 'black',
+    },
+  },
   span: {
     // display: 'block',
     '@media (max-width:600px)': {
@@ -45,12 +52,15 @@ const MenuAdmin: React.FC<PropsType> = ({ setTypeId, setBrandId }) => {
 
   return (
     <>
-      <Button color="inherit" onClick={handleOpenMenu}>
-        <SupervisorAccountOutlinedIcon
-          style={{ fontSize: '35px', color: 'black' }}
-        />
-      </Button>
-
+      <Tooltip
+        title="Панель администратора. 
+      Доступ только авторизованным пользователям с правами администратора. 
+      email:admin@admin.admin пароль: 12345"
+      >
+        <Button color="inherit" onClick={handleOpenMenu}>
+          <SupervisorAccountOutlinedIcon className={classes.icon} />
+        </Button>
+      </Tooltip>
       <Menu
         variant="menu"
         elevation={2}

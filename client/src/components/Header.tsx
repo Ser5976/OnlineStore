@@ -9,7 +9,7 @@ import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import Divider from '@material-ui/core/Divider';
 import {
   setAuth, //записть авторизации в стор
-  setIsAuth, // маркер авторизации
+  setIsAuth, // экшен маркер авторизации
   setLogout, // выход из авторизации
   AuthReducerType, //типизация авторизации
   SetAuthActionType, // типизация экшена авторизации
@@ -109,10 +109,16 @@ const Header: React.FC<PropsType> = ({
     getTypes();
     // загрузка брендов
     getBrands();
-    // загрузка корзины
-    getProductCart();
     // eslint-disable-next-line
   }, []);
+  // загрузка корзины
+  useEffect(() => {
+    if (isAuth) {
+      getProductCart();
+    }
+
+    // eslint-disable-next-line
+  }, [isAuth]);
 
   return (
     <>

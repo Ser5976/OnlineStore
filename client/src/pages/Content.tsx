@@ -29,10 +29,12 @@ import {
   getDevices, //запрос на получение устройств
   getTypes, //запрос на получение типов
 } from '../action/deviceAction';
+import { SetPathActionType, setPath } from '../store/reducer/authReducer';
 import { addProductCart, ProductType } from '../action/basketAction'; //санка добавления товара в корзину и типизация товара
 import byk1 from '../img/byk1.jpg';
 import planshet1 from '../img/planshet1.jpg';
 import reclama1 from '../img/reclama1.jpg';
+import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -49,6 +51,8 @@ type MapStateToPropsType = {
   isFetchErrorDevice: boolean;
   isLoadinTypes: boolean;
   isFetchErrorTypes: boolean;
+  isAuth: boolean;
+  errorBasket: boolean;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -63,6 +67,7 @@ type MapDispathPropsType = {
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
   addProductCart: (product: ProductType) => void;
+  setPath: (value: string) => SetPathActionType;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -89,23 +94,24 @@ const Content: React.FC<PropsType> = ({
   setTypeId,
   setBrandId,
   addProductCart, //добавление товара в корзину
+  setPath, //запись пути последнего клика
   name,
   devices,
   types,
-  brands,
   pageQty,
   limit,
-  typeId,
-  brandId,
   isLoadinDevice,
   isFetchErrorDevice,
   isLoadinTypes,
   isFetchErrorTypes,
+  isAuth,
+  errorBasket,
 }) => {
   const classes = useStyles();
   const history = useHistory(); //для изменения строки запроса
   // console.log('история', history);
   const location = useLocation(); // для получения строки запроса
+  console.log(location.pathname);
   const searchPage = parseInt(location.search?.split('=')[1] || '1'); // получаем число страницы из строки запроса
   // console.log(searchPage);
   // пагинация, данные о текущей странице( по умолчанию: 1 или, если есть ,информация о текущей странице в адресной строке )
@@ -136,11 +142,11 @@ const Content: React.FC<PropsType> = ({
     getTypes();
     // eslint-disable-next-line
   }, []);
-
-  //console.log(devices);
-
-  // console.log(info);
-  // console.log('рендеринг');
+  //для алерта,который показывает результат добавления товара в корзину
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => {
+    setOpen(true);
+  };
 
   return (
     <>
@@ -232,6 +238,11 @@ const Content: React.FC<PropsType> = ({
                           item={item}
                           key={Math.random()}
                           addProductCart={addProductCart}
+                          errorBasket={errorBasket}
+                          isAuth={isAuth}
+                          handleClick={handleClick}
+                          setPath={setPath}
+                          path={location.pathname}
                         />
                       );
                     })}
@@ -258,24 +269,35 @@ const Content: React.FC<PropsType> = ({
             )}
           />
         )}
+        <CustomizedSnackbars
+          setOpen={setOpen}
+          open={open}
+          errorBasket={errorBasket}
+        />
       </Container>
     </>
   );
 };
-const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
+const mapStateToProps = ({
+  devices,
+  auth,
+  basket,
+}: RootStateType): MapStateToPropsType => {
   return {
-    devices: state.devices.devices, //устройства
-    types: state.devices.types, //типы устройств
-    brands: state.devices.brands, //брэнды устройств
-    name: state.devices.name, // имя для поиска
-    pageQty: state.devices.pageQty, //количества страниц
-    limit: state.devices.limit, //сколько устройств на странице
-    typeId: state.devices.typeId, // айдишник типа
-    brandId: state.devices.brandId, // айдишник брэнда
-    isLoadinDevice: state.devices.isLoadinDevice, //крутилка у стройств
-    isLoadinTypes: state.devices.isLoadinTypes, //крутилка типов
-    isFetchErrorDevice: state.devices.isFetchErrorDevice, //ошибка устройств
-    isFetchErrorTypes: state.devices.isFetchErrorTypes, //ошибка типов
+    devices: devices.devices, //устройства
+    types: devices.types, //типы устройств
+    brands: devices.brands, //брэнды устройств
+    name: devices.name, // имя для поиска
+    pageQty: devices.pageQty, //количества страниц
+    limit: devices.limit, //сколько устройств на странице
+    typeId: devices.typeId, // айдишник типа
+    brandId: devices.brandId, // айдишник брэнда
+    isLoadinDevice: devices.isLoadinDevice, //крутилка у стройств
+    isLoadinTypes: devices.isLoadinTypes, //крутилка типов
+    isFetchErrorDevice: devices.isFetchErrorDevice, //ошибка устройств
+    isFetchErrorTypes: devices.isFetchErrorTypes, //ошибка типов
+    isAuth: auth.isAuth, //маркер авторизации
+    errorBasket: basket.errorBasket, //ошибка добавления товара в корзину
   };
 };
 export default connect<
@@ -288,4 +310,5 @@ export default connect<
   setTypeId,
   setBrandId,
   addProductCart,
+  setPath,
 })(Content);

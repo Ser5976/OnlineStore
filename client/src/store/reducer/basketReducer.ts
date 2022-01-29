@@ -1,4 +1,5 @@
 const ADD_PRODUCT_CART = 'ADD_PRODUCT_CART';
+const ERROR_BASKET = 'ERROR_BASKET';
 
 // типизация--------------------------------
 // типизация стейта
@@ -16,6 +17,7 @@ export type InitialStateType = {
   basket: BasketType[];
   totalPrice: number;
   totalCount: number;
+  errorBasket: boolean;
 };
 
 // типизация экшена
@@ -25,8 +27,14 @@ export type SetAddProductCartActionType = {
   totalCount: number;
   totalPrice: number;
 };
+export type SetErrorBasketActionType = {
+  type: typeof ERROR_BASKET;
+  payload: boolean;
+};
 
-export type SetActionType = SetAddProductCartActionType;
+export type SetActionType =
+  | SetAddProductCartActionType
+  | SetErrorBasketActionType;
 
 //-------------------------------------------
 
@@ -34,6 +42,7 @@ const initialState: InitialStateType = {
   basket: [],
   totalPrice: 0,
   totalCount: 0,
+  errorBasket: false,
 };
 
 export const basketReducer = (
@@ -47,6 +56,11 @@ export const basketReducer = (
         basket: action.basket,
         totalCount: action.totalCount,
         totalPrice: action.totalPrice,
+      };
+    case ERROR_BASKET:
+      return {
+        ...state,
+        errorBasket: action.payload,
       };
 
     default:
@@ -64,4 +78,9 @@ export const setAddProductCart = (
   basket,
   totalCount,
   totalPrice,
+});
+//ошибка при добавлении товара в корзину
+export const setErrorBasket = (value: boolean): SetErrorBasketActionType => ({
+  type: ERROR_BASKET,
+  payload: value,
 });
