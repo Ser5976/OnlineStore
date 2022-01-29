@@ -14,7 +14,7 @@ const User = new Schema({
       quantity: Number,
     },
   ],
-  role: { type: String, default: 'ADMIN' },
+  role: { type: String, default: 'USER' },
 });
 
 export default model('User', User);

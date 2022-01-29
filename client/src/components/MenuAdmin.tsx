@@ -9,12 +9,14 @@ import {
   setBrandIdActionType,
   setTypeIdActionType,
 } from '../store/reducer/deviceReducer';
+import { AuthReducerType } from '../store/reducer/authReducer';
 import { Tooltip } from '@material-ui/core';
 
 //----типизация пропсов----
 type PropsType = {
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
+  auth: AuthReducerType;
 };
 //-------------------------
 const useStyles = makeStyles(() => ({
@@ -23,9 +25,12 @@ const useStyles = makeStyles(() => ({
   },
   icon: {
     fontSize: '37px',
-    color: 'gray',
-    '&:hover': {
-      color: 'black',
+    color: (auth: AuthReducerType): string => {
+      if (auth.role === 'ADMIN') {
+        return 'black';
+      } else {
+        return 'gray';
+      }
     },
   },
   span: {
@@ -36,14 +41,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const MenuAdmin: React.FC<PropsType> = ({ setTypeId, setBrandId }) => {
+const MenuAdmin: React.FC<PropsType> = ({
+  setTypeId, // запись в стейт выбранного типа(для обнуления)
+  setBrandId, //запись в стейт выбранного типа(для обнуления)
+  auth, //параметры авторизации
+}) => {
   const history = useHistory();
-  const classes = useStyles();
+  const classes = useStyles(auth);
+
   // для меню
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    if (auth.role === 'ADMIN') {
+      setAnchorEl(event.currentTarget);
+    } else {
+      history.push('/login');
+    }
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -52,15 +66,22 @@ const MenuAdmin: React.FC<PropsType> = ({ setTypeId, setBrandId }) => {
 
   return (
     <>
-      <Tooltip
-        title="Панель администратора. 
-      Доступ только авторизованным пользователям с правами администратора. 
-      email:admin@admin.admin пароль: 12345"
-      >
+      {auth.role === 'ADMIN' ? (
         <Button color="inherit" onClick={handleOpenMenu}>
           <SupervisorAccountOutlinedIcon className={classes.icon} />
         </Button>
-      </Tooltip>
+      ) : (
+        <Tooltip
+          title="Панель администратора. 
+      Доступ только авторизованным пользователям с правами администратора. 
+      email: admin@admin.admin пароль: 12345"
+        >
+          <Button color="inherit" onClick={handleOpenMenu}>
+            <SupervisorAccountOutlinedIcon className={classes.icon} />
+          </Button>
+        </Tooltip>
+      )}
+
       <Menu
         variant="menu"
         elevation={2}

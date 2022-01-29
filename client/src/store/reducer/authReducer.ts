@@ -80,7 +80,7 @@ export const authReducer = (
     case SET_LOGOUT:
       return {
         ...state,
-        auth: { ...state.auth, email: null, token: null },
+        auth: { ...state.auth, email: null, token: null, role: null },
         isAuth: false,
       };
     case SET_PATH:

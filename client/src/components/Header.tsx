@@ -118,7 +118,7 @@ const Header: React.FC<PropsType> = ({
     }
 
     // eslint-disable-next-line
-  }, [isAuth]);
+  }, [isAuth, auth.email]);
 
   return (
     <>
@@ -132,9 +132,13 @@ const Header: React.FC<PropsType> = ({
             <img src={Logo7} style={{ height: '100px', width: 'auto' }} />
           </div>
           <SearchInput setName={setName} />
-          {isAuth && auth.role === 'ADMIN' && (
-            <MenuAdmin setTypeId={setTypeId} setBrandId={setBrandId} />
-          )}
+
+          <MenuAdmin
+            setTypeId={setTypeId}
+            setBrandId={setBrandId}
+            auth={auth}
+          />
+
           {isAuth ? (
             <>
               <IconButton color="inherit" onClick={() => history.push('/cart')}>
