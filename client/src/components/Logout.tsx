@@ -5,12 +5,19 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { SetLogoutActionType } from '../store/reducer/authReducer';
 import { useHistory } from 'react-router-dom';
+import { SetClearCartActionType } from '../store/reducer/basketReducer';
 
 //типизация--------------------------------
-type PropsType = { setLogout: () => SetLogoutActionType };
+type PropsType = {
+  setLogout: () => SetLogoutActionType;
+  setClearCart: () => SetClearCartActionType;
+};
 //-----------------------------------------
 
-const Logout: React.FC<PropsType> = ({ setLogout }) => {
+const Logout: React.FC<PropsType> = ({
+  setLogout, //очистка авторизации в сторе
+  setClearCart, //очистка корзины
+}) => {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -21,6 +28,19 @@ const Logout: React.FC<PropsType> = ({ setLogout }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  //очистка
+  const cleaning = () => {
+    //удаление данных авторизации из стора
+    setLogout();
+    //очистка корзины
+    setClearCart();
+    // удаление данных из sessionStorage
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('email');
+    sessionStorage.removeItem('role');
+    //на главную страницу
+    history.push('/');
   };
 
   return (
@@ -51,18 +71,7 @@ const Logout: React.FC<PropsType> = ({ setLogout }) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem
-          onClick={() => {
-            setLogout();
-            // удаление данных из sessionStorage
-            sessionStorage.removeItem('token');
-            sessionStorage.removeItem('email');
-            sessionStorage.removeItem('role');
-            history.push('/');
-          }}
-        >
-          Выйти
-        </MenuItem>
+        <MenuItem onClick={cleaning}>Выйти</MenuItem>
       </Menu>
     </>
   );

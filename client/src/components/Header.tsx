@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -28,6 +28,10 @@ import {
 import { getBrands, getTypes } from '../action/deviceAction'; //запрос на получениe типов устройств
 import { getProductCart } from '../action/basketAction'; // запрос на получение содержимого корзины
 import { RootStateType } from '../store/store'; //типизация всего стейта
+import {
+  setClearCart,
+  SetClearCartActionType,
+} from '../store/reducer/basketReducer';
 import { useHistory } from 'react-router-dom';
 import Logo7 from '../img/logo7.png';
 import MenuAdmin from './MenuAdmin';
@@ -54,27 +58,30 @@ type MapDispathPropsType = {
   getTypes: () => void;
   getBrands: () => void;
   getProductCart: () => void;
+  setClearCart: () => SetClearCartActionType;
 };
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 //-----------------------------------------
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    /*  title: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      }, 
-    },*/
-
-    toolBar: {
-      display: 'block',
-      '@media (min-width:600px)': {
-        display: 'flex',
-      },
+const useStyles = makeStyles(() => ({
+  shoppingIcon: {
+    fontSize: '31px',
+    color: (isAuth) => {
+      if (isAuth) {
+        return 'black';
+      } else {
+        return 'gray';
+      }
     },
-  })
-);
+  },
+
+  toolBar: {
+    display: 'block',
+    '@media (min-width:600px)': {
+      display: 'flex',
+    },
+  },
+}));
 
 const Header: React.FC<PropsType> = ({
   auth,
@@ -91,9 +98,10 @@ const Header: React.FC<PropsType> = ({
   setTypeId,
   setName,
   getProductCart,
+  setClearCart, //очистка корзины
 }) => {
   const history = useHistory();
-  const classes = useStyles();
+  const classes = useStyles(isAuth);
 
   useEffect(() => {
     setIsAuth(!!sessionStorage.getItem('token')); //берём токен из sessionStorage и приводим его к булевому значению
@@ -119,6 +127,14 @@ const Header: React.FC<PropsType> = ({
 
     // eslint-disable-next-line
   }, [isAuth, auth.email]);
+  //войти в корзину
+  const shopingCart = () => {
+    if (isAuth) {
+      history.push('/cart');
+    } else {
+      history.push('/login');
+    }
+  };
 
   return (
     <>
@@ -139,28 +155,18 @@ const Header: React.FC<PropsType> = ({
             auth={auth}
           />
 
-          {isAuth ? (
-            <>
-              <IconButton color="inherit" onClick={() => history.push('/cart')}>
-                <Badge badgeContent={totalCount} color="secondary">
-                  <ShoppingCartOutlinedIcon
-                    style={{
-                      fontSize: '35px',
-                      color: 'black',
-                      fontWeight: 'lighter',
-                    }}
-                  />
-                </Badge>
-              </IconButton>
-              <Logout setLogout={setLogout} />
-            </>
-          ) : (
-            <IconButton onClick={() => history.push('/login')}>
-              <PersonAddOutlinedIcon
-                style={{ fontSize: '35px', color: 'black' }}
-              />
-            </IconButton>
-          )}
+          <IconButton color="inherit" onClick={shopingCart}>
+            <Badge badgeContent={totalCount} color="secondary">
+              <ShoppingCartOutlinedIcon className={classes.shoppingIcon} />
+            </Badge>
+          </IconButton>
+          <Logout setLogout={setLogout} setClearCart={setClearCart} />
+
+          <IconButton onClick={() => history.push('/login')}>
+            <PersonAddOutlinedIcon
+              style={{ fontSize: '35px', color: 'black' }}
+            />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Divider />
@@ -198,4 +204,5 @@ export default connect<
   setTypeId,
   setName,
   getProductCart,
+  setClearCart,
 })(Header);
