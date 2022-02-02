@@ -1,5 +1,0 @@
-{
-  "port": 8000,
-  "db_url": "mongodb+srv://user:user@cluster0.7n9eo.mongodb.net/onlineStore?retryWrites=true&w=majority",
-  "secret": "SECRET_KEY_RANDOM"
-}
