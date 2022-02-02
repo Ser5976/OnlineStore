@@ -8,7 +8,7 @@ class deviceController {
     try {
       const { name, price, description, typeId, brandId, info } = req.body;
       // console.log(req.files.picture);
-      const fileName = FileServise.saveFile(req.files.picture);
+      const fileName = FileServise.saveFile(req.files.picture); //работа с файлом:даём ему название,записываем на свой жесткий диск в папку статик, в базу записываем название файла
       const specifications = JSON.parse(info); //парсим,т.к. массив info из formData приходит в виде строки
 
       const device = await Device.create({

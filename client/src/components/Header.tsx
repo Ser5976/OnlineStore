@@ -160,13 +160,15 @@ const Header: React.FC<PropsType> = ({
               <ShoppingCartOutlinedIcon className={classes.shoppingIcon} />
             </Badge>
           </IconButton>
-          <Logout setLogout={setLogout} setClearCart={setClearCart} />
-
-          <IconButton onClick={() => history.push('/login')}>
-            <PersonAddOutlinedIcon
-              style={{ fontSize: '35px', color: 'black' }}
-            />
-          </IconButton>
+          {isAuth ? (
+            <Logout setLogout={setLogout} setClearCart={setClearCart} />
+          ) : (
+            <IconButton onClick={() => history.push('/login')}>
+              <PersonAddOutlinedIcon
+                style={{ fontSize: '33px', color: 'black' }}
+              />
+            </IconButton>
+          )}
         </Toolbar>
       </AppBar>
       <Divider />

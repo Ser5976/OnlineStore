@@ -30,9 +30,9 @@ const useStyles = makeStyles(() => ({
     marginTop: '25px',
   },
   typography: {
-    color: '#fff',
+    color: '#e0e0e0',
     '&:hover': {
-      color: '#9e9e9e',
+      color: '#fff',
     },
     cursor: 'pointer',
   },

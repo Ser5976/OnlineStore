@@ -53,7 +53,7 @@ const Logout: React.FC<PropsType> = ({
         color="inherit"
       >
         <AccountCircleOutlinedIcon
-          style={{ fontSize: '35px', color: 'black' }}
+          style={{ fontSize: '33px', color: 'black' }}
         />
       </IconButton>
       <Menu

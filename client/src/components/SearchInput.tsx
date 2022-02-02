@@ -25,22 +25,14 @@ const useStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-
-    /*  title: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      }, 
-    },*/
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: alpha(theme.palette.common.black, 0.15),
+      backgroundColor: alpha(theme.palette.common.black, 0.1),
       '&:hover': {
-        backgroundColor: alpha(theme.palette.common.black, 0.25),
+        backgroundColor: alpha(theme.palette.common.black, 0.15),
       },
       marginRight: 300,
-      // marginLeft: 200,
       width: '100%',
       [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(3),

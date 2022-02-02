@@ -7,9 +7,11 @@ import Box from '@material-ui/core/Box';
 import Copyright from '../components/Copyright';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
 import FormLogin from '../components/FormLogin';
 import { makeStyles } from '@material-ui/core/styles';
 import { authorization, registration } from '../action/authAction';
+import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import { RootStateType } from '../store/store';
 import { AuthType } from '../action/authAction';
 import { connect } from 'react-redux';
@@ -26,11 +28,14 @@ type MapDispathPropsType = {
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 
 const useStyles = makeStyles((theme) => ({
+  breadcrumb: {
+    margin: 15,
+  },
   root: {
     height: '100vh',
   },
   paper: {
-    margin: theme.spacing(8, 4),
+    // margin: theme.spacing(1, 1),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -56,60 +61,65 @@ const AuthContainer: React.FC<PropsType> = ({
   const isLogin: boolean = location.pathname === '/login';
 
   return (
-    <Grid
-      container
-      component="main"
-      className={classes.root}
-      justifyContent="center"
-      alignItems="center"
-    >
-      <CssBaseline />
+    <Container maxWidth="lg">
+      <Box className={classes.breadcrumb}>
+        <ActiveLastBreadcrumb name={isLogin ? 'авторизация' : 'регистрация'} />
+      </Box>
+      <Grid
+        container
+        component="main"
+        className={classes.root}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <CssBaseline />
 
-      <Grid item>
-        <Box className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            {isLogin ? <div>Войти</div> : <div>Зарегистрироваться</div>}
-          </Typography>
-          {errorMessage ? (
-            errorMessage === 'Request failed with status code 400' ? (
-              <Typography
-                component="h1"
-                variant="body1"
-                className={classes.error}
-              >
-                {isLogin ? (
-                  <div> Неверный логин и пароль</div>
-                ) : (
-                  <div>Пользователь с таким именем уже существует</div>
-                )}
-              </Typography>
-            ) : (
-              <Typography
-                component="h1"
-                variant="body1"
-                className={classes.error}
-              >
-                Что то пошло не так
-              </Typography>
-            )
-          ) : null}
+        <Grid item>
+          <Box className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              {isLogin ? <div>Войти</div> : <div>Зарегистрироваться</div>}
+            </Typography>
+            {errorMessage ? (
+              errorMessage === 'Request failed with status code 400' ? (
+                <Typography
+                  component="h1"
+                  variant="body1"
+                  className={classes.error}
+                >
+                  {isLogin ? (
+                    <div> Неверный логин и пароль</div>
+                  ) : (
+                    <div>Пользователь с таким именем уже существует</div>
+                  )}
+                </Typography>
+              ) : (
+                <Typography
+                  component="h1"
+                  variant="body1"
+                  className={classes.error}
+                >
+                  Что то пошло не так
+                </Typography>
+              )
+            ) : null}
 
-          <FormLogin
-            authorization={authorization}
-            isLogin={isLogin}
-            errorMessage={errorMessage}
-            registration={registration}
-          />
+            <FormLogin
+              authorization={authorization}
+              isLogin={isLogin}
+              errorMessage={errorMessage}
+              registration={registration}
+            />
 
-          <Box mt={5}>
-            <Copyright />
+            <Box mt={5}>
+              <Copyright />
+            </Box>
           </Box>
-        </Box>
+        </Grid>
       </Grid>
-    </Grid>
+    </Container>
   );
 };
 const mapStateToProps = (state: RootStateType): MapStateToPropsType => {

@@ -16,7 +16,7 @@ const ActiveLastBreadcrumb: React.FC<PropsType> = ({ name }) => {
   function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     event.preventDefault();
     history.push('/');
-    console.log(name);
+    // console.log(name);
   }
 
   return (

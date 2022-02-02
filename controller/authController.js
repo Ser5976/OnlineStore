@@ -240,8 +240,3 @@ class authController {
   }
 }
 export default new authController();
-
-/*{ basket: newBasket },
-        {
-          new: true,
-        } */
