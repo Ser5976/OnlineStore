@@ -7,4 +7,5 @@ export const ModelUrls = {
   DEVICES: `${ROOT_URL}/api/device`,
   TYPES: `${ROOT_URL}/api/type`,
   BRANDS: `${ROOT_URL}/api/brand`,
+  CHECK: `${ROOT_URL}/auth/check`,
 };

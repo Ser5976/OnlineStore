@@ -7,19 +7,26 @@ import {
   SetActionType, // тип экшенов authReducer
   setAuth, // запись авторизации  в стейт
   setIsAuth, //запись маркера авторизации
+  setLogout, //очистка авторизации
   AuthReducerType, // типизация авторизации редюсера
 } from '../store/reducer/authReducer';
+import {
+  setClearCart,
+  SetClearCartActionType,
+} from '../store/reducer/basketReducer';
 //типизация авторизация
 export type AuthType = {
   email: string;
   password: string;
 };
 // типизация санки
+type ActionType = SetActionType | SetClearCartActionType; //типы экшенов из двух редюсеров
+
 export type ThunkType = ThunkAction<
   Promise<void>,
   RootStateType,
   unknown, //extraArgument
-  SetActionType
+  ActionType
 >;
 // авторизация
 export const authorization = (value: AuthType, history: any): ThunkType => {
@@ -62,6 +69,42 @@ export const registration = (value: AuthType, history: any): ThunkType => {
     } catch (e: any) {
       console.log(e.message);
       dispatch(setErrorMessage(e.message));
+    }
+  };
+};
+//  проверка авторизации,получение нового токина, или выход из авторизации, если токен не валиден
+export const checkAuthorization = (history: any): ThunkType => {
+  return async (dispatch, getState) => {
+    const token = getState().auth.auth.token || sessionStorage.getItem('token');
+    const isAuth = getState().auth.isAuth || !!sessionStorage.getItem('token');
+    if (!isAuth) {
+      return;
+    }
+    try {
+      const { data } = await axios.get(ModelUrls.CHECK, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      //запись данных в sessionStorage
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('email', data.email);
+      sessionStorage.setItem('role', data.role);
+      //запись в стейт
+      dispatch(setAuth(data));
+      dispatch(setIsAuth(true));
+    } catch (e: any) {
+      // если токен не валиден,то выполняем следующее:
+      //очистка авторизации в сторе
+      dispatch(setLogout());
+      //очистка корзины
+      dispatch(setClearCart());
+      // удаление данных из sessionStorage
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('email');
+      sessionStorage.removeItem('role');
+      // преход на страницу авторизации
+      history.push('/login');
     }
   };
 };

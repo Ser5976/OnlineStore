@@ -27,6 +27,7 @@ import {
 } from '../store/reducer/deviceReducer';
 import { getBrands, getTypes } from '../action/deviceAction'; //запрос на получениe типов устройств
 import { getProductCart } from '../action/basketAction'; // запрос на получение содержимого корзины
+import { checkAuthorization } from '../action/authAction';
 import { RootStateType } from '../store/store'; //типизация всего стейта
 import {
   setClearCart,
@@ -59,6 +60,7 @@ type MapDispathPropsType = {
   getBrands: () => void;
   getProductCart: () => void;
   setClearCart: () => SetClearCartActionType;
+  checkAuthorization: (history: any) => void;
 };
 type PropsType = MapDispathPropsType & MapStateToPropsType;
 //-----------------------------------------
@@ -99,20 +101,23 @@ const Header: React.FC<PropsType> = ({
   setName,
   getProductCart,
   setClearCart, //очистка корзины
+  checkAuthorization, //проверка авторизации,получение нового токина или выход из авторизации если токен не валиден
 }) => {
   const history = useHistory();
   const classes = useStyles(isAuth);
-
-  useEffect(() => {
+  /*  useEffect(() => {
     setIsAuth(!!sessionStorage.getItem('token')); //берём токен из sessionStorage и приводим его к булевому значению
 
-    const authorizationData: AuthReducerType = {
-      //берём данные из sessionStorage и записываем в стор
-      token: sessionStorage.getItem('token'),
-      email: sessionStorage.getItem('email'),
-      role: sessionStorage.getItem('role'),
-    };
-    setAuth(authorizationData);
+    // eslint-disable-next-line
+  }, []); */
+
+  useEffect(() => {
+    checkAuthorization(history);
+
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
     // загрузка типов устройств
     getTypes();
     // загрузка брендов
@@ -207,4 +212,5 @@ export default connect<
   setName,
   getProductCart,
   setClearCart,
+  checkAuthorization,
 })(Header);

@@ -197,7 +197,7 @@ class authController {
   //=================================================================
   //============ получение корзины===================================
   async getBasket(req, res) {
-    console.log('работает получение карзины');
+    //console.log('работает получение корзины');
     try {
       const userCart = await User.findById(req.user.id, 'basket');
       //console.log(userCart);
@@ -206,7 +206,7 @@ class authController {
       const totalPrice = basket.reduce((acc, item) => {
         return acc + item.price * item.quantity;
       }, 0);
-      console.log(totalPrice);
+      // console.log(totalPrice);
       const totalCount = basket.reduce((acc, item) => {
         return acc + item.quantity;
       }, 0);
@@ -233,9 +233,9 @@ class authController {
     try {
       const { user } = req;
       const token = generateAccessToken(user.id, user.role, user.email);
-      res.json(token);
+      res.json({ token, email: user.email, role: user.role });
     } catch (error) {
-      res.status(500).json(e);
+      res.status(401).json(e);
     }
   }
 }
