@@ -130,7 +130,7 @@ const DeleteContainer: React.FC<PropsType> = ({
       <Box style={{ margin: '25px' }}>
         <ActiveLastBreadcrumb name="Результат поиска" />
       </Box>
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         <Typography component="h1" variant="h5" align="center">
           Результат поиска
         </Typography>

@@ -73,6 +73,17 @@ const useStyles = makeStyles((theme) => ({
   textTitle: {
     marginTop: '25px',
   },
+  button: {
+    backgroundColor: '#0047ae',
+    color: '#e0e0e0',
+    fontSize: 12,
+    '&:hover': {
+      backgroundColor: '#1a237e',
+    },
+    '@media (max-width:600px)': {
+      width: '100%',
+    },
+  },
 }));
 
 const ProfileDevice: React.FC<PropsType> = ({
@@ -153,6 +164,9 @@ const ProfileDevice: React.FC<PropsType> = ({
           <Typography className={classes.name} variant="h3">
             {name}
           </Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            {description}
+          </Typography>
           <Grid container spacing={2} className={classes.grid_container}>
             <Grid item xs={12} sm={6}>
               <ImageList image={image} />
@@ -164,24 +178,20 @@ const ProfileDevice: React.FC<PropsType> = ({
               >
                 Цена: {price} p
               </Typography>
-              <Grid container spacing={2} style={{ marginTop: '25px' }}>
+              <Grid container spacing={2} style={{ margin: '35px 0' }}>
                 <Grid item xs={12} sm={6}>
                   <Button
-                    variant="outlined"
-                    color="primary"
+                    className={classes.button}
                     fullWidth
-                    style={{ marginBottom: 15, fontSize: 12 }}
                     onClick={() => {}}
                   >
-                    Купить
+                    Оформить заказ
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Button
-                    variant="outlined"
-                    color="primary"
+                    className={classes.button}
                     fullWidth
-                    style={{ marginBottom: 15, fontSize: 12 }}
                     onClick={() => {
                       addToCart();
                       setPath(location.pathname);

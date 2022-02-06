@@ -7,10 +7,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Container from '@material-ui/core/Container';
-import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   TypeDeviceType, // типизация типов устройст
   setBrandIdActionType, //типизация экшена запись брэнда в стейт
@@ -41,6 +40,9 @@ const useStyles = makeStyles(() => ({
     '@media (max-width:600px)': {
       display: 'none',
     },
+  },
+  link: {
+    textDecoration: 'none',
   },
 }));
 
@@ -98,31 +100,38 @@ const MenuBar: React.FC<PropsType> = ({
                 }
               />
             </ListItem>
+            <ListItem>
+              <ListItemText
+                primary={
+                  <Link to="/paymetPage" className={classes.link}>
+                    <Typography align="center" className={classes.typography}>
+                      Оплата
+                    </Typography>
+                  </Link>
+                }
+              />
+            </ListItem>
 
             <ListItem>
               <ListItemText
                 primary={
-                  <Typography align="center" className={classes.typography}>
-                    Оплата
-                  </Typography>
+                  <Link to="/deliveryPage" className={classes.link}>
+                    <Typography align="center" className={classes.typography}>
+                      Доставка
+                    </Typography>
+                  </Link>
                 }
               />
             </ListItem>
+
             <ListItem>
               <ListItemText
                 primary={
-                  <Typography align="center" className={classes.typography}>
-                    Доставка
-                  </Typography>
-                }
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={
-                  <Typography align="center" className={classes.typography}>
-                    Контакты
-                  </Typography>
+                  <Link to="/contactPage" className={classes.link}>
+                    <Typography align="center" className={classes.typography}>
+                      Контакты
+                    </Typography>
+                  </Link>
                 }
               />
             </ListItem>

@@ -71,13 +71,19 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 0, 5),
   },
   buttons: {
-    display: 'flex',
-    justifyContent: 'flex-start',
+    backgroundColor: '#0047ae',
+    color: '#e0e0e0',
+    fontSize: 12,
+    '&:hover': {
+      backgroundColor: '#1a237e',
+    },
+    marginBottom: 15,
   },
+  /*
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
-  },
+  }, */
   textTitle: {
     marginBottom: '25px',
   },
@@ -235,10 +241,9 @@ const AddDevicesContainer: React.FC<PropsType> = ({
                 <Grid container component="main">
                   <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
                     <Button
-                      variant="outlined"
-                      color="primary"
+                      variant="contained"
+                      className={classes.buttons}
                       fullWidth
-                      style={{ marginBottom: 15, fontSize: 12 }}
                       onClick={() => {
                         setActiveStep(0);
                       }}
@@ -248,8 +253,8 @@ const AddDevicesContainer: React.FC<PropsType> = ({
                   </Grid>
                   <Grid item xs={12} sm={6} style={{ padding: '5px 5px' }}>
                     <Button
-                      variant="outlined"
-                      color="primary"
+                      variant="contained"
+                      className={classes.buttons}
                       fullWidth
                       style={{ marginBottom: 15, fontSize: 12 }}
                       onClick={appendDevice}

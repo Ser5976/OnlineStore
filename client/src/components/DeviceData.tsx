@@ -193,6 +193,7 @@ const DeviceData: React.FC<PropsType> = ({
               {...field}
               //variant="outlined"
               margin="normal"
+              type="number"
               required
               fullWidth
               label="Введите стоимость устройства"
@@ -204,7 +205,7 @@ const DeviceData: React.FC<PropsType> = ({
         <Controller
           name="description"
           control={control}
-          defaultValue={addedDevice.price}
+          defaultValue={addedDevice.description}
           render={({ field }) => (
             <TextField
               {...field}

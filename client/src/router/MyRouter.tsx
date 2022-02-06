@@ -11,6 +11,9 @@ import Footer from '../components/Footer';
 import DeleteContainer from '../pages/DeleteContainer';
 import SearchPage from '../pages/SearchPage';
 import Cart from '../pages/Cart';
+import PaymetPage from '../pages/PaymetPage';
+import ContactPage from '../pages/ContactPage';
+import DeliveryPage from '../pages/DeliveryPage';
 
 const MyRouter: React.FC = () => {
   return (
@@ -31,6 +34,9 @@ const MyRouter: React.FC = () => {
         <Route component={ProfileDevice} path="/profileDevice/:id" />
         <Route component={ProfileType} path="/profileType/:id" />
         <Route component={Cart} path="/cart" />
+        <Route component={PaymetPage} path="/paymetPage" />
+        <Route component={ContactPage} path="/contactPage" />
+        <Route component={DeliveryPage} path="/deliveryPage" />
       </Switch>
 
       <Footer />

@@ -1,8 +1,7 @@
 import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Box, Grid, Typography, Link } from '@material-ui/core';
+import { Container, Box, Typography } from '@material-ui/core';
 import { StorefrontSharp } from '@material-ui/icons';
-import Logo1 from '../img/logo1.png';
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {

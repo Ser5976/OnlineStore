@@ -47,6 +47,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     marginTop: 30,
   },
+  addFieldsButton: {
+    backgroundColor: '#0047ae',
+    color: '#e0e0e0',
+    fontSize: 12,
+    '&:hover': {
+      backgroundColor: '#1a237e',
+    },
+    marginBottom: 15,
+  },
 }));
 
 const DeviceProperty: React.FC<PropsType> = ({
@@ -86,9 +95,8 @@ const DeviceProperty: React.FC<PropsType> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Button
-        variant="outlined"
-        color="primary"
-        style={{ marginBottom: 15, fontSize: 12 }}
+        variant="contained"
+        className={classes.addFieldsButton}
         onClick={() => {
           append({ title: '', description: '' });
         }}
