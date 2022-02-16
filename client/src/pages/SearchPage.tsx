@@ -20,6 +20,7 @@ import Device from '../components/Device';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import { addProductCart, ProductType } from '../action/basketAction';
 import { SetPathActionType, setPath } from '../store/reducer/authReducer';
+import { setErrorBasket } from '../store/reducer/basketReducer';
 import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { connect } from 'react-redux';
 
@@ -34,7 +35,7 @@ type MapStateToPropsType = {
   isLoadinDevice: boolean;
   isFetchErrorDevice: boolean;
   isAuth: boolean;
-  errorBasket: boolean;
+  errorBasket: null | string;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -48,6 +49,7 @@ type MapDispathPropsType = {
   ) => void;
   addProductCart: (product: ProductType) => void;
   setPath: (value: string) => SetPathActionType;
+  setErrorBasket: (data: null | string) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -70,7 +72,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const DeleteContainer: React.FC<PropsType> = ({
+const SearchPage: React.FC<PropsType> = ({
   devices,
   name,
   pageQty,
@@ -84,6 +86,7 @@ const DeleteContainer: React.FC<PropsType> = ({
   getDevices,
   addProductCart, //санка добавление продукта в корзину
   setPath, //запись пути последнего клика
+  setErrorBasket, //удаление ошибки добавления в корзину из стейта
 }) => {
   const classes = useStyles();
   const history = useHistory(); //для изменения строки запроса
@@ -119,11 +122,15 @@ const DeleteContainer: React.FC<PropsType> = ({
     );
     // eslint-disable-next-line
   }, [typeId, brandId, page, name]);
-  //для алерта,который показывает результат добавления товара в корзину
+
+  //===для алерта,который показывает результат добавления товара в корзину===
   const [open, setOpen] = React.useState(false);
   const handleClick = () => {
     setOpen(true);
   };
+  const errorMessage = errorBasket;
+  const successMessage = 'Товар добавлен в корзину!';
+  //=============================================================================
 
   return (
     <>
@@ -167,7 +174,6 @@ const DeleteContainer: React.FC<PropsType> = ({
                       item={item}
                       key={Math.random()}
                       addProductCart={addProductCart}
-                      errorBasket={errorBasket}
                       isAuth={isAuth}
                       handleClick={handleClick}
                       setPath={setPath}
@@ -198,8 +204,11 @@ const DeleteContainer: React.FC<PropsType> = ({
         )}
         <CustomizedSnackbars
           setOpen={setOpen}
+          setDeleteError={setErrorBasket}
           open={open}
-          errorBasket={errorBasket}
+          mistake={errorBasket}
+          errorMessage={errorMessage}
+          successMessage={successMessage}
         />
       </Container>
     </>
@@ -228,4 +237,6 @@ export default connect<
   MapDispathPropsType,
   unknown, // личные пропсы
   RootStateType
->(mapStateToProps, { getDevices, addProductCart, setPath })(DeleteContainer);
+>(mapStateToProps, { getDevices, addProductCart, setPath, setErrorBasket })(
+  SearchPage
+);

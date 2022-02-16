@@ -5,6 +5,7 @@ import {
   Divider,
   createStyles,
   makeStyles,
+  Grid,
 } from '@material-ui/core';
 import { DeviceType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
@@ -14,43 +15,53 @@ import { useHistory } from 'react-router-dom';
 
 type PropsType = {
   item: DeviceType; //типизация  выбранного устройства
-  removeDevice: (id: string | undefined) => void; // типизация удаление устройства
+  removeDevice: (
+    id: string | undefined,
+    showAlert: () => void,
+    setRemoteDevice: React.Dispatch<React.SetStateAction<string>>,
+    name: string
+  ) => void; // типизация удаление устройства
+  showAlert: () => void;
+  setRemoteDevice: React.Dispatch<React.SetStateAction<string>>;
 };
 //---------------------------------
 
 const useStyles = makeStyles(() =>
   createStyles({
-    root: {
-      display: 'flex',
-      padding: '15px 0px 0px 15px',
-    },
-
-    content: {
-      flex: '1 0 auto',
-    },
-
-    media: {
-      height: 100,
-      cursor: 'pointer',
-      marginRight: 10,
-    },
     button: {
       display: 'flex',
       justifyContent: 'flex-end',
       paddingBottom: '5px',
     },
+
+    root: {
+      padding: 25,
+    },
+
+    media: {
+      height: 100,
+      cursor: 'pointer',
+      paddingTop: 50,
+    },
   })
 );
 
-const DeleteDevice: React.FC<PropsType> = ({ item, removeDevice }) => {
+const DeleteDevice: React.FC<PropsType> = ({
+  item, //устройство
+  removeDevice, //удаление устройства
+  showAlert, // показывает алерт,результат удаления
+  setRemoteDevice, // записывает в локальный стейт name(устройства) удалённого товара
+}) => {
   const { name, picture, price } = item;
   const classes = useStyles();
   const history = useHistory();
 
   return (
     <div>
-      <div className={classes.root}>
-        <div
+      <Grid container spacing={2} className={classes.root}>
+        <Grid
+          item
+          md={3}
           className={classes.media}
           onClick={() => {
             history.push(`/profileDevice/${item._id}`);
@@ -60,17 +71,21 @@ const DeleteDevice: React.FC<PropsType> = ({ item, removeDevice }) => {
             src={`${ROOT_URL}/${picture[0]}`}
             style={{ height: '100px', width: 'auto' }}
           />
-        </div>
+        </Grid>
 
-        <div className={classes.content}>
+        <Grid item md={8}>
           <Typography component="h5" variant="h5">
             {price} p
           </Typography>
-          <Typography variant="subtitle1" color="textSecondary">
+          <Typography
+            variant="subtitle1"
+            color="textSecondary"
+            style={{ wordWrap: 'break-word' }}
+          >
             {name}
           </Typography>
-        </div>
-      </div>
+        </Grid>
+      </Grid>
       <div className={classes.button}>
         <Button
           variant="contained"
@@ -79,7 +94,7 @@ const DeleteDevice: React.FC<PropsType> = ({ item, removeDevice }) => {
             if (
               window.confirm(`Вы действительно хотите удалить ${item.name}`)
             ) {
-              removeDevice(item._id);
+              removeDevice(item._id, showAlert, setRemoteDevice, item.name);
             }
           }}
         >

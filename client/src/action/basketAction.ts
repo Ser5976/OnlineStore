@@ -34,11 +34,9 @@ export const getProductCart = (): ThunkType => {
       dispatch(
         setAddProductCart(data.basket, data.totalCount, data.totalPrice)
       );
-      dispatch(setErrorBasket(false));
       // console.log(data);
     } catch (e: any) {
       console.log(e);
-      dispatch(setErrorBasket(true));
     }
   };
 };
@@ -54,7 +52,10 @@ export const addProductCart = (product: ProductType): ThunkType => {
       });
       dispatch(getProductCart());
     } catch (e: any) {
-      console.log(e);
+      console.log(e, 'ошибка добавления вкорзину');
+      dispatch(
+        setErrorBasket('Товар не добавлен в корзину, что то пошло не так!')
+      );
     }
   };
 };

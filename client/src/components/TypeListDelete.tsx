@@ -14,7 +14,8 @@ import { TypeDeviceType } from '../store/reducer/deviceReducer'; //типиза�
 //----типизация пропсов----
 type PropsType = {
   types: TypeDeviceType[]; //типизация списка типов устройств
-  removeType: (id: string) => void; //типизация удаления выбранного типа
+  showAlert: () => void;
+  removeType: (id: string, showAlert: () => void) => void; //типизация удаления выбранного типа
 };
 //-------------------------
 const useStyles = makeStyles((theme: Theme) => ({
@@ -30,7 +31,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const TypeListDelete: React.FC<PropsType> = ({ types, removeType }) => {
+const TypeListDelete: React.FC<PropsType> = ({
+  types, // типы
+  removeType, // удаление типа
+  showAlert, // показывает алерт,результат удаления
+}) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -43,7 +48,7 @@ const TypeListDelete: React.FC<PropsType> = ({ types, removeType }) => {
         <ListItemText
           disableTypography
           primary={
-            <Typography variant="h6" gutterBottom>
+            <Typography style={{ fontWeight: 'bold' }}>
               Удалить тип товара
             </Typography>
           }
@@ -65,7 +70,7 @@ const TypeListDelete: React.FC<PropsType> = ({ types, removeType }) => {
                         `Вы действительно хотите удалить тип ${item.name}?`
                       )
                     ) {
-                      removeType(item._id);
+                      removeType(item._id, showAlert);
                     }
                   }}
                 >

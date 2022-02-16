@@ -23,9 +23,10 @@ type PropsType = {
   isFetchErrorBrands: boolean;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
-  removeType: (id: string) => void;
-  removeBrand: (id: string) => void;
+  removeType: (id: string, showAlert: () => void) => void;
+  removeBrand: (id: string, showAlert: () => void) => void;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
+  showAlert: () => void;
 };
 //-------------------------
 
@@ -34,9 +35,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: 20,
     padding: '0px 5px',
   },
-  products: { paddingLeft: theme.spacing(2), marginBottom: 25 },
+  products: { paddingLeft: theme.spacing(5), marginBottom: 25 },
   activProducts: {
-    paddingLeft: theme.spacing(2),
+    paddingLeft: theme.spacing(5),
     marginBottom: 25,
     backgroundColor: '#e0e0e0',
   },
@@ -60,6 +61,7 @@ const TypeBarDelete: React.FC<PropsType> = ({
   removeType, // удаление типа товара
   removeBrand, // удаление брэнда товара
   setCategory, // изменение категории
+  showAlert, // показывает алерт,результат удаления
 }) => {
   const classes = useStyles();
   //создаём объект с булевыми значениями для управления элементами списка(открытие закрытие)(чтобы реагировать на каждый элемент)
@@ -176,13 +178,21 @@ const TypeBarDelete: React.FC<PropsType> = ({
           );
         })}
       </List>
-      <TypeListDelete types={types} removeType={removeType} />
+      <TypeListDelete
+        types={types}
+        removeType={removeType}
+        showAlert={showAlert}
+      />
       {isFetchErrorBrands ? (
         <Typography align="center" color="error">
           Брэнды не загрузились. Что-то пошло не так!
         </Typography>
       ) : (
-        <BrandListDelete brands={brands} removeBrand={removeBrand} />
+        <BrandListDelete
+          brands={brands}
+          removeBrand={removeBrand}
+          showAlert={showAlert}
+        />
       )}
     </>
   );

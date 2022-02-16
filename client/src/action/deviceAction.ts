@@ -204,19 +204,27 @@ export const addBrand = (
   };
 };
 // удаление  устройства
-export const removeDevice = (id: string | undefined): ThunkType => {
+export const removeDevice = (
+  id: string | undefined,
+  showAlert: () => void,
+  setRemoteDevice: React.Dispatch<React.SetStateAction<string>>,
+  name: string
+): ThunkType => {
   console.log(id);
   return async (dispatch) => {
     try {
       const response = await axios.delete(ModelUrls.DEVICES + '/' + id);
-      window.location.reload();
+      setRemoteDevice(name);
+      showAlert(); // показывает алерт,результат удаления
     } catch (e) {
       console.log(e);
+      dispatch(setAlertMessage('товар не удалён,что-то пошло не так'));
+      showAlert();
     }
   };
 };
 // удаление типа устройства
-export const removeType = (id: string): ThunkType => {
+export const removeType = (id: string, showAlert: () => void): ThunkType => {
   console.log(id);
   return async (dispatch) => {
     try {
@@ -226,13 +234,16 @@ export const removeType = (id: string): ThunkType => {
         dispatch(setAlertMessage(response.data.message));
       }
       dispatch(getTypes());
+      showAlert();
     } catch (e) {
       console.log(e);
+      dispatch(setAlertMessage('тип не удалён,что-то пошло не так'));
+      showAlert();
     }
   };
 };
 // удаление брэнда устройства
-export const removeBrand = (id: string): ThunkType => {
+export const removeBrand = (id: string, showAlert: () => void): ThunkType => {
   console.log(id);
   return async (dispatch) => {
     try {
@@ -243,8 +254,11 @@ export const removeBrand = (id: string): ThunkType => {
       }
       dispatch(getBrands());
       dispatch(getTypes());
+      showAlert(); //открытие алерта, который показывает результат удаления брэнда
     } catch (e) {
       console.log(e);
+      dispatch(setAlertMessage('брэнд не удалён,что-то пошло не так'));
+      showAlert();
     }
   };
 };

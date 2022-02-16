@@ -1,3 +1,5 @@
+import { string } from 'yup/lib/locale';
+
 const ADD_PRODUCT_CART = 'ADD_PRODUCT_CART';
 const ERROR_BASKET = 'ERROR_BASKET';
 const CLEAR_CART = 'CLEAR_CART';
@@ -18,7 +20,7 @@ export type InitialStateType = {
   basket: BasketType[];
   totalPrice: number;
   totalCount: number;
-  errorBasket: boolean;
+  errorBasket: null | string;
 };
 
 // типизация экшена
@@ -30,7 +32,7 @@ export type SetAddProductCartActionType = {
 };
 export type SetErrorBasketActionType = {
   type: typeof ERROR_BASKET;
-  payload: boolean;
+  payload: null | string;
 };
 export type SetClearCartActionType = {
   type: typeof CLEAR_CART;
@@ -47,7 +49,7 @@ const initialState: InitialStateType = {
   basket: [],
   totalPrice: 0,
   totalCount: 0,
-  errorBasket: false,
+  errorBasket: null,
 };
 
 export const basketReducer = (
@@ -96,7 +98,9 @@ export const setClearCart = (): SetClearCartActionType => ({
   type: CLEAR_CART,
 });
 //ошибка при добавлении товара в корзину
-export const setErrorBasket = (value: boolean): SetErrorBasketActionType => ({
+export const setErrorBasket = (
+  value: null | string
+): SetErrorBasketActionType => ({
   type: ERROR_BASKET,
   payload: value,
 });

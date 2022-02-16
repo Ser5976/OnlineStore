@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { RootStateType } from '../store/store'; // типизация всего стейта( для типизации state)
@@ -14,6 +14,7 @@ import { addProductCart, ProductType } from '../action/basketAction';
 import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { useHistory, useLocation } from 'react-router-dom';
 import { SetPathActionType, setPath } from '../store/reducer/authReducer';
+import { setErrorBasket } from '../store/reducer/basketReducer';
 import { connect } from 'react-redux';
 
 //типизация---------------------------------------------------------------------
@@ -22,12 +23,13 @@ type MapStateToPropsType = {
   isLoadinSelectedDevice: boolean;
   isFetchErrorSelectedDevice: boolean;
   isAuth: boolean;
-  errorBasket: boolean;
+  errorBasket: null | string;
 };
 type MapDispathPropsType = {
   getSelectedDevice: (id: string) => void;
   addProductCart: (product: ProductType) => void;
   setPath: (value: string) => SetPathActionType;
+  setErrorBasket: (data: null | string) => void;
 };
 type PropsType = MapStateToPropsType & MapDispathPropsType;
 type ParamsType = {
@@ -90,6 +92,7 @@ const ProfileDevice: React.FC<PropsType> = ({
   getSelectedDevice, // запрос на выбранный товар
   addProductCart, // добавить товар в корзину
   setPath, //запись пути последнего клика
+  setErrorBasket, //удаление ошибки добавления в корзину из стейта
   isAuth, //маркер авторизации
   errorBasket, //ошибка при добалении товара в корзину
   selectedDevice, // выбранный товар
@@ -100,11 +103,15 @@ const ProfileDevice: React.FC<PropsType> = ({
   const location = useLocation();
   console.log(location);
   const classes = useStyles();
-  //для алерта,который показывает результат добавления товара в корзину
-  const [open, setOpen] = React.useState(false);
+  //===для алерта,который показывает результат добавления товара в корзину===
+  const [open, setOpen] = useState(false);
   const handleClick = () => {
     setOpen(true);
   };
+  const errorMessage = errorBasket;
+  const successMessage = 'Товар добавлен в корзину!';
+  //=============================================================================
+
   //  хук роутера ,который помогает получить значение params
   const { id } = useParams<ParamsType>();
   // console.log(selectedDevice);
@@ -228,8 +235,11 @@ const ProfileDevice: React.FC<PropsType> = ({
       )}
       <CustomizedSnackbars
         setOpen={setOpen}
+        setDeleteError={setErrorBasket}
         open={open}
-        errorBasket={errorBasket}
+        mistake={errorBasket}
+        errorMessage={errorMessage}
+        successMessage={successMessage}
       />
     </Container>
   );
@@ -253,6 +263,9 @@ export default connect<
   MapDispathPropsType,
   unknown, // первичные пропсы
   RootStateType
->(mapStateToProps, { getSelectedDevice, addProductCart, setPath })(
-  ProfileDevice
-);
+>(mapStateToProps, {
+  getSelectedDevice,
+  addProductCart,
+  setPath,
+  setErrorBasket,
+})(ProfileDevice);

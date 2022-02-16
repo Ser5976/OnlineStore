@@ -35,9 +35,10 @@ import {
   removeBrand, //удаление брэнда
 } from '../action/deviceAction';
 import DeleteDevice from '../components/DeleteDevice';
-import AlertMessage from '../components/AlertMessage';
+
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import TypeBarDelete from '../components/TypeBarDelete';
+import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -55,7 +56,7 @@ type MapStateToPropsType = {
   isLoadinTypes: boolean;
   isFetchErrorTypes: boolean;
   isFetchErrorBrands: boolean;
-  alertMessage: string | null;
+  alertMessage: null | string;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -69,9 +70,14 @@ type MapDispathPropsType = {
   ) => void;
   setTypeId: (data: string | null) => setTypeIdActionType;
   setBrandId: (data: string | null) => setBrandIdActionType;
-  removeDevice: (id: string | undefined) => void;
-  removeType: (id: string) => void;
-  removeBrand: (id: string) => void;
+  removeDevice: (
+    id: string | undefined,
+    showAlert: () => void,
+    setRemoteDevice: React.Dispatch<React.SetStateAction<string>>,
+    name: string
+  ) => void;
+  removeType: (id: string, showAlert: () => void) => void;
+  removeBrand: (id: string, showAlert: () => void) => void;
   setAlertMessage: (data: string | null) => void;
 };
 
@@ -137,13 +143,15 @@ const DeleteContainer: React.FC<PropsType> = ({
     }
     // eslint-disable-next-line
   }, [searchPage]);
-
+  //название удалённого товара добовляем в локальный стейт,чтобы добавить в зависимость для получения устройств
+  const [remoteDevice, setRemoteDevice] = useState('');
+  console.log(remoteDevice);
   // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
   useEffect(() => {
-    // console.log('рендеринг');
+    console.log('рендеринг');
     getDevices(typeId, brandId, limit, page, name, setPage, history);
     // eslint-disable-next-line
-  }, [typeId, brandId, page, name]);
+  }, [typeId, brandId, page, name, remoteDevice]);
   // запрос на сервак для получения типов устройств
   useEffect(() => {
     getTypes();
@@ -153,24 +161,33 @@ const DeleteContainer: React.FC<PropsType> = ({
   // для изменения категории(все товары,планшеты и т.д...)
   const [category, setCategory] = useState('Все товары');
 
+  //===для алерта,который показывает результат удаления===
+  const [show, setShow] = useState(false);
+  const showAlert = () => {
+    setShow(true);
+  };
+  const errorMessage = alertMessage;
+  const successMessage = 'Удаление произошло успешно';
+  //=============================================================================
+
   return (
     <>
-      {alertMessage && (
-        <AlertMessage
-          setAlertMessage={setAlertMessage}
-          alertMessage={alertMessage}
-        />
-      )}
       <Box style={{ margin: '25px' }}>
         <ActiveLastBreadcrumb name="Удалить  товар" />
       </Box>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Typography component="h1" variant="h5" align="center">
           Удалить товар
         </Typography>
         <Grid container spacing={10}>
           <Grid item xs={12} sm={4}>
-            <Typography variant="h6" style={{ marginTop: '115px' }}>
+            <Typography
+              style={{
+                marginTop: '115px',
+                fontWeight: 'bold',
+                padding: '0px 16px',
+              }}
+            >
               {' '}
               Каталог товаров
             </Typography>
@@ -205,6 +222,7 @@ const DeleteContainer: React.FC<PropsType> = ({
                 removeBrand={removeBrand}
                 setCategory={setCategory}
                 isFetchErrorBrands={isFetchErrorBrands}
+                showAlert={showAlert}
               />
             )}
           </Grid>
@@ -243,6 +261,8 @@ const DeleteContainer: React.FC<PropsType> = ({
                       return (
                         <DeleteDevice
                           removeDevice={removeDevice}
+                          setRemoteDevice={setRemoteDevice}
+                          showAlert={showAlert}
                           item={item}
                           key={Math.random()}
                         />
@@ -272,6 +292,14 @@ const DeleteContainer: React.FC<PropsType> = ({
           />
         )}
       </Container>
+      <CustomizedSnackbars
+        setOpen={setShow}
+        setDeleteError={setAlertMessage}
+        open={show}
+        mistake={alertMessage}
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
     </>
   );
 };
@@ -280,7 +308,7 @@ const mapStateToProps = (state: RootStateType): MapStateToPropsType => {
     devices: state.devices.devices, //устройства
     types: state.devices.types, //типы устройств
     brands: state.devices.brands, //брэнды устройств
-    name: state.devices.name, //имя для поиска
+    name: state.devices.name, //имя для поиска товара(поиск товара по названию)
     pageQty: state.devices.pageQty, //количества страниц
     limit: state.devices.limit, //сколько устройств на странице
     typeId: state.devices.typeId, // айдишник типа

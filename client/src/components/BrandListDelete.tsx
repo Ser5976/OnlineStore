@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
@@ -9,12 +9,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
+
 import { BrandType } from '../store/reducer/deviceReducer'; //типизация
 
 //----типизация пропсов----
 type PropsType = {
   brands: BrandType[]; // типизация выбранного списка брэндов
-  removeBrand: (id: string) => void; //  типизация удаление брэнда
+  removeBrand: (id: string, showAlert: () => void) => void; //  типизация удаление брэнда
+  showAlert: () => void;
 };
 //-------------------------
 const useStyles = makeStyles((theme: Theme) => ({
@@ -30,19 +32,28 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const BrandListDelete: React.FC<PropsType> = ({ brands, removeBrand }) => {
+const BrandListDelete: React.FC<PropsType> = ({
+  brands, //список брэндов
+  removeBrand, //удаление брэнда
+  showAlert, // показывает алерт,результат удаления
+}) => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     setOpen(!open);
   };
+
   return (
     <List component="nav" className={classes.root}>
       <ListItem className={classes.list} button onClick={handleClick}>
         <ListItemText
           disableTypography
-          primary={<Typography variant="h6">Удалить брэнд товара</Typography>}
+          primary={
+            <Typography style={{ fontWeight: 'bold' }}>
+              Удалить брэнд товара
+            </Typography>
+          }
         />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
@@ -61,7 +72,7 @@ const BrandListDelete: React.FC<PropsType> = ({ brands, removeBrand }) => {
                         `Вы действительно хотите удалить брэнд ${item.name} ?`
                       )
                     ) {
-                      removeBrand(item._id);
+                      removeBrand(item._id, showAlert);
                     }
                   }}
                 >

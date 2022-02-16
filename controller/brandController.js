@@ -28,12 +28,14 @@ class brandController {
       if (!id) {
         res.status(400).json({ massage: 'Id не указан' });
       }
+      //делаем проверку есть ли удаляемый брэнд в устройствах и типах, если есть в устройсте, то не удаляем брэнд,
+      // если нет,то удаляем в типе,если он там есть,а потом удаляем брэнд
       const brandDevice = await Device.find({ brandId: id });
       const brandType = await Type.find({
         brands: { $elemMatch: { $in: [id] } },
       });
-      console.log(brandDevice.length !== 0);
-      console.log(brandType.length !== 0);
+      // console.log(brandDevice.length !== 0);
+      // console.log(brandType.length !== 0);
       if (brandDevice.length !== 0) {
         res.json({
           message:

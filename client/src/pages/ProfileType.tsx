@@ -30,6 +30,7 @@ import {
   getSelectedType, //запрос на получение выбранного типа устройства
 } from '../action/deviceAction';
 import { addProductCart, ProductType } from '../action/basketAction';
+import { setErrorBasket } from '../store/reducer/basketReducer';
 import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { connect } from 'react-redux';
 
@@ -47,7 +48,7 @@ type MapStateToPropsType = {
   isLoadinSelectedType: boolean;
   isFetchErrorSelectedType: boolean;
   isAuth: boolean;
-  errorBasket: boolean;
+  errorBasket: null | string;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -64,6 +65,7 @@ type MapDispathPropsType = {
   setBrandId: (data: string | null) => setBrandIdActionType;
   addProductCart: (product: ProductType) => void;
   setPath: (value: string) => SetPathActionType;
+  setErrorBasket: (data: null | string) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -108,6 +110,7 @@ const ProfileType: React.FC<PropsType> = ({
   setBrandId,
   addProductCart, //санка для добавления продукта в корзину
   setPath, //запись пути последнего клика
+  setErrorBasket, //удаление ошибки добавления в корзину из стейта
   devices,
   selectedType,
   pageQty,
@@ -165,11 +168,15 @@ const ProfileType: React.FC<PropsType> = ({
   const removeBrand = () => {
     setBrandId(null);
   };
-  //для алерта,который показывает результат добавления товара в корзину
+  //===для алерта,который показывает результат добавления товара в корзину===
   const [open, setOpen] = React.useState(false);
   const handleClick = () => {
     setOpen(true);
   };
+  const errorMessage = errorBasket;
+  const successMessage = 'Товар добавлен в корзину!';
+  //=============================================================================
+
   return (
     <>
       <Box className={classes.breadcrumb}>
@@ -260,7 +267,6 @@ const ProfileType: React.FC<PropsType> = ({
                         item={item}
                         key={Math.random()}
                         addProductCart={addProductCart}
-                        errorBasket={errorBasket}
                         isAuth={isAuth}
                         handleClick={handleClick}
                         setPath={setPath}
@@ -293,8 +299,11 @@ const ProfileType: React.FC<PropsType> = ({
         )}
         <CustomizedSnackbars
           setOpen={setOpen}
+          setDeleteError={setErrorBasket}
           open={open}
-          errorBasket={errorBasket}
+          mistake={errorBasket}
+          errorMessage={errorMessage}
+          successMessage={successMessage}
         />
       </Container>
     </>
@@ -333,4 +342,5 @@ export default connect<
   setBrandId,
   addProductCart,
   setPath,
+  setErrorBasket,
 })(ProfileType);

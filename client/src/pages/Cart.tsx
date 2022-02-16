@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { RootStateType } from '../store/store'; // типизация всего стейта( для типизации state)
 import Grid from '@material-ui/core/Grid';

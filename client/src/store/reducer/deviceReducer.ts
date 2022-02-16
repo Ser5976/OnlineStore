@@ -247,7 +247,7 @@ const initialState: InitialStateType = {
   addedDeviceError: false, //ошибка при добавлении устройства в базу данных
   alertMessage: null, // маркер получения сообщения о невозможности удаления типа/брэнда устройства
 
-  name: null, //поиск товара по имени
+  name: null, //имя для поиска товара(поиск товара по названию)
 };
 export const deviceReducer = (
   state = initialState,

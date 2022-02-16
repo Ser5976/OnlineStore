@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { DeviceType } from '../store/reducer/deviceReducer';
 import { ROOT_URL } from '../constants/url';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { ProductType } from '../action/basketAction';
 import { SetPathActionType } from '../store/reducer/authReducer';
 
@@ -20,7 +20,6 @@ type PropsType = {
   addProductCart: (product: ProductType) => void;
   handleClick: () => void;
   isAuth: boolean;
-  errorBasket: boolean;
   setPath: (value: string) => SetPathActionType;
   path: string;
 };
@@ -37,6 +36,9 @@ const useStyles = makeStyles(() =>
       cursor: 'pointer',
       paddingTop: 50,
     },
+    typography: {
+      wordWrap: 'break-word',
+    },
     lower_typography: {
       cursor: 'pointer',
       marginRight: '50px',
@@ -50,9 +52,8 @@ const useStyles = makeStyles(() =>
 
 const Device: React.FC<PropsType> = ({
   item, //девайс
-  addProductCart, //
+  addProductCart, //добавление товара в корзину
   isAuth, //маркер авторизации
-  errorBasket, //санка добавления товара в корзину
   handleClick, //открытие алерта(добавления товара в корзину либо ошибки)
   setPath, //запись пути последнего клика
   path, //путь последнего клика
@@ -73,9 +74,6 @@ const Device: React.FC<PropsType> = ({
         id,
       };
       addProductCart(product); // передаем объек товара в базу корзины
-      handleClick(); // запускаем алерт,что всё прошло хорошо
-    } else if (errorBasket) {
-      handleClick(); //запускаем алерт,что есть ошибка
     } else {
       history.push('/login');
     }
@@ -99,7 +97,12 @@ const Device: React.FC<PropsType> = ({
         </Grid>
         <Grid item md={8}>
           <Box>
-            <Typography component="h5" variant="h5" color="initial">
+            <Typography
+              component="h5"
+              variant="h5"
+              color="initial"
+              className={classes.typography}
+            >
               {name}
             </Typography>
             <Typography variant="subtitle1" color="inherit">
@@ -108,7 +111,7 @@ const Device: React.FC<PropsType> = ({
             <Typography
               variant="subtitle2"
               color="textSecondary"
-              style={{ wordWrap: 'break-word' }}
+              className={classes.typography}
             >
               {description}
             </Typography>
@@ -128,6 +131,7 @@ const Device: React.FC<PropsType> = ({
                 onClick={() => {
                   addToCart(item);
                   setPath(path);
+                  handleClick();
                 }}
               >
                 Добавить в корзину

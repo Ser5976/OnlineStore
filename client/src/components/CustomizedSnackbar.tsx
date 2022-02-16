@@ -6,8 +6,11 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 //----типизация пропсов----
 type PropsType = {
   setOpen: (data: boolean) => void;
+  setDeleteError: (data: null) => void;
   open: boolean;
-  errorBasket: boolean;
+  mistake: boolean | string | null;
+  errorMessage: string | null;
+  successMessage: string;
 };
 //-------------------------
 
@@ -25,9 +28,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const CustomizedSnackbars: React.FC<PropsType> = ({
-  setOpen,
-  errorBasket,
-  open,
+  setOpen, //функция для закрытия алерта
+  mistake, // ошибка
+  open, // открывает алерт
+  errorMessage, // сообщение ошибки
+  successMessage, //сообщение удачных действий
+  setDeleteError, // удаление ошибки из стейта
 }) => {
   const classes = useStyles();
 
@@ -37,18 +43,21 @@ const CustomizedSnackbars: React.FC<PropsType> = ({
     }
 
     setOpen(false);
+    setTimeout(() => {
+      setDeleteError(null);
+    }, 300);
   };
-
+  // console.log(mistake);
   return (
     <div className={classes.root}>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        {errorBasket ? (
+        {mistake ? (
           <Alert onClose={handleClose} severity="error">
-            Товар не добавлен в корзину, что то пошло не так!
+            {errorMessage}
           </Alert>
         ) : (
           <Alert onClose={handleClose} severity="success">
-            Товар добавлен в корзину!
+            {successMessage}
           </Alert>
         )}
       </Snackbar>

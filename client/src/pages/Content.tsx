@@ -35,6 +35,7 @@ import byk1 from '../img/byk1.jpg';
 import planshet1 from '../img/planshet1.jpg';
 import reclama1 from '../img/reclama1.jpg';
 import CustomizedSnackbars from '../components/CustomizedSnackbar';
+import { setErrorBasket } from '../store/reducer/basketReducer';
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -52,7 +53,7 @@ type MapStateToPropsType = {
   isLoadinTypes: boolean;
   isFetchErrorTypes: boolean;
   isAuth: boolean;
-  errorBasket: boolean;
+  errorBasket: null | string;
 };
 type MapDispathPropsType = {
   getDevices: (
@@ -68,6 +69,7 @@ type MapDispathPropsType = {
   setBrandId: (data: string | null) => setBrandIdActionType;
   addProductCart: (product: ProductType) => void;
   setPath: (value: string) => SetPathActionType;
+  setErrorBasket: (data: null | string) => void;
 };
 
 type PropsType = MapDispathPropsType & MapStateToPropsType;
@@ -95,6 +97,7 @@ const Content: React.FC<PropsType> = ({
   setBrandId,
   addProductCart, //добавление товара в корзину
   setPath, //запись пути последнего клика
+  setErrorBasket, //удаление ошибки добавления в корзину из стейта
   name,
   devices,
   types,
@@ -142,12 +145,14 @@ const Content: React.FC<PropsType> = ({
     getTypes();
     // eslint-disable-next-line
   }, []);
-  //для алерта,который показывает результат добавления товара в корзину
-  const [open, setOpen] = React.useState(false);
+  //===для алерта,который показывает результат добавления товара в корзину===
+  const [open, setOpen] = useState(false);
   const handleClick = () => {
     setOpen(true);
   };
-
+  const errorMessage = errorBasket;
+  const successMessage = 'Товар добавлен в корзину!';
+  //=============================================================================
   return (
     <>
       <ImageContainer />
@@ -238,7 +243,6 @@ const Content: React.FC<PropsType> = ({
                           item={item}
                           key={Math.random()}
                           addProductCart={addProductCart}
-                          errorBasket={errorBasket}
                           isAuth={isAuth}
                           handleClick={handleClick}
                           setPath={setPath}
@@ -271,8 +275,11 @@ const Content: React.FC<PropsType> = ({
         )}
         <CustomizedSnackbars
           setOpen={setOpen}
+          setDeleteError={setErrorBasket}
           open={open}
-          errorBasket={errorBasket}
+          mistake={errorBasket}
+          errorMessage={errorMessage}
+          successMessage={successMessage}
         />
       </Container>
     </>
@@ -287,7 +294,7 @@ const mapStateToProps = ({
     devices: devices.devices, //устройства
     types: devices.types, //типы устройств
     brands: devices.brands, //брэнды устройств
-    name: devices.name, // имя для поиска
+    name: devices.name, // имя товара, для поиска
     pageQty: devices.pageQty, //количества страниц
     limit: devices.limit, //сколько устройств на странице
     typeId: devices.typeId, // айдишник типа
@@ -311,4 +318,5 @@ export default connect<
   setBrandId,
   addProductCart,
   setPath,
+  setErrorBasket,
 })(Content);
