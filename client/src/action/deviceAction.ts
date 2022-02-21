@@ -141,7 +141,12 @@ export const getBrands = (): ThunkType => {
   };
 };
 // добавление устройства в базу данных ,обнуление стейта addedDevice,переход на главную страницу
-export const addDevice = (data: any, history: any): ThunkType => {
+export const addDevice = (
+  data: addedDeviceType,
+  showAlert: () => void, // открытие алерта,который показывает результат добавления
+  handleStart: () => void // для изменения локального стейта activeStep
+  // в AddDevicesContainer,чтобы возратить степ на начальный уровень добавления товара
+): ThunkType => {
   //чтобы обнулить стейт
   const copyAddedDevice: addedDeviceType = {
     name: '',
@@ -160,7 +165,8 @@ export const addDevice = (data: any, history: any): ThunkType => {
       //обнуляем добавленное устройство в стейте
       dispatch(setAddedDevice(copyAddedDevice));
       dispatch(getTypes());
-      history.push('/');
+      handleStart();
+      showAlert();
     } catch (e) {
       console.log(e);
       dispatch(setAddedDeviceError(true));
@@ -205,10 +211,11 @@ export const addBrand = (
 };
 // удаление  устройства
 export const removeDevice = (
-  id: string | undefined,
-  showAlert: () => void,
-  setRemoteDevice: React.Dispatch<React.SetStateAction<string>>,
-  name: string
+  id: string | undefined, // id удалённого товара
+  showAlert: () => void, // открытие алерта,который показывает результат удаления
+  setRemoteDevice: React.Dispatch<React.SetStateAction<string>>, // добавление в локальный стейт названия товара
+  //чтобы добавить в зависимость для получения устройств
+  name: string //  название товара
 ): ThunkType => {
   console.log(id);
   return async (dispatch) => {

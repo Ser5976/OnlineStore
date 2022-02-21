@@ -32,6 +32,7 @@ import {
 import { addProductCart, ProductType } from '../action/basketAction';
 import { setErrorBasket } from '../store/reducer/basketReducer';
 import CustomizedSnackbars from '../components/CustomizedSnackbar';
+import { useAlert } from '../hooks/alert.hooks'; //свой хук для алерта(показа сообщений об удалении и добавлении)
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -169,11 +170,11 @@ const ProfileType: React.FC<PropsType> = ({
     setBrandId(null);
   };
   //===для алерта,который показывает результат добавления товара в корзину===
-  const [open, setOpen] = React.useState(false);
+  /* const [open, setOpen] = React.useState(false);
   const handleClick = () => {
     setOpen(true);
-  };
-  const errorMessage = errorBasket;
+  }; */
+  const { show, showAlert, setShow } = useAlert();
   const successMessage = 'Товар добавлен в корзину!';
   //=============================================================================
 
@@ -268,7 +269,7 @@ const ProfileType: React.FC<PropsType> = ({
                         key={Math.random()}
                         addProductCart={addProductCart}
                         isAuth={isAuth}
-                        handleClick={handleClick}
+                        showAlert={showAlert}
                         setPath={setPath}
                         path={location.pathname}
                       />
@@ -298,11 +299,11 @@ const ProfileType: React.FC<PropsType> = ({
           />
         )}
         <CustomizedSnackbars
-          setOpen={setOpen}
+          setOpen={setShow}
           setDeleteError={setErrorBasket}
-          open={open}
+          open={show}
           mistake={errorBasket}
-          errorMessage={errorMessage}
+          errorMessage={errorBasket}
           successMessage={successMessage}
         />
       </Container>

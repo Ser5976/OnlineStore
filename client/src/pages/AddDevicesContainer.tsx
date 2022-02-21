@@ -1,7 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-//import Paper from '@material-ui/core/Paper';
-import { useHistory } from 'react-router';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -24,8 +22,9 @@ import {
 import { addDevice, addType, addBrand } from '../action/deviceAction';
 import ModalWindow from '../components/ModalWindow';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
+import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { connect } from 'react-redux';
-import MenuAdmin from '../components/MenuAdmin';
+import { useAlert } from '../hooks/alert.hooks';
 
 //типизация--------------------------------
 type MapStateToPropsType = {
@@ -36,7 +35,11 @@ type MapStateToPropsType = {
 };
 type MapDispathPropsType = {
   setAddedDevice: (data: addedDeviceType) => setAddedDeviceActionType;
-  addDevice: (data: addedDeviceType, history: any) => void;
+  addDevice: (
+    data: addedDeviceType,
+    showAlert: () => void,
+    handleStart: () => void
+  ) => void;
   addType: (data: { name: string }, handleClose: () => void) => void;
   addBrand: (data: { name: string }, handleClose: () => void) => void;
   setAddedDeviceError: (data: boolean) => void;
@@ -79,11 +82,6 @@ const useStyles = makeStyles((theme) => ({
     },
     marginBottom: 15,
   },
-  /*
-  button: {
-    marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(1),
-  }, */
   textTitle: {
     marginBottom: '25px',
   },
@@ -99,14 +97,13 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   types, //типы
   brands, //брэнды
   addedDevice, //добавленный девайс
+  addedDeviceError, //ошибка добавленного устройства
   setAddedDevice, //запись добавленного девайса в стейт
   addDevice, //добавить устройства в базу данных
   addType, //добавить тип устройства в базу данных
   addBrand, //добавить брэнд устройства в базу данных
-  addedDeviceError, //ошибка добавленного устройства
   setAddedDeviceError, //изменение ошибки
 }) => {
-  const history = useHistory();
   const classes = useStyles();
   //степер
   const [activeStep, setActiveStep] = React.useState(0);
@@ -128,7 +125,11 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   const handleCloseBrand = () => {
     setOpenBrand(false);
   };
-  //------------------------------------------------------------
+
+  //===для алерта,который показывает результат добавления товара ===
+  const { show, showAlert, setShow } = useAlert();
+  //=============================================================================
+
   const getStepContent = (step: number): JSX.Element => {
     switch (step) {
       case 0:
@@ -183,7 +184,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
         throw new Error('Unknown step');
     }
   };
-
+  //Функции изменения шага(1,2,3)
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -191,7 +192,10 @@ const AddDevicesContainer: React.FC<PropsType> = ({
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
-  //отправка добаленного устройства  на сервак,используем FormData из за файлов,history чтобы вернуться на главную
+  const handleStart = () => {
+    setActiveStep(0);
+  };
+  //отправка добаленного устройства  на сервак,используем FormData из-за файлов,
   const appendDevice = () => {
     const { picture, price, description, name, typeId, brandId, info } =
       addedDevice;
@@ -205,7 +209,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
     picture.forEach((file) => {
       formData.append('picture', file);
     });
-    addDevice(formData, history);
+    addDevice(formData, showAlert, handleStart);
   };
 
   return (
@@ -235,7 +239,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
                     color="error"
                     className={classes.textTitle}
                   >
-                    Что-то пошло не так!
+                    Устройство не добавлено,что-то пошло не так!
                   </Typography>
                 )}
                 <Grid container component="main">
@@ -244,9 +248,7 @@ const AddDevicesContainer: React.FC<PropsType> = ({
                       variant="contained"
                       className={classes.buttons}
                       fullWidth
-                      onClick={() => {
-                        setActiveStep(0);
-                      }}
+                      onClick={handleStart}
                     >
                       Отмена
                     </Button>
@@ -270,6 +272,14 @@ const AddDevicesContainer: React.FC<PropsType> = ({
           </React.Fragment>
         </div>
       </main>
+      <CustomizedSnackbars
+        setOpen={setShow}
+        setDeleteError={null}
+        open={show}
+        mistake={null}
+        errorMessage={null}
+        successMessage="Устройство добавлено успешно"
+      />
     </>
   );
 };

@@ -6,7 +6,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 //----типизация пропсов----
 type PropsType = {
   setOpen: (data: boolean) => void;
-  setDeleteError: (data: null) => void;
+  setDeleteError: ((data: null) => void) | null;
   open: boolean;
   mistake: boolean | string | null;
   errorMessage: string | null;
@@ -43,9 +43,11 @@ const CustomizedSnackbars: React.FC<PropsType> = ({
     }
 
     setOpen(false);
-    setTimeout(() => {
-      setDeleteError(null);
-    }, 300);
+    if (setDeleteError) {
+      setTimeout(() => {
+        setDeleteError(null);
+      }, 300);
+    }
   };
   // console.log(mistake);
   return (

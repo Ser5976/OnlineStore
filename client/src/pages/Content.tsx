@@ -37,6 +37,7 @@ import reclama1 from '../img/reclama1.jpg';
 import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { setErrorBasket } from '../store/reducer/basketReducer';
 import { connect } from 'react-redux';
+import { useAlert } from '../hooks/alert.hooks'; //свой хук для алерта(показа сообщений об удалении и добавлении)
 
 //типизация--------------------------------
 type MapStateToPropsType = {
@@ -146,12 +147,7 @@ const Content: React.FC<PropsType> = ({
     // eslint-disable-next-line
   }, []);
   //===для алерта,который показывает результат добавления товара в корзину===
-  const [open, setOpen] = useState(false);
-  const handleClick = () => {
-    setOpen(true);
-  };
-  const errorMessage = errorBasket;
-  const successMessage = 'Товар добавлен в корзину!';
+  const { show, showAlert, setShow } = useAlert();
   //=============================================================================
   return (
     <>
@@ -191,7 +187,7 @@ const Content: React.FC<PropsType> = ({
                 setBrandId={setBrandId}
               />
             )}
-            <div style={{ marginBottom: '25px' }}>
+            {/*  <div style={{ marginBottom: '25px' }}>
               <img
                 src={reclama1}
                 style={{ height: '200px', width: 'auto', marginTop: '25px' }}
@@ -204,7 +200,7 @@ const Content: React.FC<PropsType> = ({
                 src={byk1}
                 style={{ height: '205px', width: 'auto', marginTop: '25px' }}
               />
-            </div>
+            </div> */}
           </Grid>
           <Grid item xs={12} sm={9}>
             <Typography variant="h6" style={{ marginTop: '50px' }}>
@@ -244,7 +240,7 @@ const Content: React.FC<PropsType> = ({
                           key={Math.random()}
                           addProductCart={addProductCart}
                           isAuth={isAuth}
-                          handleClick={handleClick}
+                          showAlert={showAlert}
                           setPath={setPath}
                           path={location.pathname}
                         />
@@ -274,12 +270,12 @@ const Content: React.FC<PropsType> = ({
           />
         )}
         <CustomizedSnackbars
-          setOpen={setOpen}
+          setOpen={setShow}
           setDeleteError={setErrorBasket}
-          open={open}
+          open={show}
           mistake={errorBasket}
-          errorMessage={errorMessage}
-          successMessage={successMessage}
+          errorMessage={errorBasket}
+          successMessage="Товар добавлен в корзину!"
         />
       </Container>
     </>

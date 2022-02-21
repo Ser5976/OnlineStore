@@ -39,6 +39,7 @@ import DeleteDevice from '../components/DeleteDevice';
 import ActiveLastBreadcrumb from '../components/ActiveLastBreadcrumb';
 import TypeBarDelete from '../components/TypeBarDelete';
 import CustomizedSnackbars from '../components/CustomizedSnackbar';
+import { useAlert } from '../hooks/alert.hooks'; //свой хук для алерта(показа сообщений об удалении и добавлении)
 import { connect } from 'react-redux';
 
 //типизация--------------------------------
@@ -143,12 +144,13 @@ const DeleteContainer: React.FC<PropsType> = ({
     }
     // eslint-disable-next-line
   }, [searchPage]);
-  //название удалённого товара добовляем в локальный стейт,чтобы добавить в зависимость для получения устройств
+
+  //название удалённого товара добавляем в локальный стейт,чтобы добавить в зависимость для получения устройств
   const [remoteDevice, setRemoteDevice] = useState('');
-  console.log(remoteDevice);
+
   // запрос на сервак для получения устройств(фильтруем устройства по типу и бренду,а также пагинация)
   useEffect(() => {
-    console.log('рендеринг');
+    // console.log('рендеринг');
     getDevices(typeId, brandId, limit, page, name, setPage, history);
     // eslint-disable-next-line
   }, [typeId, brandId, page, name, remoteDevice]);
@@ -162,12 +164,7 @@ const DeleteContainer: React.FC<PropsType> = ({
   const [category, setCategory] = useState('Все товары');
 
   //===для алерта,который показывает результат удаления===
-  const [show, setShow] = useState(false);
-  const showAlert = () => {
-    setShow(true);
-  };
-  const errorMessage = alertMessage;
-  const successMessage = 'Удаление произошло успешно';
+  const { show, showAlert, setShow } = useAlert();
   //=============================================================================
 
   return (
@@ -297,8 +294,8 @@ const DeleteContainer: React.FC<PropsType> = ({
         setDeleteError={setAlertMessage}
         open={show}
         mistake={alertMessage}
-        errorMessage={errorMessage}
-        successMessage={successMessage}
+        errorMessage={alertMessage}
+        successMessage="Удаление произошло успешно"
       />
     </>
   );

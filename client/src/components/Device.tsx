@@ -18,7 +18,7 @@ import { SetPathActionType } from '../store/reducer/authReducer';
 type PropsType = {
   item: DeviceType; //типизация  выбранного устройства
   addProductCart: (product: ProductType) => void;
-  handleClick: () => void;
+  showAlert: () => void;
   isAuth: boolean;
   setPath: (value: string) => SetPathActionType;
   path: string;
@@ -54,7 +54,7 @@ const Device: React.FC<PropsType> = ({
   item, //девайс
   addProductCart, //добавление товара в корзину
   isAuth, //маркер авторизации
-  handleClick, //открытие алерта(добавления товара в корзину либо ошибки)
+  showAlert, //открытие алерта(добавления товара в корзину либо ошибки)
   setPath, //запись пути последнего клика
   path, //путь последнего клика
 }) => {
@@ -131,7 +131,7 @@ const Device: React.FC<PropsType> = ({
                 onClick={() => {
                   addToCart(item);
                   setPath(path);
-                  handleClick();
+                  showAlert();
                 }}
               >
                 Добавить в корзину

@@ -15,6 +15,7 @@ import CustomizedSnackbars from '../components/CustomizedSnackbar';
 import { useHistory, useLocation } from 'react-router-dom';
 import { SetPathActionType, setPath } from '../store/reducer/authReducer';
 import { setErrorBasket } from '../store/reducer/basketReducer';
+import { useAlert } from '../hooks/alert.hooks'; //свой хук для алерта(показа сообщений об удалении и добавлении)
 import { connect } from 'react-redux';
 
 //типизация---------------------------------------------------------------------
@@ -104,12 +105,7 @@ const ProfileDevice: React.FC<PropsType> = ({
   console.log(location);
   const classes = useStyles();
   //===для алерта,который показывает результат добавления товара в корзину===
-  const [open, setOpen] = useState(false);
-  const handleClick = () => {
-    setOpen(true);
-  };
-  const errorMessage = errorBasket;
-  const successMessage = 'Товар добавлен в корзину!';
+  const { show, showAlert, setShow } = useAlert();
   //=============================================================================
 
   //  хук роутера ,который помогает получить значение params
@@ -126,7 +122,7 @@ const ProfileDevice: React.FC<PropsType> = ({
   // добавление товара в корзину(если ошибка - показываем алерт ошибки,если неавторизирован-авторизация,если всё норм-алерт норм)
   const addToCart = () => {
     if (errorBasket) {
-      handleClick(); //запускаем алерт,что есть ошибка
+      showAlert(); //запускаем алерт,что есть ошибка
     } else if (isAuth) {
       const product: ProductType = {
         name,
@@ -136,7 +132,7 @@ const ProfileDevice: React.FC<PropsType> = ({
         id: _id,
       };
       addProductCart(product); // передаем объек товара в базу корзины
-      handleClick(); // запускаем алерт,что всё прошло хорошо
+      showAlert(); // запускаем алерт,что всё прошло хорошо
     } else {
       history.push('/login');
     }
@@ -234,12 +230,12 @@ const ProfileDevice: React.FC<PropsType> = ({
         </>
       )}
       <CustomizedSnackbars
-        setOpen={setOpen}
+        setOpen={setShow}
         setDeleteError={setErrorBasket}
-        open={open}
+        open={show}
         mistake={errorBasket}
-        errorMessage={errorMessage}
-        successMessage={successMessage}
+        errorMessage={errorBasket}
+        successMessage="Товар добавлен в корзину!"
       />
     </Container>
   );
