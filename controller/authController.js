@@ -80,7 +80,7 @@ class authController {
 
   //===== добавляем в корзину товар(req.user.id имеется благодаря authMiddleware) ===
   async addBasket(req, res) {
-    console.log('передаваемый объект', req.body);
+    // console.log('передаваемый объект', req.body);
     try {
       const { id, name, price, picture, description } = req.body; //свойства добаленного товара
       const userCart = await User.findOne({ _id: req.user.id });
